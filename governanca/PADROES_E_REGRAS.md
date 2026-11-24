@@ -1,6 +1,6 @@
 # Padrões e regras do produto — catálogo normativo
 
-**Versão:** 1.0 · **Data de criação e última revisão:** 2026-11-23 · **Timezone:** America/Sao_Paulo.  
+**Versão:** 1.0 · **Data de criação:** 2026-11-23 · **Última revisão:** 2026-11-24 · **Timezone:** America/Sao_Paulo.  
 **Nome de trabalho:** NEXO Alpha. **Marca/domínio finais: em aberto.**
 
 > **Legenda:** Decidido = regra de produto; Implementado = código existe no PR #1; Validado = teste de CI com evidência; Pendente = trabalho futuro. "Implementado" não significa homologado nem em produção.
