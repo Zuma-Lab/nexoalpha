@@ -5,7 +5,7 @@ Data base: **2026-11-23** · Fuso: **America/Sao_Paulo**. Revisar este arquivo a
 | ID | Data | Decisão / razão | Estado | Aplicação |
 |---|---|---|---|---|
 | ADR-001 | 2026-11-23 | **Alpha independente do NEXO legado**. O usuário rejeitou reaproveitar layout, frontend, API e estrutura do produto anterior. Reaproveitar somente conceitos, regras de negócio e testes como especificação. | Decidido | `Zuma-Lab/nexoalpha` |
-| ADR-002 | 2026-11-23 | **Homepage centrada no produto (direção A)**, com briefing V1/V2 como peça principal, sem hero de executivo artificial. | Decidido; implementado na branch | `homepage/dist/` |
+| ADR-002 | 2026-11-23 | **Homepage centrada no produto (direção A)**, com briefing V1/V2 como peça principal, sem hero de executivo artificial. | **Substituído em 2026-11-24 por ADR-015** | `homepage/dist/` |
 | ADR-003 | 2026-11-23 | **Identidade temporária grafite/laranja/off-white/Inter**, usando `design/brandbook-v2/nexo-tokens.json` como fonte canônica de novas telas. | Decidido como direção, marca provisória | Design system |
 | ADR-004 | 2026-11-23 | **Autenticação por cookie HttpOnly e proteção CSRF**, no mesmo domínio; nunca token de sessão em `sessionStorage`. | Implementado em branch; precisa homologação | API/frontend |
 | ADR-005 | 2026-11-23 | **RFQs e propostas públicas com prazo e revogação**, tokens aleatórios armazenados como hash, permissão mínima. | Implementado em branch; precisa homologação | API |
@@ -18,6 +18,11 @@ Data base: **2026-11-23** · Fuso: **America/Sao_Paulo**. Revisar este arquivo a
 | ADR-012 | 2026-11-23 | **Nada será mesclado à `main` sem revisão.** Pull request em draft é o caminho auditável para a entrega entre computadores. | Decidido para esta rodada | Git |
 | ADR-013 | 2026-11-23 | **A identidade pode mudar após validação do nome.** Até lá, não alterar logos em massa, nem adquirir/dominar uma marca sem checagem. | Pendente de decisão | Marca |
 | ADR-014 | 2026-11-23 | **Prioridade de produto:** briefing por serviço, sourcing/RFQ, matriz, editor de proposta, operação e aprovação; segurança e autorização são transversais. | Decidido como ordem | Roadmap |
+
+| ADR-015 | 2026-11-24 | **Direção editorial B substitui o template SaaS da direção A.** Hero orientado ao problema real; caso V1→V2→impacto→próxima decisão; cálculo de room nights e matriz de permissões em vez de cartões idênticos. | Implementado na branch; QA de navegador pendente | `homepage/dist/` |
+| ADR-016 | 2026-11-24 | **Workspace operacional V2 criado do zero**, sem carregar CSS/HTML do `alpha-snapshot/frontend/`. Projeto é a unidade de navegação: briefing, fornecedores, comparativo, proposta e execução como etapas de uma operação. | Implementado na branch; homologação pendente | `alpha-snapshot/workspace-v2/` |
+| ADR-017 | 2026-11-24 | **Funcionalidade antes de decoração.** O wizard chama validação Python real, as tabelas usam totais da API, links RFQ/proposta informam envio manual, e estados de erro e leitura ficam explícitos. | Implementado parcialmente; E2E em execução | `workspace-v2/app.js` e API |
+| ADR-018 | 2026-11-24 | **Identidade continua provisória**; aplicar brandbook 2.1 no Alpha sem fixar nome, domínio ou logo geométrico final. A marca pode mudar após decisão posterior. | Decidido | Design e governança |
 
 ## Decisões pendentes de aprovação
 
