@@ -241,3 +241,32 @@ def test_viewer_cannot_create_or_read_private_briefing_draft(client):
     assert client.get(path).status_code==403
     assert client.put(path,headers={'X-Nexo-CSRF':viewer.json()['csrf_token']},
        json={'payload':{'eventName':'Test'}}).status_code==403
+
+
+def test_proposal_editor_snapshots_terms_and_hides_internal_costs(client):
+    h=login(client)
+    pid=client.get('/api/projects',headers=h).json()[0]['id']
+    payload={'introduction':'Convenção anual — hospedagem e salas confirmadas',
+             'terms':'Café incluso. Cancelamento conforme política do fornecedor.'}
+    r=client.post(f'/api/projects/{pid}/proposals',headers=h,json=payload)
+    assert r.status_code==201,r.text
+    saved=r.json()
+    token=saved['review_path'].split('/')[-1]
+    assert client.get('/api/public/proposal/'+token).status_code==404
+    assert client.post(f"/api/proposals/{saved['id']}/publish",headers=h).status_code==200
+    public=client.get('/api/public/proposal/'+token)
+    assert public.status_code==200,public.text
+    data=public.json()
+    assert data['snapshot']['introduction']==payload['introduction']
+    assert data['snapshot']['terms']==payload['terms']
+    raw=str(data['snapshot'])
+    assert 'unit_net_cents' not in raw
+    assert 'net_total_cents' not in raw
+    assert 'fee_bps' not in raw
+    assert 'tax_bps' not in raw
+    # Revisões criam snapshots novos, sem alterar a proposta publicada.
+    next_r=client.post(f'/api/projects/{pid}/proposals',headers=h,json={'terms':'Nova condição'})
+    assert next_r.status_code==201,next_r.text
+    assert next_r.json()['version']==saved['version']+1
+    still=client.get('/api/public/proposal/'+token).json()
+    assert still['snapshot']['terms']==payload['terms']
