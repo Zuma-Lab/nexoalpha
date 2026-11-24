@@ -1,0 +1,15 @@
+NEXO - LOGO VETORIAL v1
+
+Reconstrução geométrica baseada no recorte original e na referência de briefing. É uma reconstrução, não o arquivo vetorial original.
+
+SVG: arquivo mestre, formas vetoriais fechadas, sem dependência de fontes, sem imagens embutidas e com fundo transparente. Escala sem pixelar.
+PNG: versões transparentes em 4096 px (assinaturas) e 2048 px (símbolos). Não ampliar além da resolução exportada; para novos tamanhos exportar do SVG.
+
+Principal: laranja #FF850D + branco #FFFFFF, para fundo grafite.
+Fundo claro: laranja + grafite #111315.
+Monocromáticos: branco ou grafite.
+
+Área de proteção mínima: metade da altura do símbolo em cada lado. Não esticar, inclinar, adicionar brilho ou alterar as proporções. Para favicon e avatares usar símbolo isolado e verificar em 16/24/32 px.
+
+As imagens preview e variantes têm fundo apenas para demonstração. Os demais SVGs e PNGs são transparentes.
+Arquivos criados localmente; não publicados no GitHub.

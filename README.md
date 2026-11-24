@@ -1,3 +1,19 @@
+# Estado atual — homepage e identidade
+
+O código da homepage, brandbook, logos vetoriais e novas explorações fotográficas estão preservados neste repositório. **Ponto de retomada:** [Estado atual e pendências](handoff/ESTADO_ATUAL_2026-11-23.md).
+
+- [Homepage implementada](homepage/README.md)
+- [Brandbook PDF v1](design/brandbook-v1/NEXO-Brandbook-v1.pdf) e tokens na mesma pasta
+- [Logos vetoriais e PNGs](assets/brand/nexo-logo-v1/)
+- [Fotografias exploratórias](assets/photography/)
+- [Direção para o refinamento](design/DIRECAO_FOTOGRAFICA_E_REFINAMENTO.md)
+- [Skills instaladas e uso](skills/INVENTARIO_E_USO.md)
+
+A imagem atual do hero foi considerada artificial pelo usuário. O refinamento visual está pendente; os arquivos salvos registram o estado anterior à próxima remodelagem. A geometria do logo vetorial ainda requer validação e o PDF mantém o logo raster antigo.
+
+---
+
+## Registro inicial preservado (estado anterior)
 # NEXO ALPHA
 
 Reconstrução independente da plataforma NEXO para cotações e gestão de eventos corporativos.

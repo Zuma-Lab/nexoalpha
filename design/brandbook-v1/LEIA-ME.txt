@@ -1,0 +1,8 @@
+NEXO BRANDBOOK 1.0
+
+PDF: manual visual de referência.
+CSS e JSON: valores normalizados para novos layouts; não alteram o sistema existente automaticamente.
+assets/: referências originais de homepage, briefings e logo.
+O PDF distingue direção aprovada de especificações propostas nesta versão. Fonte Inter proposta; Arial usada no PDF. Logo vetor ainda pendente.
+Manter os três arquivos sincronizados ao alterar a marca.
+Os arquivos foram preparados localmente; publicação no GitHub não realizada.

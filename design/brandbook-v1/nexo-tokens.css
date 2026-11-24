@@ -1,0 +1,53 @@
+/* NEXO Brandbook v1.0 | 2026-11-23 | valores normalizados propostos */
+:root {
+  --nexo-graphite: #111315;
+  --nexo-canvas: #0B0D0F;
+  --nexo-surface: #1B1D20;
+  --nexo-raised: #25282C;
+  --nexo-border: #454A50;
+  --nexo-orange: #FF850D;
+  --nexo-hover: #F5A044;
+  --nexo-pressed: #E77300;
+  --nexo-cream: #F3EFE9;
+  --nexo-white: #FFFFFF;
+  --nexo-muted: #B8BDC4;
+  --nexo-ink: #111315;
+  --nexo-light-muted: #565C63;
+  --nexo-light-border: #D9D4CD;
+  --nexo-orange-text: #A84800;
+  --nexo-success: #B9E56C;
+  --nexo-warning: #FFD166;
+  --nexo-danger: #FF9A9A;
+  --nexo-info: #9DC8FF;
+  --nexo-font: Inter, Arial, sans-serif;
+  --nexo-space-4: 4px;
+  --nexo-space-8: 8px;
+  --nexo-space-12: 12px;
+  --nexo-space-16: 16px;
+  --nexo-space-24: 24px;
+  --nexo-space-32: 32px;
+  --nexo-space-48: 48px;
+  --nexo-space-64: 64px;
+  --nexo-space-96: 96px;
+  --nexo-radius-input: 10px;
+  --nexo-radius-card: 16px;
+  --nexo-radius-panel: 24px;
+  --nexo-radius-pill: 999px;
+  --nexo-motion-fast: 160ms;
+  --nexo-motion-normal: 220ms;
+  --nexo-bg: var(--nexo-graphite);
+  --nexo-text: var(--nexo-white);
+  --nexo-text-muted: var(--nexo-muted);
+  --nexo-action-bg: var(--nexo-orange);
+  --nexo-action-text: var(--nexo-graphite);
+  --nexo-focus: var(--nexo-white);
+}
+[data-nexo-theme="light"] {
+  --nexo-bg: var(--nexo-cream);
+  --nexo-text: var(--nexo-graphite);
+  --nexo-text-muted: var(--nexo-light-muted);
+  --nexo-focus: var(--nexo-graphite);
+}
+@media (prefers-reduced-motion: reduce) {
+  :root { --nexo-motion-fast: 0ms; --nexo-motion-normal: 0ms; }
+}

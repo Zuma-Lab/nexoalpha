@@ -1,0 +1,79 @@
+{
+  "brand": "NEXO",
+  "version": "1.0.0",
+  "date": "2026-11-23",
+  "status": "Padrão proposto de implementação baseado nas referências visuais",
+  "colors": {
+    "graphite": "#111315",
+    "canvas": "#0B0D0F",
+    "surface": "#1B1D20",
+    "raised": "#25282C",
+    "border": "#454A50",
+    "orange": "#FF850D",
+    "hover": "#F5A044",
+    "pressed": "#E77300",
+    "cream": "#F3EFE9",
+    "white": "#FFFFFF",
+    "muted": "#B8BDC4",
+    "ink": "#111315",
+    "light-muted": "#565C63",
+    "light-border": "#D9D4CD",
+    "orange-text": "#A84800",
+    "success": "#B9E56C",
+    "warning": "#FFD166",
+    "danger": "#FF9A9A",
+    "info": "#9DC8FF"
+  },
+  "font": {
+    "family": "Inter, Arial, sans-serif",
+    "weights": [
+      400,
+      500,
+      600,
+      700
+    ]
+  },
+  "spacing": [
+    4,
+    8,
+    12,
+    16,
+    24,
+    32,
+    48,
+    64,
+    96
+  ],
+  "radius": {
+    "input": 10,
+    "card": 16,
+    "panel": 24,
+    "pill": 999
+  },
+  "breakpoints": {
+    "tablet": 768,
+    "desktop": 1200
+  },
+  "motion": {
+    "fast": "160ms",
+    "normal": "220ms"
+  },
+  "references": [
+    {
+      "file": "01-homepage-primeira-aprovada.png",
+      "sha256": "938636905a22401fcb341ba00ffe5e6e71b68ace6904ebcd71f9291d8a4df4af"
+    },
+    {
+      "file": "05-briefing-etapas-exploratorio.png",
+      "sha256": "d7b04482755a3da722c09ac694ba6dbdf117a42247302f5c8415ce2e96ffcfc7"
+    },
+    {
+      "file": "06-briefing-inteligente-exploratorio.png",
+      "sha256": "e63d6011837594532c9c08bd8dd3eb7f48f9fb77b954b64bcba2684ca0601d5e"
+    },
+    {
+      "file": "07-logo-recorte-original.png",
+      "sha256": "89090a5b0ce0a697a25ba42253d2121c691bc97bf4cda099cad2ec8cc32bc553"
+    }
+  ]
+}
