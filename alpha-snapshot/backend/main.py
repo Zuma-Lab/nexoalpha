@@ -18,6 +18,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 from .db import init_db, connect, rows
 from .security import hash_password, verify_password, make_token, token_hash
+from .briefing_rules import collect_issues, prepare_submission
 
 FRONTEND = Path(__file__).resolve().parents[1]/'frontend'
 HOMEPAGE = Path(__file__).resolve().parents[2]/'homepage'/'dist'
@@ -309,11 +310,24 @@ def new_briefing(pid:int,body:BriefingIn,user=Depends(me)):
     allow(user,('admin','consultant','client'))
     with connect() as db:
         p=project(db,pid,user)
+        payload=body.payload
+        # O formato detalhado por serviço passa pela validação da lógica de negócio.
+        service_format=('eventName' in payload or any(k in payload for k in ('svcAereo','svcHospedagem','svcEspacoAlimentacao','svcTransfers')))
+        if service_format:
+            issues=collect_issues(payload)
+            if issues:raise HTTPException(422,{'issues':issues})
+            payload=prepare_submission(payload)
         version=db.execute('SELECT COALESCE(MAX(version),0)+1 FROM briefing_versions WHERE project_id=?',(pid,)).fetchone()[0]
-        db.execute('INSERT INTO briefing_versions(company_id,project_id,version,payload,created_by) VALUES (?,?,?,?,?)',(user['company_id'],pid,version,json.dumps(body.payload,ensure_ascii=False),user['id']))
+        db.execute('INSERT INTO briefing_versions(company_id,project_id,version,payload,created_by) VALUES (?,?,?,?,?)',(user['company_id'],pid,version,json.dumps(payload,ensure_ascii=False),user['id']))
+        canonical=payload if not service_format else {
+            'destination':payload['destination'],
+            'start_date':payload['departureDate'],
+            'end_date':payload['returnDate'],
+            'attendees':int(payload['totalPassengers']) if payload['totalPassengers'] else 0,
+        }
         for key,col in [('destination','destination'),('start_date','starts_at'),('end_date','ends_at'),('attendees','attendees')]:
-            if key in body.payload and isinstance(body.payload[key],(str,int)):
-                db.execute(f'UPDATE projects SET {col}=?,updated_at=CURRENT_TIMESTAMP WHERE id=?',(body.payload[key],pid))
+            if key in canonical and type(canonical[key]) in (str,int):
+                db.execute(f'UPDATE projects SET {col}=?,updated_at=CURRENT_TIMESTAMP WHERE id=?',(canonical[key],pid))
         audit(db,user['company_id'],user['id'],'briefing.versioned',pid,f'V{version}')
         return {'version':version,'project_id':pid}
 
