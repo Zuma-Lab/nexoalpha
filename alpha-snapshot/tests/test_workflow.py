@@ -204,3 +204,40 @@ def test_product_homepage_and_workspace_routes(client):
     assert 'Operação | NEXO Alpha' in workspace.text
     assert client.get('/app-assets/styles.css').status_code==200
     assert 'NEXO Alpha — workspace V2' in client.get('/app-assets/app.js').text
+
+
+def test_briefing_draft_is_private_validated_by_csrf_and_cleared_on_publish(client):
+    h=login(client)
+    pid=client.get('/api/projects',headers=h).json()[0]['id']
+    path=f'/api/projects/{pid}/briefing-draft'
+    assert client.get(path,headers=h).json()['payload'] is None
+    draft={'eventName':'Revisão interna','destination':'São Paulo','totalPassengers':'130'}
+    assert client.put(path,json={'payload':draft}).status_code==403
+    saved=client.put(path,headers=h,json={'payload':draft})
+    assert saved.status_code==200,saved.text
+    assert client.get(path,headers=h).json()['payload']==draft
+    assert client.put(path,headers=h,json={'payload':{'long':'x'*70000}}).status_code==422
+    versions_before=len(client.get(f'/api/projects/{pid}',headers=h).json()['briefings'])
+    assert versions_before==1
+    r=client.post(f'/api/projects/{pid}/briefings',headers=h,json={'payload':{
+        'objective':'Nova versão imutável','attendees':130,'destination':'São Paulo',
+        'services':['Hospedagem']}})
+    assert r.status_code==201,r.text
+    assert r.json()['version']==2
+    assert client.get(path,headers=h).json()['payload'] is None
+    assert len(client.get(f'/api/projects/{pid}',headers=h).json()['briefings'])==2
+
+
+def test_viewer_cannot_create_or_read_private_briefing_draft(client):
+    h=login(client)
+    user=client.post('/api/users',headers=h,json={
+      'full_name':'Auditor Externo','email':'auditor@example.com',
+      'password':'AValidPassword_2026','role':'viewer'})
+    assert user.status_code==201,user.text
+    viewer=client.post('/api/auth/login',json={
+      'email':'auditor@example.com','password':'AValidPassword_2026'})
+    assert viewer.status_code==200
+    path='/api/projects/1/briefing-draft'
+    assert client.get(path).status_code==403
+    assert client.put(path,headers={'X-Nexo-CSRF':viewer.json()['csrf_token']},
+       json={'payload':{'eventName':'Test'}}).status_code==403
