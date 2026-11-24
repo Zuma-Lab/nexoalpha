@@ -8,10 +8,10 @@ Reconstrução independente da plataforma NEXO para cotações e gestão de even
 
 - `produto/`: escopo, requisitos, fluxos, acesso, dados, regras financeiras e roadmap.
 - `design/`: decisões da homepage, identidade visual, design system, especificações e referências.
-- `assets/`: imagens conceituais geradas e selecionadas durante a conversa.
+- `assets/`: imagens conceituais originais PNG e versões WebP, incluindo o logo e mockups de briefing; arquivos verificados por hash Git.
 - `historico/`: registro cronológico reconstruído do material acessível e limitações da exportação.
 - `skills/`: referências de metodologias de design; **não significa instalação global**.
-- `app/`: instantâneo de implementação Alpha existente, quando transferido e identificado.
+- `alpha-snapshot/`: instantâneo recuperado da implementação Alpha (backend, frontend, testes, documentação e capturas).
 - `handoff/`: instruções para continuar no ChatGPT Work.
 
 ## Estado e limites
