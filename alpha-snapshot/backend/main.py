@@ -119,6 +119,10 @@ class RFQResponseIn(BaseModel):
     conditions:str=''
     cancellation:str=''
     notes:str=''
+class ProposalContentIn(BaseModel):
+    introduction:str=Field(default='',max_length=2000)
+    terms:str=Field(default='',max_length=4000)
+
 class QuoteItemIn(BaseModel):
     category:str
     description:str=Field(min_length=1)
@@ -449,7 +453,7 @@ def delete_quote_item(pid:int,item_id:int,user=Depends(me)):
         return {'ok':True}
 
 @app.post('/api/projects/{pid}/proposals',status_code=201)
-def create_proposal(pid:int,user=Depends(me)):
+def create_proposal(pid:int,body:ProposalContentIn|None=Body(default=None),user=Depends(me)):
     allow(user,('admin','consultant'))
     with connect() as db:
         p=project(db,pid,user)
@@ -457,7 +461,7 @@ def create_proposal(pid:int,user=Depends(me)):
         if not items:raise HTTPException(422,'Adicione itens à cotação antes da proposta')
         v=db.execute('SELECT COALESCE(MAX(version),0)+1 FROM proposals WHERE project_id=?',(pid,)).fetchone()[0]
         total=sum(i['sale_total_cents'] for i in items)
-        snapshot=json.dumps({'project':{k:p[k] for k in ('title','protocol','destination','starts_at','ends_at','attendees')},'items':items,'total_cents':total},ensure_ascii=False)
+        snapshot=json.dumps({'project':{k:p[k] for k in ('title','protocol','destination','starts_at','ends_at','attendees')},'items':items,'total_cents':total,'introduction':(body.introduction.strip() if body else ''),'terms':(body.terms.strip() if body else '')},ensure_ascii=False)
         token=make_token()
         expires_at=(datetime.now(timezone.utc)+timedelta(days=30)).isoformat()
         propid=db.execute('INSERT INTO proposals(company_id,project_id,version,snapshot,total_cents,token_hash,created_by,expires_at) VALUES (?,?,?,?,?,?,?,?)',(user['company_id'],pid,v,snapshot,total,token_hash(token),user['id'],expires_at)).lastrowid
@@ -484,7 +488,7 @@ def public_proposal(token:str):
         # Cliente jamais recebe custos NET, tributos, fees, margens ou IDs internos.
         public_items=[{key:item.get(key) for key in ('category','description','quantity','sale_total_cents')}
           for item in private.get('items',[])]
-        snapshot={'project':private.get('project',{}),'items':public_items,'total_cents':p['total_cents']}
+        snapshot={'project':private.get('project',{}),'items':public_items,'total_cents':p['total_cents'],'introduction':str(private.get('introduction') or ''),'terms':str(private.get('terms') or '')}
         return {'version':p['version'],'status':p['status'],
           'snapshot':snapshot,'total_cents':p['total_cents'],'published_at':p['published_at']}
 
