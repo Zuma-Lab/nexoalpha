@@ -193,7 +193,7 @@ def login(body:Login,request:Request,response:Response):
         expires=(datetime.now(timezone.utc)+timedelta(hours=12)).isoformat()
         db.execute('INSERT INTO sessions(user_id,token_hash,csrf_token,expires_at) VALUES (?,?,?,?)',(match['id'],token_hash(token),csrf,expires))
     response.set_cookie(COOKIE_NAME,token,max_age=43200,httponly=True,
-        secure=os.environ.get('NEXO_SECURE_COOKIES')=='1',
+        secure=(os.environ.get('NEXO_SECURE_COOKIES')=='1' or request.url.scheme=='https'),
         samesite='strict',path='/')
     response.headers['Cache-Control']='no-store'
     return {'user':{k:match[k] for k in ('id','company_id','client_id','full_name','email','role')},'csrf_token':csrf}
@@ -225,6 +225,8 @@ def request_demo(body:DemoRequestIn,request:Request):
 @app.get('/api/demo-requests')
 def get_demo_requests(user=Depends(me)):
     allow(user,('admin',))
+    owner=os.environ.get('NEXO_LEADS_ADMIN_EMAIL','').strip().lower()
+    if not owner or user['email'].lower()!=owner:raise HTTPException(403,'Acesso restrito ao operador da plataforma')
     with connect() as db:
         return rows(db.execute('SELECT id,name,email,company,event_type,created_at FROM demo_requests ORDER BY id DESC LIMIT 200'))
 
