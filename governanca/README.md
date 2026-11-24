@@ -13,7 +13,8 @@
 5. [Pendências e riscos](PENDENCIAS_E_RISCOS.md) — prioridades, proprietário de decisão e bloqueios.
 6. [Processo de versionamento](CONTRIBUICAO_E_VERSIONAMENTO.md) — como alterar o projeto sem perder rastreabilidade.
 7. [Brandbook v2.1](../design/brandbook-v2/BRANDBOOK_V2.md) e [tokens canônicos](../design/brandbook-v2/nexo-tokens.json).
-8. [Auditoria crítica pós-reformulação (24/11/2026)](AUDITORIA_CRITICA_POS_REFORMULACAO_2026-11-24.md) — notas comparativas, evidências reais, limitações e pendências.
+8. [Pesquisa e mensagens de dor na homepage (24/11/2026)](PESQUISA_DORES_E_MENSAGEM_HOME_2026-11-24.md) — fontes de mercado, dores qualitativas, exemplos, copy e limites funcionais.
+9. [Auditoria crítica pós-reformulação (24/11/2026)](AUDITORIA_CRITICA_POS_REFORMULACAO_2026-11-24.md) — notas comparativas, evidências reais, limitações e pendências.
 
 **Hierarquia:** decisões expressas pelo proprietário > ADR vigente > regras do produto > brandbook/tokens vigentes > código validado > documentos históricos. Nenhum resumo equivale a uma transcrição integral. Sempre confrontar regras com o código e a CI.
 
