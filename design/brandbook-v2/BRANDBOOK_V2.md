@@ -1,6 +1,6 @@
-# Brandbook v2 — NEXO Alpha (nome provisório)
+# Brandbook v2.1 — NEXO Alpha (nome provisório)
 
-**Versão:** 2.0 · **Data de edição:** 2026-11-23 (America/Sao_Paulo)  
+**Versão:** 2.1 · **Data de edição:** 2026-11-24 (America/Sao_Paulo)  
 **Fonte técnica canônica:** [nexo-tokens.json](nexo-tokens.json)  
 **PDF gerado:** [NEXO-Alpha-Brandbook-v2.pdf](NEXO-Alpha-Brandbook-v2.pdf)  
 **Governança:** [regras BR](../../governanca/PADROES_E_REGRAS.md) · [ADRs](../../governanca/DECISOES_ARQUITETURAIS.md) · [roadmap](../../governanca/ROADMAP.md)
@@ -17,18 +17,20 @@ Plataforma B2B para transformar solicitações, briefings e cotações de evento
 
 **Evitar:** fotos sintéticas de clientes, promessas de funcionalidades inexistentes, métricas sem fonte e imitar marcas concorrentes. Qondor/Perk são referências conceituais de organização e experiência, não fontes de código, marca, textos ou telas para reprodução.
 
-## 02. Direção de homepage aprovada
+## 02. Direção B — narrativa operacional editorial (vigente em 2026-11-24)
 
-**Direção A:** o **produto** é o protagonista. A página apresenta:
+A direção A, com painel V1/V2 isolado à direita de um grande título, tornou-se **histórica** após auditoria crítica. A direção atual é **B**: contar uma decisão comercial de modo específico e verificável, sem layout padronizado de marketing SaaS.
 
-1. **Hero:** comparação de briefing V1/V2 em HTML semântico (campos participantes, apartamentos, salas, período, transfers), sem hero fotográfico.
-2. **Trilha:** 01 briefing, 02 fornecedores, 03 cotação, 04 proposta.
-3. **Matriz comercial:** alternativas e trade-offs, com preços fictícios rotulados; custos NET nunca aparecem na visão pública do produto.
-4. **Papéis:** solicitante, consultor e fornecedor; permissões diferentes e explicadas.
-5. **Conversão:** CTA primário "Solicitar demonstração"; ação de entrar distinta e autenticada.
-6. **Rodapé:** nome provisório e referência a ambiente em desenvolvimento, sem depoimentos inventados.
+1. **Hero editorial:** “O briefing mudou. A operação continua.” Título assimétrico, hierarquia clara e princípio operacional no lugar de screenshot decorativo ou foto.
+2. **Caso de uso contextual:** alteração de participantes, apartamentos e salas; painel de impacto; próxima ação. **Os impactos ainda são demonstrativos e não automações de produção.**
+3. **Raciocínio financeiro:** 315 room nights (105 apartamentos × 3 diárias), tarifa NET, café e cancelamento; Hotel A/B/C fictícios e com fórmula explicada. Proibido recomendar automaticamente pela tarifa unitária.
+4. **Permissões em matriz:** mesmo projeto, três visões — consultor, cliente e fornecedor — em vez de cartões idênticos.
+5. **Contato e login funcionais:** formulários com status real; não transformar texto decorativo em falso botão.
+6. **Mobile específico:** painéis empilhados e opções de hospedagem em cartões legíveis, sem recortar informações decisivas.
 
-As telas do hero são **demonstrações construídas em HTML**, não capturas do workspace interno. Substituí-las por capturas do aplicativo somente quando o editor definitivo existir, for testado e aprovado. Fotografias reais/licenciadas podem ser introduzidas em seções editoriais futuras, se fizerem sentido.
+O laranja identifica uma ação, campo alterado ou algo que exige atenção; não deve colorir palavras aleatórias dos títulos. Ilustrações sem resultado real devem ser explicitamente rotuladas.
+
+**Importante:** a nova homepage ainda é material do Alpha, não a confirmação de que todas as automações de impacto/cotação estão implementadas. O workspace V2 tem backend funcional parcial, mas demanda homologação.
 
 ## 03. Cores — tokens de referência
 
@@ -55,30 +57,30 @@ As telas do hero são **demonstrações construídas em HTML**, não capturas do
 
 **Regra de aplicação:** preferir tokens semânticos; nunca inventar novos verdes, azuis ou amarelos porque existam no NEXO legado. Garantir contraste real, incluindo hover, disabled e estados de erro.
 
-## 04. Tipografia
+## 04. Tipografia e voz editorial
 
-- Família primária: **Inter**, pesos 400, 500, 600, 700; fallbacks system-ui, Segoe UI e Arial.
-- Homepage atual: Inter carregada pelo Google Fonts. **Pendente antes de produção:** empacotamento licenciado no próprio site, sem compartilhar arquivos de fonte em mensagens.
-- Headline hero: `clamp(38px, 4.55vw, 66px)` desktop; `clamp(34px, 9vw, 46px)` mobile; line-height 1.065; letter-spacing -0.035em.
-- Corpo: 16px e line-height 1.6. Destaque/lead: 18px. Navegação: 14px. Controles: 15px.
-- Mockup HTML: textos não inferiores a 12px; preferir 13–14px em tabelas e 16px em texto normal. A antiga imagem ilustrativa tinha textos de 7–10px e foi retirada do hero.
-- Pesos: 400 texto comum, 500 elementos secundários, 600 títulos, 700 CTAs/etiquetas.
+- Fonte primária: **Inter** 400/500/600/700; fallback system-ui/Segoe UI/Arial. Evitar apenas aumentar pesos 700 para disfarçar falta de hierarquia.
+- **Homepage B:** headline 52–90px desktop, ~42–61px mobile; line-height 1.01; letter-spacing -0.064em. Texto de apoio 16–19px desktop, 15px mobile. Labels editoriais de 10–11px somente quando tiverem contraste e não forem o único acesso à informação.
+- **Workspace V2:** corpo 14px, títulos de 26–35px, controles de 12–14px, tabelas de 12px, apoio 11–12px, sempre verificando contraste e zoom 200%.
+- Labels em maiúsculas são coordenadas operacionais: **etapa / contexto / tipo de documento**. Evitar “a sua jornada conectada” e títulos sem objeto concreto.
+- Inter continua carregada do Google Fonts na branch; hospedagem local e análise de licença/privacidade seguem bloqueios antes do go-live.
+- Evitar incluir dados pessoais em capturas ou exemplos de marketing.
 
-## 05. Grid, espaçamento, raios e bordas
+## 05. Layout, densidade, componentes e contraste
 
-- Conteúdo máximo: **1280px**; container: `calc(100% - 64px)` desktop, -48px tablet, -32px mobile.
-- Espaçamento base 4px; escala `4, 8, 12, 16, 24, 32, 48, 64, 96` px.
-- Seções: 114px de padding vertical desktop, 80px tablet, 69px mobile (valores da home atual).
-- Header: 80px desktop, 68px mobile; gap desktop do hero 66px.
-- Raios: input 8px, botão 10px, card 16px, diálogo 18px, pill 999px.
-- Bordas padrão 1px; foco visível 3px em laranja com offset 4px.
-- Breakpoints efetivos na home: ≤620px, ≤850px, ≤1100px; tokens citam desktop base de referência ≥1200px. Não confundir com os breakpoints históricos da v1.
+- Conteúdo máximo: **1340px** na homepage; margem lateral 96px desktop, 48px tablet e 32px mobile (somatório das duas bordas).
+- Seções: 113px desktop, 82px tablet, 62px mobile, conforme contexto e não simplesmente repetidas em todos os blocos.
+- Header: 76px desktop, 65px mobile. Menu responsivo por volta de 650px; reordenar informação, não apenas encolher colunas.
+- Hierarquia: narrativa editorial pode usar superfícies escuras; operação interna usa superfícies claras para leitura prolongada e navegação grafite para orientação.
+- Raios: botões/inputs 5px; superfícies e diálogos até 8px; reduzir sombras decorativas, manter bordas de separação de 1px.
+- Fonte de cor: `nexo-tokens.json`, com grafite `#111315`, laranja `#FF850D`, creme `#F3EFE9`, cinzas neutros e estados não exclusivos da cor.
+- Alvo WCAG 2.2 AA, foco por teclado, regiões com `aria-live` e tabela ou lista semanticamente rotulada. Padrões de fonte e tamanho mínimo dependem da importância e do contexto, não de um número único universal.
 
 ## 06. Componentes e microinterações
 
 **Header:** logotipo provisório; nav âncora; CTA demo; login distinto; menu mobile via `aria-expanded`.  
-**Hero:** texto em coluna + demonstração em HTML; tabela tem cabeçalhos semânticos e dados ilustrativos.  
-**Tabelas:** cabeçalhos com escopo, números alinhados e cálculo exibido em moeda; rolagem horizontal quando necessário sem esmagar o texto.  
+**Hero:** título editorial orientado a problema real; o caso em três etapas fica numa seção independente, com rótulos de demonstração.  
+**Tabelas e cartões de opção:** no workspace, tabela densa com cabeçalho, unidades e totais. Na homepage mobile, comparação por fornecedor em cartões com tarifa, café, cancelamento e total; não cortar colunas sem sinalização.  
 **Botões:** foco visível, estados hover/disabled/loading, mínimo de 44px para alvos críticos.  
 **Formulários:** labels explícitos, obrigatório indicado, `type=email`, feedback `aria-live`, limite de envio e proteção antiabuso.  
 **Diálogos:** `<dialog>` nativo, fechar por botão e Escape, foco adequado; homologar leitor de tela.  
@@ -88,7 +90,7 @@ As telas do hero são **demonstrações construídas em HTML**, não capturas do
 
 **Alvo:** WCAG 2.2 AA. Texto normal ≥4,5:1; texto grande ≥3:1. Componentes e limites visuais relevantes ≥3:1. Sem depender exclusivamente de cor para mudanças de estado. Usar `lang=pt-BR`, skip link, HTML semântico, texto alternativo relevante, estados de foco e teclado, validação compreensível e `aria-live`.
 
-**Telas de referência:** desktop 1440×960; mobile 390×844. Verificar também 1280px e 768px, zoom 200%, sem overflow lateral na página e com scroll interno apenas em tabelas quando intencional.
+**Telas de referência:** desktop 1440×960; mobile 390×844. Capturar também o workspace V2 autenticado. Verificar 1280px e 768px, zoom 200%, sem overflow lateral na página e com scroll interno apenas em tabelas quando intencional.
 
 A validação por captura demonstra aparência em determinada resolução, **não substitui auditoria WCAG, teste E2E e QA manual**.
 
@@ -113,20 +115,20 @@ A validação por captura demonstra aparência em determinada resolução, **nã
 
 **Nome provisório:** NEXO Alpha; **não usar `nexo.com.br`**. Considerar Benexo, Nexobe, Bnexo ou alternativa, após pesquisa de disponibilidade e conflitos marcários, análise de pronúncia e posicionamento. Não registrar `og:url`/canonical até a URL final. Adapte cores e logo somente após decisão explícita e ADR novo.
 
-## 11. Aplicação e divergências conhecidas
+## 11. Aplicação atual e divergências conhecidas
 
-| Parâmetro | Especificação v2 | Situação atual |
+| Elemento | Implementação em PR #1 | Pendência |
 |---|---|---|
-| Paleta | Tokens v2 | Homepage majoritariamente alinhada |
-| Tipografia | Inter local + fallbacks | Google Fonts na home; local pendente |
-| Logo | Identidade definitiva | Geometria provisória |
-| Produto no hero | Briefing V1/V2 HTML | Implementado como demonstração |
-| Imagens reais do produto | Captura do workspace final | Pendente |
-| Login | Sessão segura e fluxo real | API integrada na branch, teste E2E pendente |
-| Lead demo | Persistência + consentimento e destino | Persistência sim, CRM/LGPD pendentes |
-| OG/canonical | URL pública do domínio final | Em aberto por naming |
-| Capturas | Executadas com código da branch | Automatização e revisão visual |
-| Acessibilidade | WCAG 2.2 AA | Boas práticas implementadas, auditoria pendente |
+| Homepage B | Narrativa de briefing alterado, cálculo de room nights, matriz de acesso, contato e login | QA visual final, fontes locais, domínio/SEO e LGPD |
+| Workspace V2 | `alpha-snapshot/workspace-v2/`, interface própria clara com navegação grafite, operações por projeto, fila, wizard, RFQs, cotação, propostas, tarefas | Testes end-to-end amplos, segurança multiempresa e homologação de regras |
+| Wizard de briefing | Criação real de versões imutáveis e campos condicionais, reaproveitando somente regras do negócio | Rascunho persistente, categorias adicionais e paridade total do legado |
+| Cotação | Quantidade, custo NET em centavos, bps de imposto e fee, total da API | Harmonização de unidades/tributação por contrato, importação Excel e seleção com escopos equivalentes |
+| Propostas | Versões e links públicos com custos internos filtrados pela API | Editor avançado de cláusulas, envio real e fluxo de renovação de links |
+| Identidade | Paleta e tipografia de trabalho | Nome/dominio e logo final; não adotar `nexo.com.br` |
+| Screenshots | Chromium autenticado com dados locais fictícios | Auditoria manual de UX, WCAG e múltiplos navegadores |
+| Branding | Manual e tokens 2.1 como fonte canônica | PDF regenerado pela CI, suporte a marca definitiva |
+
+**Arquivo histórico:** `alpha-snapshot/frontend/` continua em Git, mas não é servido em `/app`. Não tratá-lo como a interface ativa.
 
 ## 12. Critérios de aceite e próximos passos
 
@@ -135,4 +137,4 @@ A validação por captura demonstra aparência em determinada resolução, **nã
 **Aprovar marca:** escolher nome/dominio, verificar legalidade/identidade, completar logo.  
 **Aprovar lançamento:** produção segura, LGPD, monitoramento, backups, SEO, QA e consentimento.
 
-**Histórico:** versão v1 de 2026-11-23 preservada. **Esta versão v2 registrada em 2026-11-23**, para a direção A e exigências do Claude. Toda alteração posterior deve atualizar `governanca/REGISTRO_DE_ALTERACOES.md` e a data no JSON.
+**Histórico:** v1 preservada; v2 de 2026-11-23 (direção A) substituída pela **v2.1 em 2026-11-24 (direção B)**. Toda alteração posterior deve atualizar `governanca/REGISTRO_DE_ALTERACOES.md` e a data no JSON.
