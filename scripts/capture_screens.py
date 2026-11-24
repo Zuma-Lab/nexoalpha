@@ -134,6 +134,8 @@ def main():
                     w.locator('[data-action="start-briefing"]').last.click()
                     w.locator('form[data-form="wizard"]').wait_for()
                     snap(w,"workspace-briefing-desktop.png")
+                    # Alteração deliberada para comprovar que o diff V1→V2 renderiza.
+                    w.locator('form[data-form="wizard"] [name="totalPassengers"]').fill("130")
                     for step in range(4):
                         w.locator('form[data-form="wizard"] button[type="submit"]').click()
                         if step<3:
