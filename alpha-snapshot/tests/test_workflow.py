@@ -184,3 +184,15 @@ def test_demo_request_validation_and_persistence(client):
     leads=client.get('/api/demo-requests',headers=h).json()
     assert len(leads)==1
     assert leads[0]['email']=='ana@example.com'
+
+def test_product_homepage_and_workspace_routes(client):
+    home=client.get('/')
+    assert home.status_code==200
+    assert 'Do briefing à proposta aprovada' in home.text
+    assert client.get('/styles.css').status_code==200
+    assert client.get('/app.js').status_code==200
+    assert client.get('/assets/logo-white.svg').status_code==200
+    assert client.get('/app-assets/app.js').status_code==200
+    workspace=client.get('/app')
+    assert workspace.status_code==200
+    assert 'NEXO — Workspace' in workspace.text
