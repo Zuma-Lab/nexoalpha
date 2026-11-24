@@ -371,8 +371,20 @@ async function action(button){
    await api("/api/projects/"+state.pid+"/briefing-draft",{method:"PUT",body:{payload:state.draft}});
    notify("Rascunho salvo para este usuário e projeto. Ainda não é uma versão publicada.");
  }
- else if(name==="wizard-back"){if(state.wizardStep===0){state.draft=null;await navigate("project","briefing");}else{state.wizardStep--;render();}}
- else if(name==="wizard-jump"){const jump=Number(button.dataset.step);if(jump<=state.wizardStep){state.wizardStep=jump;render();}}
+ else if(name==="wizard-back"){
+   const form=document.querySelector('form[data-form="wizard"]');
+   if(form)captureWizard(form);
+   if(state.wizardStep===0){state.draft=null;await navigate("project","briefing");}
+   else{state.wizardStep--;render();}
+ }
+ else if(name==="wizard-jump"){
+   const jump=Number(button.dataset.step);
+   if(jump<=state.wizardStep){
+      const form=document.querySelector('form[data-form="wizard"]');
+      if(form)captureWizard(form);
+      state.wizardStep=jump;render();
+   }
+ }
  else if(name==="remove-item"){if(confirm("Excluir este item do orçamento? O valor da cotação será recalculado.")){await api("/api/projects/"+state.pid+"/quote-items/"+Number(button.dataset.id),{method:"DELETE"});await refreshProject();render();notify("Item excluído.");}}
  else if(name==="mark-rfq-sent"){const batch=state.rfqBatch;if(!batch)return;await api("/api/rfq-batches/"+batch.batch_id+"/send",{method:"POST"});state.rfqBatch=null;await refreshProject();render();notify("Envio manual registrado. O sistema não despachou e-mails.");}
  else if(name==="copy-rfq"){const item=state.rfqBatch?.links[Number(button.dataset.index)];if(item){await navigator.clipboard.writeText(location.origin+item.response_path);notify("Link copiado. Compartilhe apenas com o fornecedor indicado.");}}
