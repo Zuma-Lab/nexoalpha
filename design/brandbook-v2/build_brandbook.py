@@ -64,7 +64,7 @@ S={
  "minor":style("minor",bold,12,19,C["graphite"],9,14),
  "body":style("body",regular,9.4,15,C["graphite"],9),
  "bullet":style("bullet",regular,9.2,14.7,C["graphite"],6,0,15),
- "caption":style("caption",regular,8.5,13,C["light-muted"],12),
+ "caption":style("caption",regular,8.5,13,C["light_muted"],12),
  "note":style("note",regular,9,14,C["graphite"],4),
  "table":style("table",regular,8.1,12,C["graphite"],0),
  "table_header":style("table_header",bold,8.4,12,C["white"],0),
