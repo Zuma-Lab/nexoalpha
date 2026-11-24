@@ -74,6 +74,9 @@
 | BR-043 | 2026-11-24 | Captura de workspace deve registrar login de demonstração, visual do projeto, wizard e cotação do código real, sem screenshot sintético de UI futura. | Pipeline ampliado; confirmação pendente |
 | BR-044 | 2026-11-24 | Padrões de interface datados são revisáveis. Nova diretriz exige ADR e changelog, com divergências documentadas, não alteração silenciosa. | Decidido |
 
+| BR-045 | 2026-11-24 | Rascunhos são privados por usuário/empresa/projeto; salvar não cria V2, publicar versão válida apaga somente rascunho do autor. Todas as operações usam CSRF e permissão do servidor. | Implementado e testado |
+| BR-046 | 2026-11-24 | Texto de apresentação e condições comerciais são integrados ao snapshot imutável da proposta; o público não recebe colunas NET, impostos ou fee internos. | Implementado em branch; revisão editorial pendente |
+
 ## Contratos de implementação (status atual)
 
 - Frontend homepage: `homepage/dist/index.html`, `styles.css`, `app.js`.
