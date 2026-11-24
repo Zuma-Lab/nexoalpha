@@ -59,4 +59,4 @@ A automação em `.github/workflows/alpha-ci.yml` verifica sintaxe e roda os tes
 
 Para consultar leads da homepage por API, configurar `NEXO_LEADS_ADMIN_EMAIL` com o e-mail exato do operador autorizado; administradores de workspaces de clientes não recebem acesso aos leads globais por padrão.
 
-**Regras de briefing por serviço:** [validação Python](alpha-snapshot/backend/briefing_rules.py) implementa casos essenciais das regras recuperadas, sem importar frontend legado. O wizard visual V2 já existe; rascunhos persistentes, editor de cláusulas da proposta e paridade completa de regras ainda estão planejados na issue #2.
+**Regras de briefing por serviço:** [validação Python](alpha-snapshot/backend/briefing_rules.py) implementa casos essenciais das regras recuperadas, sem importar frontend legado. O wizard visual V2 já existe; anexos, editor avançado de cláusulas da proposta e paridade completa de regras ainda estão planejados na issue #2.
