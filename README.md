@@ -4,13 +4,13 @@ Produto independente de gestão de eventos e grupos corporativos. O repositório
 
 ## Ponto único de retomada e identidade
 
-**Atualização de posicionamento em 24/11/2026:** homepage reconhece o retrabalho de e-mails, planilhas e cadastros internos já no hero. A primeira rolagem `#retrabalho` mostra um cenário fictício de quatro fontes contraditórias, antes do caso V1/V2. Pesquisa e limites estão em [governanca/PESQUISA_DORES_E_MENSAGEM_HOME_2026-11-24.md](governanca/PESQUISA_DORES_E_MENSAGEM_HOME_2026-11-24.md). Integrações externas **ainda não estão implementadas**.
+**Atualização de posicionamento em 24/11/2026:** homepage reconhece o retrabalho de e-mails, planilhas e cadastros internos já no hero. A primeira rolagem mantém a composição do caso V1/V2 já aprovada, sem nova seção ilustrativa ou mudanças de cores; o conceito de quatro fontes permanece apenas como estudo editorial. Pesquisa e limites estão em [governanca/PESQUISA_DORES_E_MENSAGEM_HOME_2026-11-24.md](governanca/PESQUISA_DORES_E_MENSAGEM_HOME_2026-11-24.md). Integrações externas **ainda não estão implementadas**.
 
 **Nome provisório:** NEXO Alpha; marca e domínio definitivos não foram escolhidos. `nexo.com.br` não será assumido. Alternativas de naming citadas: Benexo, Nexobe e Bnexo, ainda sem validação.
 
 - **[Pasta de governança](governanca/README.md)** — regras, decisões, cronologia, riscos, roadmap e processo de revisão, todos com data de alteração.
 - **[Roadmap de ponta a ponta](governanca/ROADMAP.md)** — M0 a M9, início/meio/fim, critérios de saída e dependências.
-- **[Brandbook v2.2](design/brandbook-v2/BRANDBOOK_V2.md)** — guia completo, tokens canônicos e gerador PDF versionado.
+- **[Brandbook v2.1](design/brandbook-v2/BRANDBOOK_V2.md)** — guia completo, tokens canônicos e gerador PDF versionado.
 - **[Galeria de telas reais](evidencias/capturas/README.md)** — capturas da branch em desktop e mobile; conferir manifesto e data.
 
 ## Retomar em outro computador
