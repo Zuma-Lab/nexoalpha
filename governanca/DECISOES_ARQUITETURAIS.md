@@ -1,0 +1,32 @@
+# Registro de decisões (ADR)
+
+Data base: **2026-11-23** · Fuso: **America/Sao_Paulo**. Revisar este arquivo a cada mudança de escopo.
+
+| ID | Data | Decisão / razão | Estado | Aplicação |
+|---|---|---|---|---|
+| ADR-001 | 2026-11-23 | **Alpha independente do NEXO legado**. O usuário rejeitou reaproveitar layout, frontend, API e estrutura do produto anterior. Reaproveitar somente conceitos, regras de negócio e testes como especificação. | Decidido | `Zuma-Lab/nexoalpha` |
+| ADR-002 | 2026-11-23 | **Homepage centrada no produto (direção A)**, com briefing V1/V2 como peça principal, sem hero de executivo artificial. | Decidido; implementado na branch | `homepage/dist/` |
+| ADR-003 | 2026-11-23 | **Identidade temporária grafite/laranja/off-white/Inter**, usando `design/brandbook-v2/nexo-tokens.json` como fonte canônica de novas telas. | Decidido como direção, marca provisória | Design system |
+| ADR-004 | 2026-11-23 | **Autenticação por cookie HttpOnly e proteção CSRF**, no mesmo domínio; nunca token de sessão em `sessionStorage`. | Implementado em branch; precisa homologação | API/frontend |
+| ADR-005 | 2026-11-23 | **RFQs e propostas públicas com prazo e revogação**, tokens aleatórios armazenados como hash, permissão mínima. | Implementado em branch; precisa homologação | API |
+| ADR-006 | 2026-11-23 | **Propostas públicas não expõem NET, fee, tributos internos ou IDs internos.** | Implementado em branch e testado | API |
+| ADR-007 | 2026-11-23 | **Documentação versionada e regenerável no GitHub**, PDF derivado de fonte, capturas reais geradas pelo navegador, CI como evidência. | Em implementação | `governanca/`, `design/`, `evidencias/` |
+| ADR-008 | 2026-11-23 | **NEXO é nome de trabalho, não marca final registrada**. Não usar `nexo.com.br` no código nem fixar domínio. Alternativas: Benexo, Nexobe, Bnexo; avaliar naming, marca, domínio e identidade após escolha. | Em aberto | Marca/SEO |
+| ADR-009 | 2026-11-23 | **Preservar histórico v1, sem confundir snapshot e sistema final**. O `alpha-snapshot` é base recuperada, não interface nova homologada. | Decidido | Documentação |
+| ADR-010 | 2026-11-23 | **Sem dados de clientes reais nos mockups**. Gráficos, números, propostas e perfis demonstrativos são rotulados como ilustração. | Decidido; implementado na homepage | Marketing |
+| ADR-011 | 2026-11-23 | **Fotografias de IA do lote antigo não são necessárias** para homepage centrada no produto. Se usar fotografia depois, exigir material real/autorizado/licenciado. | Decidido para home atual | Conteúdo |
+| ADR-012 | 2026-11-23 | **Nada será mesclado à `main` sem revisão.** Pull request em draft é o caminho auditável para a entrega entre computadores. | Decidido para esta rodada | Git |
+| ADR-013 | 2026-11-23 | **A identidade pode mudar após validação do nome.** Até lá, não alterar logos em massa, nem adquirir/dominar uma marca sem checagem. | Pendente de decisão | Marca |
+| ADR-014 | 2026-11-23 | **Prioridade de produto:** briefing por serviço, sourcing/RFQ, matriz, editor de proposta, operação e aprovação; segurança e autorização são transversais. | Decidido como ordem | Roadmap |
+
+## Decisões pendentes de aprovação
+
+| ID | Assunto | Opções/impacto | Dependência |
+|---|---|---|---|
+| OPEN-01 | Marca final | NEXO Alpha (provisório), Benexo, Nexobe, Bnexo ou novo nome. Requer pesquisa marcária e domínio. | Antes de publicar URL canônica |
+| OPEN-02 | URL pública | Domínio a contratar/hospedar. Não assumir `nexo.com.br`. | SEO, OG, cookies, ambiente |
+| OPEN-03 | Captação de leads | E-mail, CRM, consentimento, política LGPD e prazo de retenção. | Go-live da home com formulário |
+| OPEN-04 | Stack da produção | FastAPI + banco transacional definitivo, filas, hospedagem, observabilidade. SQLite continua somente base de desenvolvimento até decisão. | Lançamento |
+| OPEN-05 | Marca gráfica | Validar geometria vetorial, proporções e versão final dos logos. | Antes do kit comercial definitivo |
+
+**Última atualização:** 2026-11-23.
