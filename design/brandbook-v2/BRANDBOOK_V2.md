@@ -121,9 +121,9 @@ A validação por captura demonstra aparência em determinada resolução, **nã
 |---|---|---|
 | Homepage B | Narrativa de briefing alterado, cálculo de room nights, matriz de acesso, contato e login | QA visual final, fontes locais, domínio/SEO e LGPD |
 | Workspace V2 | `alpha-snapshot/workspace-v2/`, interface própria clara com navegação grafite, operações por projeto, fila, wizard, RFQs, cotação, propostas, tarefas | Testes end-to-end amplos, segurança multiempresa e homologação de regras |
-| Wizard de briefing | Criação real de versões imutáveis e campos condicionais, reaproveitando somente regras do negócio | Rascunho persistente, categorias adicionais e paridade total do legado |
+| Wizard de briefing | Criação real de versões imutáveis e campos condicionais, reaproveitando somente regras do negócio | Anexos, categorias adicionais e paridade total do legado |
 | Cotação | Quantidade, custo NET em centavos, bps de imposto e fee, total da API | Harmonização de unidades/tributação por contrato, importação Excel e seleção com escopos equivalentes |
-| Propostas | Versões e links públicos com custos internos filtrados pela API | Editor avançado de cláusulas, envio real e fluxo de renovação de links |
+| Propostas | Versões e links públicos com custos internos filtrados pela API | Editor de cláusulas avançado; apresentação e condições já integram o snapshot. Envio real e fluxo de renovação de links |
 | Identidade | Paleta e tipografia de trabalho | Nome/dominio e logo final; não adotar `nexo.com.br` |
 | Screenshots | Chromium autenticado com dados locais fictícios | Auditoria manual de UX, WCAG e múltiplos navegadores |
 | Branding | Manual e tokens 2.1 como fonte canônica | PDF regenerado pela CI, suporte a marca definitiva |
