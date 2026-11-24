@@ -340,10 +340,11 @@ def create_rfq_batch(pid:int,body:RFQBatchIn,user=Depends(me)):
         for sid in body.supplier_ids:required(db,'SELECT id FROM suppliers WHERE id=? AND company_id=?',(sid,user['company_id']))
         bid=db.execute('INSERT INTO rfq_batches(company_id,project_id,briefing_version_id,deadline,created_by) VALUES (?,?,?,?,?)',(user['company_id'],pid,version['id'],body.deadline,user['id'])).lastrowid
         links=[]
+        expires_at=(datetime.now(timezone.utc)+timedelta(days=14)).isoformat()
         for sid in body.supplier_ids:
             token=make_token()
-            rid=db.execute('INSERT INTO rfqs(company_id,batch_id,supplier_id,token_hash) VALUES (?,?,?,?)',(user['company_id'],bid,sid,token_hash(token))).lastrowid
-            links.append({'rfq_id':rid,'supplier_id':sid,'response_path':'/rfq/'+token})
+            rid=db.execute('INSERT INTO rfqs(company_id,batch_id,supplier_id,token_hash,expires_at) VALUES (?,?,?,?,?)',(user['company_id'],bid,sid,token_hash(token),expires_at)).lastrowid
+            links.append({'rfq_id':rid,'supplier_id':sid,'response_path':'/rfq/'+token,'expires_at':expires_at})
         db.execute('UPDATE projects SET status=?,updated_at=CURRENT_TIMESTAMP WHERE id=?',('sourcing',pid))
         audit(db,user['company_id'],user['id'],'rfq.batch_created',pid,f'Lote #{bid}; briefing V{version["version"]}')
         return {'batch_id':bid,'briefing_version':version['version'],'links':links,'sent':False}
@@ -354,8 +355,8 @@ def send_rfq_batch(bid:int,user=Depends(me)):
     with connect() as db:
         batch=required(db,'SELECT * FROM rfq_batches WHERE id=? AND company_id=?',(bid,user['company_id']))
         # Represents a recorded dispatch; actual email gateway not configured in Alpha.
-        if batch['sent_at']:return {'batch_id':bid,'status':'already_sent','delivered_via':'manual_link'}
-        db.execute('UPDATE rfq_batches SET sent_at=? WHERE id=?',(now(),bid))
+        changed=db.execute('UPDATE rfq_batches SET sent_at=? WHERE id=? AND sent_at IS NULL',(now(),bid)).rowcount
+        if not changed:return {'batch_id':bid,'status':'already_sent','delivered_via':'manual_link'}
         db.execute("UPDATE rfqs SET status='sent',sent_at=? WHERE batch_id=? AND status='prepared'",(now(),bid))
         audit(db,user['company_id'],user['id'],'rfq.batch_marked_sent',batch['project_id'],f'Lote #{bid} (envio manual por link)')
         return {'batch_id':bid,'status':'sent','delivered_via':'manual_link'}
@@ -366,14 +367,14 @@ def public_rfq(token:str):
         r=required(db,'''SELECT r.id,r.status,s.name supplier_name,p.protocol,p.title,p.destination,p.starts_at,p.ends_at,p.attendees,
           b.deadline,v.version briefing_version,v.payload briefing
           FROM rfqs r JOIN suppliers s ON s.id=r.supplier_id JOIN rfq_batches b ON b.id=r.batch_id
-          JOIN projects p ON p.id=b.project_id JOIN briefing_versions v ON v.id=b.briefing_version_id WHERE r.token_hash=?''',(token_hash(token),))
+          JOIN projects p ON p.id=b.project_id JOIN briefing_versions v ON v.id=b.briefing_version_id WHERE r.token_hash=? AND r.revoked_at IS NULL AND r.expires_at>?''',(token_hash(token),now()))
         r['briefing']=jload(r['briefing'])
         return r
 
 @app.post('/api/public/rfq/{token}/response')
 def public_rfq_response(token:str,body:RFQResponseIn):
     with connect() as db:
-        r=required(db,'SELECT * FROM rfqs WHERE token_hash=?',(token_hash(token),))
+        r=required(db,'SELECT * FROM rfqs WHERE token_hash=? AND revoked_at IS NULL AND expires_at>?',(token_hash(token),now()))
         if r['status']=='responded':raise HTTPException(409,'Resposta já registrada')
         db.execute('''INSERT INTO rfq_responses(company_id,rfq_id,available,net_cents,tax_bps,conditions,cancellation,notes)
           VALUES (?,?,?,?,?,?,?,?)''',(r['company_id'],r['id'],body.available,body.net_cents,body.tax_bps,body.conditions,body.cancellation,body.notes))
@@ -415,9 +416,10 @@ def create_proposal(pid:int,user=Depends(me)):
         total=sum(i['sale_total_cents'] for i in items)
         snapshot=json.dumps({'project':{k:p[k] for k in ('title','protocol','destination','starts_at','ends_at','attendees')},'items':items,'total_cents':total},ensure_ascii=False)
         token=make_token()
-        propid=db.execute('INSERT INTO proposals(company_id,project_id,version,snapshot,total_cents,token_hash,created_by) VALUES (?,?,?,?,?,?,?)',(user['company_id'],pid,v,snapshot,total,token_hash(token),user['id'])).lastrowid
+        expires_at=(datetime.now(timezone.utc)+timedelta(days=30)).isoformat()
+        propid=db.execute('INSERT INTO proposals(company_id,project_id,version,snapshot,total_cents,token_hash,created_by,expires_at) VALUES (?,?,?,?,?,?,?,?)',(user['company_id'],pid,v,snapshot,total,token_hash(token),user['id'],expires_at)).lastrowid
         audit(db,user['company_id'],user['id'],'proposal.created',pid,f'Versão {v}')
-        return {'id':propid,'version':v,'total_cents':total,'status':'draft','review_path':'/proposal/'+token}
+        return {'id':propid,'version':v,'total_cents':total,'status':'draft','review_path':'/proposal/'+token,'expires_at':expires_at}
 
 @app.post('/api/proposals/{propid}/publish')
 def publish_proposal(propid:int,user=Depends(me)):
@@ -433,7 +435,7 @@ def publish_proposal(propid:int,user=Depends(me)):
 @app.get('/api/public/proposal/{token}')
 def public_proposal(token:str):
     with connect() as db:
-        p=required(db,'SELECT id,project_id,company_id,version,status,snapshot,total_cents,published_at FROM proposals WHERE token_hash=?',(token_hash(token),))
+        p=required(db,'SELECT id,project_id,company_id,version,status,snapshot,total_cents,published_at FROM proposals WHERE token_hash=? AND expires_at>? AND revoked_at IS NULL',(token_hash(token),now()))
         if p['status']=='draft':raise HTTPException(404,'Proposta ainda não publicada')
         p['snapshot']=jload(p['snapshot'])
         return p
@@ -441,13 +443,31 @@ def public_proposal(token:str):
 @app.post('/api/public/proposal/{token}/decision')
 def public_decide(token:str,body:DecisionIn):
     with connect() as db:
-        p=required(db,'SELECT * FROM proposals WHERE token_hash=?',(token_hash(token),))
+        p=required(db,'SELECT * FROM proposals WHERE token_hash=? AND expires_at>? AND revoked_at IS NULL',(token_hash(token),now()))
         if p['status']!='published':raise HTTPException(409,'Proposta não está pendente de aprovação')
         db.execute('UPDATE proposals SET status=? WHERE id=?',(body.decision,p['id']))
         db.execute('INSERT INTO approval_decisions(company_id,proposal_id,actor,decision,comment) VALUES (?,?,?,?,?)',(p['company_id'],p['id'],body.actor[:100],body.decision,body.comment))
         if body.decision=='approved':db.execute("UPDATE projects SET status='approved',updated_at=CURRENT_TIMESTAMP WHERE id=?",(p['project_id'],))
         audit(db,p['company_id'],None,'proposal.'+body.decision,p['project_id'],f'V{p["version"]}: {body.comment[:200]}')
         return {'ok':True,'status':body.decision}
+
+@app.post('/api/rfqs/{rfqid}/revoke-link')
+def revoke_rfq(rfqid:int,user=Depends(me)):
+    allow(user,('admin','consultant'))
+    with connect() as db:
+        r=required(db,'SELECT r.id,b.project_id FROM rfqs r JOIN rfq_batches b ON b.id=r.batch_id WHERE r.id=? AND r.company_id=?',(rfqid,user['company_id']))
+        db.execute('UPDATE rfqs SET revoked_at=? WHERE id=? AND revoked_at IS NULL',(now(),rfqid))
+        audit(db,user['company_id'],user['id'],'rfq.link_revoked',r['project_id'],str(rfqid))
+    return {'ok':True}
+
+@app.post('/api/proposals/{propid}/revoke-link')
+def revoke_proposal_link(propid:int,user=Depends(me)):
+    allow(user,('admin','consultant'))
+    with connect() as db:
+        p=required(db,'SELECT project_id FROM proposals WHERE id=? AND company_id=?',(propid,user['company_id']))
+        db.execute('UPDATE proposals SET revoked_at=? WHERE id=? AND revoked_at IS NULL',(now(),propid))
+        audit(db,user['company_id'],user['id'],'proposal.link_revoked',p['project_id'],str(propid))
+    return {'ok':True}
 
 @app.post('/api/projects/{pid}/tasks',status_code=201)
 def create_task(pid:int,body:PlanTaskIn,user=Depends(me)):
