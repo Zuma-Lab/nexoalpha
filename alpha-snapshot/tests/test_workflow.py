@@ -195,6 +195,10 @@ def test_product_homepage_and_workspace_routes(client):
     home=client.get('/')
     assert home.status_code==200
     assert 'O briefing mudou.' in home.text
+    assert 'id="retrabalho"' in home.text
+    assert 'O retrabalho que não aparece na proposta'.casefold() in home.text.casefold()
+    assert 'O NEXO Alpha ainda não sincroniza automaticamente' in home.text
+    assert 'cenário fictício' in home.text.lower()
     assert client.get('/styles.css').status_code==200
     assert client.get('/app.js').status_code==200
     assert client.get('/assets/logo-white.svg').status_code==200
