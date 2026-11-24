@@ -2,7 +2,17 @@
 
 **Formato:** ID | Data local | Mudança | Razão | Arquivos | Estado | Evidência/validação.  
 **Fuso:** America/Sao_Paulo. Commits automáticos podem aparecer em 2026-11-24 UTC embora os registros abaixo sejam de 2026-11-23 no fuso local.  
-**Primeira revisão estruturada:** 2026-11-23. Não apagar entradas; substituir por nova entrada vinculada.
+**Primeira revisão estruturada:** 2026-11-23. **Última revisão técnica:** 2026-11-24. Não apagar entradas; substituir por nova entrada vinculada.
+
+## Atualização técnica de 2026-11-24 (America/Sao_Paulo)
+
+| ID | Data | Mudança e justificativa | Arquivos / referência | Status e evidência |
+|---|---|---|---|---|
+| CHG-015 | 2026-11-24 | Brandbook v2 passou a ter tokens JSON, manual Markdown e gerador PDF determinístico; v1 preservada. | `design/brandbook-v2/` | **PDF de 8 páginas** gerado e salvo na branch; GitHub Actions #45317774083 |
+| CHG-016 | 2026-11-24 | Sete telas da homepage capturadas com Chrome/Playwright e banco de dados efêmero; manifesto registra commit e viewport. | `scripts/capture_screens.py`, `evidencias/capturas/` | **7 PNGs** e manifesto no GitHub; desktop 1440 e mobile 390, sem overflow externo |
+| CHG-017 | 2026-11-24 | Introduzida validação obrigatória de IDs, datas, roadmap M0–M9 e tokens v2 na CI. | `scripts/validate_governance.py`, `.github/workflows/alpha-ci.yml` | Implementado; CI aprovada |
+| CHG-018 | 2026-11-24 | Pipeline visual passou a aproveitar Chrome do runner; evita instalação desnecessária de navegador. | `.github/workflows/alpha-evidence.yml`, `scripts/capture_screens.py` | Validado no GitHub Actions #45317774083 |
+| CHG-019 | 2026-11-24 | PDF e capturas gerados e commitados automaticamente na branch de revisão. Corrigido token `light_muted` no gerador. | `design/brandbook-v2/build_brandbook.py`, `evidencias/capturas/` | Validado em execução verde, [manifesto](../evidencias/capturas/manifest.json) |
 
 ## Alterações de 2026-11-23
 
