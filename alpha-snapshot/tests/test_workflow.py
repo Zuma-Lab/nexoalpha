@@ -201,4 +201,4 @@ def test_product_homepage_and_workspace_routes(client):
     assert client.get('/app-assets/app.js').status_code==200
     workspace=client.get('/app')
     assert workspace.status_code==200
-    assert 'NEXO — Workspace' in workspace.text
+    assert 'Operação | NEXO Alpha' in workspace.text\n    assert client.get('/app-assets/styles.css').status_code==200\n    assert 'workspace-v2' in client.get('/app-assets/app.js').text
