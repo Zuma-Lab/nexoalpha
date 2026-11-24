@@ -1,0 +1,182 @@
+{
+  "schema_version": "2.0.0",
+  "effective_date": "2026-11-23",
+  "last_modified": "2026-11-23",
+  "timezone": "America/Sao_Paulo",
+  "identity": {
+    "working_name": "NEXO Alpha",
+    "name_status": "provisório; não fixar domínio",
+    "alternatives_under_consideration": [
+      "Benexo",
+      "Nexobe",
+      "Bnexo"
+    ],
+    "brand_clearance": "pendente",
+    "logo_geometry": "pendente de validação",
+    "canonical_domain": null
+  },
+  "colors": {
+    "graphite": "#111315",
+    "canvas": "#0B0D0F",
+    "surface": "#1B1D20",
+    "raised": "#25282C",
+    "border": "#454A50",
+    "orange": "#FF850D",
+    "orange_hover": "#F5A044",
+    "orange_pressed": "#E77300",
+    "cream": "#F3EFE9",
+    "white": "#FFFFFF",
+    "muted": "#B8BDC4",
+    "ink": "#111315",
+    "light_muted": "#565C63",
+    "light_border": "#D9D4CD",
+    "orange_text": "#A84800",
+    "success": "#B9E56C",
+    "warning": "#FFD166",
+    "danger": "#FF9A9A",
+    "info": "#9DC8FF"
+  },
+  "typography": {
+    "primary_family": "Inter",
+    "fallback": [
+      "system-ui",
+      "-apple-system",
+      "Segoe UI",
+      "Arial",
+      "sans-serif"
+    ],
+    "weights": [
+      400,
+      500,
+      600,
+      700
+    ],
+    "implementation_status": "Google Fonts na homepage; auto-hospedagem antes de produção",
+    "body_px": {
+      "desktop": 16,
+      "mobile": 16
+    },
+    "lead_px": 18,
+    "nav_px": 14,
+    "controls_px": 15,
+    "mockup_min_px": 12,
+    "small_note_min_px": 12,
+    "letter_spacing_heading": "-0.035em",
+    "line_height_body": 1.6,
+    "line_height_hero": 1.065
+  },
+  "space": {
+    "base_px": 4,
+    "scale_px": [
+      4,
+      8,
+      12,
+      16,
+      24,
+      32,
+      48,
+      64,
+      96
+    ],
+    "content_max_width_px": 1280,
+    "container_horizontal_px": {
+      "desktop": 64,
+      "tablet": 48,
+      "mobile": 32
+    },
+    "section_vertical_px": {
+      "desktop": 114,
+      "tablet": 80,
+      "mobile": 69
+    },
+    "header_height_px": {
+      "desktop": 80,
+      "mobile": 68
+    },
+    "grid_gap_hero_desktop_px": 66
+  },
+  "radius": {
+    "button_px": 10,
+    "input_px": 8,
+    "card_px": 16,
+    "modal_px": 18,
+    "pill_px": 999
+  },
+  "borders": {
+    "default_px": 1,
+    "focus_px": 3
+  },
+  "shadows": {
+    "hero": "0 28px 74px #0005",
+    "surface": "0 16px 50px #1113150d"
+  },
+  "breakpoints": {
+    "mobile_max_px": 620,
+    "tablet_max_px": 850,
+    "wide_compact_max_px": 1100,
+    "desktop_design_start_px": 1200
+  },
+  "interaction": {
+    "focus_visible": "3px solid #FF850D; outline-offset 4px",
+    "motion": "200ms typical (implementation .18s)",
+    "reduced_motion": "respeitar prefers-reduced-motion",
+    "keyboard": "menu, links e dialogs com foco acessível; testar leitor de tela"
+  },
+  "accessibility": {
+    "wcag_target": "WCAG 2.2 AA",
+    "contrast_normal_min": 4.5,
+    "contrast_large_min": 3,
+    "contrast_ui_target_min": 3,
+    "form_errors": "texto + aria-live",
+    "minimum_touch_target_px": 44,
+    "semantic_structure": "header nav main section footer, tabulações reais em tabelas",
+    "decorative_media": "aria-hidden e sem simular prova social"
+  },
+  "content": {
+    "voice": [
+      "profissional",
+      "objetiva",
+      "consultiva",
+      "centrada no produto"
+    ],
+    "avoid": [
+      "promessas não verificadas",
+      "fotos artificiais como clientes reais",
+      "dados demonstrativos sem rótulo",
+      "métricas inventadas",
+      "marca de terceiros"
+    ],
+    "cta_primary": "Solicitar demonstração",
+    "cta_secondary": "Ver como funciona",
+    "demo_label": "Exemplo ilustrativo",
+    "financial_disclosure": "nunca mostrar NET/fee em vista pública",
+    "sample_data": "sempre fictícios/rotulados"
+  },
+  "homepage": {
+    "direction": "A: produto como protagonista",
+    "hero": "Briefing V1/V2 comparativo em HTML, sem fotografia",
+    "sections": [
+      "fluxo 4 etapas",
+      "matriz cotação",
+      "papéis de acesso",
+      "demonstração"
+    ],
+    "mockup_approach": "HTML semântico, não screenshot minúsculo",
+    "desktop_evidence_viewport": [
+      1440,
+      960
+    ],
+    "mobile_evidence_viewport": [
+      390,
+      844
+    ],
+    "status": "implementada na branch PR#1, não publicada em main"
+  },
+  "delivery": {
+    "design_source": "design/brandbook-v2/nexo-tokens.json",
+    "brandbook_pdf": "design/brandbook-v2/NEXO-Alpha-Brandbook-v2.pdf",
+    "documentation": "governanca/",
+    "screenshots": "evidencias/capturas/",
+    "publication": "pendente de nome, domínio, QA e infraestrutura"
+  }
+}
