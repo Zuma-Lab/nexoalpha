@@ -6,14 +6,6 @@
 
 > A execução do pipeline deve produzir os arquivos abaixo e atualizar `manifest.json`. Se a imagem estiver ausente, consulte a execução mais recente do GitHub Actions. Não substitua capturas por renders conceituais.
 
-## Homepage — direção editorial B, com dor de retrabalho no primeiro scroll
-
-### A dor da fragmentação — desktop
-![Seção real de e-mails, planilhas e registros contraditórios](home-retrabalho-desktop.png)
-
-### A dor da fragmentação — mobile
-![Seção real do retrabalho no celular](home-retrabalho-mobile.png)
-
 ## Homepage — direção editorial B
 
 ### Hero editorial
