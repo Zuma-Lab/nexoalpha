@@ -1,6 +1,6 @@
 # Roadmap — do conceito ao lançamento
 
-**Versão:** 1.0 · **Criado e revisado:** 2026-11-23 · **Nome de trabalho:** NEXO Alpha.  
+**Versão:** 1.0 · **Criado:** 2026-11-23 · **Última revisão:** 2026-11-24 · **Nome de trabalho:** NEXO Alpha.  
 **Princípio:** trabalho em marcos com **gates de aceite**, sem prometer prazos de calendário antes de dimensionamento técnico.  
 **Definição de terminado:** design, backend, frontend, testes, privacidade, documentação e validação do usuário coerentes.
 
