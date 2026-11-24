@@ -129,6 +129,7 @@ img{max-width:100%;display:block}
 .option-total b{font-size:15px}
 .finance-disclaimer{font-size:10px;color:#5D686D;line-height:1.6;background:#FAF9F6;padding:13px 20px}
 .access-section{background:#111315;color:white}
+.access-section .section-heading>p{color:#BEC6CA}
 .access-matrix{border-top:1px solid #444A4E}
 .access-row{display:grid;grid-template-columns:minmax(160px,1.3fr) repeat(3,minmax(125px,1fr));gap:16px;border-bottom:1px solid #33393C;padding:21px 10px;align-items:center}
 .access-head{font-size:10px;letter-spacing:.08em;color:#A6AEB2;text-transform:uppercase;font-weight:700}
