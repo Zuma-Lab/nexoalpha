@@ -1,6 +1,6 @@
 # Roadmap — do conceito ao lançamento
 
-**Versão:** 1.0 · **Criado:** 2026-11-23 · **Última revisão:** 2026-11-24 · **Nome de trabalho:** NEXO Alpha.  
+**Versão:** 1.1 · **Criado:** 2026-11-23 · **Última revisão:** 2026-11-24 · **Nome de trabalho:** NEXO Alpha.  
 **Princípio:** trabalho em marcos com **gates de aceite**, sem prometer prazos de calendário antes de dimensionamento técnico.  
 **Definição de terminado:** design, backend, frontend, testes, privacidade, documentação e validação do usuário coerentes.
 
@@ -18,17 +18,17 @@ M0 contexto/ADR -> M1 identidade -> M2 segurança -> M3 briefing -> M4 sourcing 
 | Marco | Status em 2026-11-23 | Entregáveis e por quê | Critério de saída |
 |---|---|---|---|
 | M0. Inventário, decisões, escopo | Em execução | Recuperar requisitos e testes do legado, mapear fluxos, organizar ADR, changelog, responsáveis, riscos e critérios de aceite. Evita repetir o produto antigo. | Regras priorizadas, rastreabilidade e backlog P0/P1/P2 aprovados |
-| M1. Identidade e homepage produto | Em revisão (PR #1) | Brandbook v2, tokens, nova home, capturas desktop/mobile, formulário e CTAs; nome/domínio ficam provisórios. | Revisão visual em navegadores; A11y, conteúdos, nome e branding apropriados |
+| M1. Identidade e homepage produto | Implementação B em revisão (PR #1) | Brandbook 2.1, tokens, nova home, capturas desktop/mobile, formulário e CTAs; nome/domínio ficam provisórios. | Revisão visual em navegadores; A11y, conteúdos, nome e branding apropriados |
 | M2. Plataforma e segurança de base | Implementado parcialmente/testes na branch | Tenancy, sessão HttpOnly, CSRF, rate limit, tokens públicos expirados/revogáveis, backups, auditoria, logs sem dados sensíveis. Segurança precede dados reais. | Testes e revisão de segurança; ambiente de staging isolado, migrações e HTTPS |
 
 ### MEIO — Produto e fluxos comercial/operacional
 
 | Marco | Status | Entregáveis e integração | Critério de saída |
 |---|---|---|---|
-| M3. Briefing inteligente por serviço (P0) | Regras Python parciais; UI pendente | Wizard para aéreo, hospedagem, salas/A&B e transfers, rascunho, anexos, validação, V1/V2, comparação de alterações, permissão por empresa e versão imutável. | E2E criar/editar/versionar; regras do NEXO convertidas em testes de equivalência; dados isolados |
-| M4. Rede de fornecedores e RFQ (P0) | Backend snapshot parcial | Cadastro categorizado, seleção, batch, tokens expirados, respostas, disponibilidade, auditoria, idempotência e comunicação real, envio/reenvio controlado. | Ciclo pedido→resposta íntegro e idempotente; concorrência e expiração testadas |
-| M5. Comparação e editor de proposta (P0/P1) | Base financeira e propostas snapshot parciais | Matriz com NET, taxas, café, cancelamento, seleção multiopção; editor profissional com agrupamentos, termos, V1/V2 imutáveis, aprovação e rastro de cálculos. | Zero vazamento de NET, arredondamento determinístico e proposta publicada assinada pela versão |
-| M6. Planejamento, acessos e operação (P1) | Snapshot parcial | Dashboard funcional, perfis por empresa, tarefas, prazos, checklists, notificações, auditoria e visibilidade de clientes. | Fluxo aprovado→planejado auditável, testes de permissão e entregáveis por serviço |
+| M3. Briefing inteligente por serviço (P0) | Wizard V2 ligado à API, homologação em andamento | Wizard para aéreo, hospedagem, salas/A&B e transfers, rascunho, anexos, validação, V1/V2, comparação de alterações, permissão por empresa e versão imutável. | E2E criar/editar/versionar; regras do NEXO convertidas em testes de equivalência; dados isolados |
+| M4. Rede de fornecedores e RFQ (P0) | API + frontend V2 conectados, envio ainda manual | Cadastro categorizado, seleção, batch, tokens expirados, respostas, disponibilidade, auditoria, idempotência e comunicação real, envio/reenvio controlado. | Ciclo pedido→resposta íntegro e idempotente; concorrência e expiração testadas |
+| M5. Comparação e editor de proposta (P0/P1) | Cotação e publicação básica integradas; editor avançado pendente | Matriz com NET, taxas, café, cancelamento, seleção multiopção; editor profissional com agrupamentos, termos, V1/V2 imutáveis, aprovação e rastro de cálculos. | Zero vazamento de NET, arredondamento determinístico e proposta publicada assinada pela versão |
+| M6. Planejamento, acessos e operação (P1) | Navegação por projeto e tarefas V2 implementadas; demais rotinas pendentes | Dashboard funcional, perfis por empresa, tarefas, prazos, checklists, notificações, auditoria e visibilidade de clientes. | Fluxo aprovado→planejado auditável, testes de permissão e entregáveis por serviço |
 
 ### FIM — Homologação, publicação e evolução
 
@@ -66,11 +66,18 @@ M0 contexto/ADR -> M1 identidade -> M2 segurança -> M3 briefing -> M4 sourcing 
 | Operação | Configuração por ambiente, backup, monitoração, logs, runbook |
 | Registro | Changelog, ADR, README e roadmap atualizados, com commit/data |
 
+## Critério de maturidade após direção B (2026-11-24)
+
+- **Implantado no código não significa pronto em produção**: validação manual, teste multitenant, dados reais com autorização, serviço de e-mail e política LGPD continuam como gates.
+- **O que avançou**: nova UI funcional de projetos, wizard, RFQs, cotação e proposta, sem stylesheet anterior; nova narrativa editorial da homepage.
+- **O que ainda é parcial**: rascunho persistente, anexos, importação Excel, regras comerciais/sourcing equivalentes ao legado, cálculo fiscal por contrato, editor de termos, portal fornecedor, envio real, observabilidade e acessibilidade homologada.
+- **Naming segue em aberto**. Não fazer redesign irreversível do logotipo antes de aprovação.
+
 ## Próxima iteração objetiva
 
 - Publicar para revisão screenshots e brandbook v2 **da homepage da branch**, não confundir com UI final do workspace.
-- Iniciar M3 com wizard visual do briefing e testes de paridade.
-- Avançar M4/M5 e só então substituir imagens demonstrativas por capturas reais do app.
+- Revisar o wizard V2 no navegador e ampliar paridade das regras do briefing.
+- Homologar RFQ, cálculo financeiro e propostas em E2E; usar capturas reais do workspace após verificação visual.
 - Guardar decisões abertas OPEN-01 a OPEN-05; não travar naming/domínio nesta etapa.
 
 **Referências de trabalho:** PR #1 e issues #2 (workspace) e #3 (publicação). **Revisão seguinte:** ao aceitar PR ou alterar a marca.
