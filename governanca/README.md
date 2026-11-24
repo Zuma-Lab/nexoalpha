@@ -12,7 +12,8 @@
 4. [Roadmap completo](ROADMAP.md) — começo, meio, fim, marcos, dependências e critérios de aceite.
 5. [Pendências e riscos](PENDENCIAS_E_RISCOS.md) — prioridades, proprietário de decisão e bloqueios.
 6. [Processo de versionamento](CONTRIBUICAO_E_VERSIONAMENTO.md) — como alterar o projeto sem perder rastreabilidade.
-7. [Brandbook v2](../design/brandbook-v2/BRANDBOOK_V2.md) e [tokens canônicos](../design/brandbook-v2/nexo-tokens.json).
+7. [Brandbook v2.1](../design/brandbook-v2/BRANDBOOK_V2.md) e [tokens canônicos](../design/brandbook-v2/nexo-tokens.json).
+8. [Auditoria crítica pós-reformulação (24/11/2026)](AUDITORIA_CRITICA_POS_REFORMULACAO_2026-11-24.md) — notas comparativas, evidências reais, limitações e pendências.
 
 **Hierarquia:** decisões expressas pelo proprietário > ADR vigente > regras do produto > brandbook/tokens vigentes > código validado > documentos históricos. Nenhum resumo equivale a uma transcrição integral. Sempre confrontar regras com o código e a CI.
 
