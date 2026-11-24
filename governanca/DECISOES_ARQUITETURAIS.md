@@ -24,6 +24,9 @@ Data base: **2026-11-23** · Fuso: **America/Sao_Paulo**. Revisar este arquivo a
 | ADR-017 | 2026-11-24 | **Funcionalidade antes de decoração.** O wizard chama validação Python real, as tabelas usam totais da API, links RFQ/proposta informam envio manual, e estados de erro e leitura ficam explícitos. | Implementado parcialmente; E2E em execução | `workspace-v2/app.js` e API |
 | ADR-018 | 2026-11-24 | **Identidade continua provisória**; aplicar brandbook 2.1 no Alpha sem fixar nome, domínio ou logo geométrico final. A marca pode mudar após decisão posterior. | Decidido | Design e governança |
 
+| ADR-019 | 2026-11-24 | **Rascunhos de briefing pertencem ao usuário e projeto**, são persistidos na API sob CSRF e autorização, e são eliminados quando a versão definitiva é registrada. Nenhuma versão publicada pode ser sobrescrita. | Implementado na branch; teste automatizado | API e workspace V2 |
+| ADR-020 | 2026-11-24 | **Conteúdo comercial estruturado na proposta** (apresentação e termos) é congelado junto aos itens e valores por versão; API pública só expõe campos apropriados ao cliente. | Implementado na branch; revisão de segurança adicional pendente | API/propostas V2 |
+
 ## Decisões pendentes de aprovação
 
 | ID | Assunto | Opções/impacto | Dependência |
