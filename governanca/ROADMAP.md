@@ -25,9 +25,9 @@ M0 contexto/ADR -> M1 identidade -> M2 segurança -> M3 briefing -> M4 sourcing 
 
 | Marco | Status | Entregáveis e integração | Critério de saída |
 |---|---|---|---|
-| M3. Briefing inteligente por serviço (P0) | Wizard V2 ligado à API, homologação em andamento | Wizard para aéreo, hospedagem, salas/A&B e transfers, rascunho, anexos, validação, V1/V2, comparação de alterações, permissão por empresa e versão imutável. | E2E criar/editar/versionar; regras do NEXO convertidas em testes de equivalência; dados isolados |
+| M3. Briefing inteligente por serviço (P0) | Wizard V2 e rascunho por usuário ligados à API; anexos e QA pendentes | Wizard para aéreo, hospedagem, salas/A&B e transfers, rascunho, anexos, validação, V1/V2, comparação de alterações, permissão por empresa e versão imutável. | E2E criar/editar/versionar; regras do NEXO convertidas em testes de equivalência; dados isolados |
 | M4. Rede de fornecedores e RFQ (P0) | API + frontend V2 conectados, envio ainda manual | Cadastro categorizado, seleção, batch, tokens expirados, respostas, disponibilidade, auditoria, idempotência e comunicação real, envio/reenvio controlado. | Ciclo pedido→resposta íntegro e idempotente; concorrência e expiração testadas |
-| M5. Comparação e editor de proposta (P0/P1) | Cotação e publicação básica integradas; editor avançado pendente | Matriz com NET, taxas, café, cancelamento, seleção multiopção; editor profissional com agrupamentos, termos, V1/V2 imutáveis, aprovação e rastro de cálculos. | Zero vazamento de NET, arredondamento determinístico e proposta publicada assinada pela versão |
+| M5. Comparação e editor de proposta (P0/P1) | Cotação e proposta com apresentação/termos em snapshot, editor avançado e QA pendentes | Matriz com NET, taxas, café, cancelamento, seleção multiopção; editor profissional com agrupamentos, termos, V1/V2 imutáveis, aprovação e rastro de cálculos. | Zero vazamento de NET, arredondamento determinístico e proposta publicada assinada pela versão |
 | M6. Planejamento, acessos e operação (P1) | Navegação por projeto e tarefas V2 implementadas; demais rotinas pendentes | Dashboard funcional, perfis por empresa, tarefas, prazos, checklists, notificações, auditoria e visibilidade de clientes. | Fluxo aprovado→planejado auditável, testes de permissão e entregáveis por serviço |
 
 ### FIM — Homologação, publicação e evolução
@@ -70,7 +70,7 @@ M0 contexto/ADR -> M1 identidade -> M2 segurança -> M3 briefing -> M4 sourcing 
 
 - **Implantado no código não significa pronto em produção**: validação manual, teste multitenant, dados reais com autorização, serviço de e-mail e política LGPD continuam como gates.
 - **O que avançou**: nova UI funcional de projetos, wizard, RFQs, cotação e proposta, sem stylesheet anterior; nova narrativa editorial da homepage.
-- **O que ainda é parcial**: rascunho persistente, anexos, importação Excel, regras comerciais/sourcing equivalentes ao legado, cálculo fiscal por contrato, editor de termos, portal fornecedor, envio real, observabilidade e acessibilidade homologada.
+- **O que ainda é parcial**: anexos, importação Excel, regras comerciais/sourcing equivalentes ao legado, cálculo fiscal por contrato, editor de termos, portal fornecedor, envio real, observabilidade e acessibilidade homologada.
 - **Naming segue em aberto**. Não fazer redesign irreversível do logotipo antes de aprovação.
 
 ## Próxima iteração objetiva
