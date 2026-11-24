@@ -27,6 +27,9 @@ Data base: **2026-11-23** · Fuso: **America/Sao_Paulo**. Revisar este arquivo a
 | ADR-019 | 2026-11-24 | **Rascunhos de briefing pertencem ao usuário e projeto**, são persistidos na API sob CSRF e autorização, e são eliminados quando a versão definitiva é registrada. Nenhuma versão publicada pode ser sobrescrita. | Implementado na branch; teste automatizado | API e workspace V2 |
 | ADR-020 | 2026-11-24 | **Conteúdo comercial estruturado na proposta** (apresentação e termos) é congelado junto aos itens e valores por versão; API pública só expõe campos apropriados ao cliente. | Implementado na branch; revisão de segurança adicional pendente | API/propostas V2 |
 
+| ADR-021 | 2026-11-24 | **Mensagem de dor no início da homepage**: fragmentação entre e-mails, planilhas, sistemas internos e versões contraditórias. A resposta do produto deve ser contextual e verificável, sem prometer sincronização automática de sistemas externos. | Decidido para teste editorial; implementado na branch | `homepage/dist/`, pesquisa de dores |
+| ADR-022 | 2026-11-24 | **Cenários concretos rotulados como fictícios**, sem usar “quatro sistemas” como estatística ou garantir economia de tempo. A primeira rolagem mostra divergência 180/210 participantes e conduz à seção V1/V2. | Decidido; implementação em revisão visual | Homepage e comunicação |
+
 ## Decisões pendentes de aprovação
 
 | ID | Assunto | Opções/impacto | Dependência |
