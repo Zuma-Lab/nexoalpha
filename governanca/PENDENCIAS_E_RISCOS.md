@@ -1,6 +1,6 @@
 # Pendências, bloqueios e riscos
 
-**Criado e revisado:** 2026-11-23 · **Escopo:** NEXO Alpha. A prioridade considera o produto para produção; home está em revisão.
+**Criado:** 2026-11-23 · **Última revisão:** 2026-11-24 · **Escopo:** NEXO Alpha. A prioridade considera o produto para produção; home está em revisão.
 
 | ID | Criticidade | Estado | Risco / pendência | Ação de mitigação | Dependência |
 |---|---|---|---|---|---|
