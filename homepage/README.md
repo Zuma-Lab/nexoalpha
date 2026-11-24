@@ -1,24 +1,29 @@
-# NEXO Homepage v1
+# NEXO — Homepage centrada no produto
 
-Site estático independente. Fonte em `dist/`. Não altera o repositório legado.
+## Direção A
 
-## Prévia local
+Homepage em HTML/CSS/JavaScript sem runtime do mockup exportado. A narrativa destaca briefing V1/V2, cotação comparativa, permissões por perfil e agendamento de demonstração. Composição e cores seguem `../design/brandbook-v1/nexo-tokens.json`.
 
-Execute `python -m http.server 4173 --directory dist` e abra http://127.0.0.1:4173.
+- `dist/index.html`: documento semântico, navegação, simulações com dados fictícios e formulários.
+- `dist/styles.css`: sistema de estilo responsivo, acessível, sem textos menores que 12px no conteúdo ilustrativo principal.
+- `dist/app.js`: menu, diálogo, login via `/api/auth/login` com cookie de sessão e pedido de demo via `/api/public/demo-requests`.
+- `dist/assets/`: identidade visual e arquivos históricos ainda presentes; o hero fotográfico não é utilizado.
 
-## Escopo
+## Visualizar
 
-Homepage responsiva, hero fotográfico, dashboard ilustrativo em HTML, módulos, fluxo com abas, conceitos de briefing com ampliação, menu mobile, modal de acesso ainda não conectado e movimento reduzido.
+```bash
+python -m http.server 4173 --directory homepage/dist
+```
 
-Não contém autenticação, envio de leads, clientes fictícios ou métricas apresentadas como reais. O painel tem dados demonstrativos. As imagens de briefing são conceitos de design, identificados na interface.
+A prévia estática permite avaliar o layout, mas **não autentica ou recebe pedidos de demonstração** sem API na mesma origem. Para testar fluxos reais, usar o servidor FastAPI descrito na raiz.
 
-## Identidade e fontes
+## Pendências antes da publicação
 
-Paleta e logo: Brandbook NEXO v1 e reconstrução vetorial da marca. Referências 01, 05 e 06 de Zuma-Lab/nexoalpha, commit 7dfa55bc2c477912254fcf56f8687f4477544219. Fonte local Inter quando disponível; fallback Arial. Nenhuma requisição de fonte externa.
+1. Configurar domínio público e inserir `og:url` + canonical definitivo; imagem Open Graph já é acessível publicamente, mas deverá ser substituída por card PNG específico do produto.
+2. Configurar notificações / CRM para leads: pedidos são persistidos no banco Alpha e consultáveis por administradores; não há e-mail automático.
+3. Hospedar Inter localmente (esta versão carrega a fonte pelo Google Fonts).
+4. Homologar responsividade, contraste, leitores de tela e fluxo de login em navegador real.
+5. Substituir exemplos ilustrativos por capturas **reais** após implementação e aprovação do novo workspace.
+6. Publicar política de privacidade e retenção de dados antes de capturar leads em produção.
 
-Hero criado com a ferramenta nativa ImageGen: fotografia cinematográfica horizontal de executivo de costas em escritório grafite diante da cidade ao pôr do sol; espaço negativo à esquerda e à direita; luz âmbar; sem texto, marca ou interface. Prompt integral em `image-prompt.txt`.
-
-O layout usa HTML e CSS reais. A imagem de referência completa não é usada como homepage.
-
-## Hero v2
-Composição corrigida a partir da referência 03: executivo sentado e parcialmente enquadrado, painel nivelado à direita e reflexo decorativo sem interação. Verificado em desktop e 390 px, sem rolagem horizontal. O reflexo é oculto no mobile e excluído da árvore de acessibilidade.
+A referência exportada `A · Homepage` não foi copiada como runtime. A seção de fotos reais fica para quando houver acervo com licença/autorização. Não gerar fotografias artificiais para simular clientes.
