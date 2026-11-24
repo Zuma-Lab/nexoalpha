@@ -29,4 +29,4 @@ Data base: **2026-11-23** · Fuso: **America/Sao_Paulo**. Revisar este arquivo a
 | OPEN-04 | Stack da produção | FastAPI + banco transacional definitivo, filas, hospedagem, observabilidade. SQLite continua somente base de desenvolvimento até decisão. | Lançamento |
 | OPEN-05 | Marca gráfica | Validar geometria vetorial, proporções e versão final dos logos. | Antes do kit comercial definitivo |
 
-**Última atualização:** 2026-11-23.
+**Última revisão documental:** 2026-11-24. As datas das ADRs são datas das decisões e não dos commits de documentação.
