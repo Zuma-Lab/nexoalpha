@@ -2,7 +2,7 @@
 
 ## Referência e intenção
 
-O usuário forneceu o Brandbook Paytrack 2026 como referência de naturalidade fotográfica. Foram analisadas as páginas de fotografia, especialmente 11–16. O PDF de terceiros não integra este acervo. Fonte local fornecida: `C:/Users/perso/Downloads/Brandbook-Paytrack-2026.pdf`.
+O usuário forneceu o Brandbook Paytrack 2026 como referência de naturalidade fotográfica. Foram analisadas as páginas de fotografia, especialmente 11–16. O PDF de terceiros não integra este acervo. Fonte local fornecida: `[arquivo local de referência — não versionado]`.
 
 A intenção é criar linguagem própria da NEXO ligada a eventos, com cenas verossímeis, e não copiar identidade, marca ou motivo triangular de luz/sombra da Paytrack.
 
