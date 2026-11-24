@@ -174,3 +174,59 @@ dialog::backdrop{background:#000c}
 @media(max-width:870px){.container{width:min(100% - 48px,1340px)}.site-header nav{gap:15px}.hero-inner{padding-bottom:70px}.hero-layout{grid-template-columns:1fr;align-items:start;padding-top:55px;gap:48px}.hero h1{max-width:800px}.hero-note{max-width:740px}.hero-note ol{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.hero-note li{grid-template-columns:1fr}.hero-note li p{max-width:190px}.case-columns{grid-template-columns:1fr}.case-panel{min-height:0;border-left:0;border-top:1px solid #E1E3E1;padding:26px}.case-panel:first-child{border-top:0}.board-annotation{margin-top:23px}.finance-layout{grid-template-columns:1fr}.finance-story{max-width:640px}.option-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.demo-layout{grid-template-columns:1fr}.form-card{max-width:680px}.section-heading{align-items:start;flex-direction:column}.section-heading>p{max-width:670px}.section,.case-study{padding:82px 0}}
 @media(max-width:650px){.container{width:calc(100% - 32px)}.header-inner{height:65px;gap:15px}.brand img{width:93px}.brand-alpha{display:none}.site-header nav{display:none;position:absolute;top:65px;left:0;right:0;background:#16191B;padding:13px 16px 19px;border-bottom:1px solid #464D51;flex-direction:column;align-items:stretch;gap:4px;margin:0}.site-header nav.open{display:flex}.site-header nav a{display:block;padding:12px}.login-trigger{margin-left:auto}.menu-toggle{display:inline-flex;order:3}.hero-inner{padding:26px 0 55px}.hero-index{font-size:9px}.hero-index span:last-child{display:none}.hero-layout{padding-top:44px;gap:35px}.hero h1{font-size:clamp(42px,10vw,61px)}.lead{font-size:15px;margin-top:25px}.actions{flex-direction:column;align-items:flex-start;margin-top:23px;gap:10px}.hero-note{padding-left:15px}.hero-note ol{grid-template-columns:1fr;gap:0}.hero-note li{grid-template-columns:27px 1fr;padding:12px 0}.hero-note li p{max-width:unset}.case-study,.section{padding:62px 0}.case-header{align-items:start;flex-direction:column;gap:18px}.case-header h2,.section-heading h2{font-size:clamp(33px,9vw,44px)}.case-panel{padding:22px 16px}.case-panel h3{font-size:21px}.impact-list li{grid-template-columns:19px minmax(0,1fr) auto}.finance-number{font-size:79px}.option-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 10px}.option{padding:16px}.options-heading{align-items:flex-start;flex-direction:column;gap:4px;padding:14px 16px}.access-matrix{border-top:none;display:flex;flex-direction:column;gap:13px}.access-row{border:1px solid #363C40;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);padding:13px 15px;gap:14px 9px}.access-head{display:none}.access-row [role=rowheader]{grid-column:1/-1;padding-bottom:3px}.access-row [role=cell]{font-size:11px;position:relative;padding-left:0}.access-row [role=cell]:before{display:block;color:#7F8A8E;font-size:9px;letter-spacing:.05em;margin-bottom:5px}.access-row [role=cell]:nth-of-type(1):before{content:"CONSULTOR"}.access-row [role=cell]:nth-of-type(2):before{content:"CLIENTE"}.access-row [role=cell]:nth-of-type(3):before{content:"FORNECEDOR"}.demo-copy h2{font-size:37px}.field-row{grid-template-columns:1fr;gap:0}.form-card{padding:22px}.footer-layout{padding:27px 0;align-items:flex-start;flex-direction:column;min-height:0}.dialog-body{padding:31px 22px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition-duration:.01ms!important;animation-duration:.01ms!important}}
+
+
+/* 2026-11-24 — seção editorial de dor e retrabalho; não é um painel funcional. */
+.pain-section{background:#E9E5DD;color:#111315;padding:106px 0 84px;scroll-margin-top:76px;color-scheme:light}
+.pain-heading{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(260px,.75fr);gap:clamp(30px,6vw,100px);align-items:end;padding-bottom:40px}
+.pain-heading h2{font-size:clamp(43px,4.8vw,72px);font-weight:600;line-height:1.065;margin-top:16px;letter-spacing:-.06em;max-width:850px}
+.pain-heading>p{font-size:15px;line-height:1.75;color:#424C52;max-width:450px;padding-bottom:5px}
+.pain-ledger{border-top:1px solid #9FA6A3;border-bottom:1px solid #9FA6A3}
+.pain-ledger-heading{display:flex;justify-content:space-between;gap:20px;padding:14px 19px 15px;font-size:10px;font-weight:650;letter-spacing:.06em;color:#556168}
+.pain-ledger-heading span:last-child{font-weight:400;text-transform:none;letter-spacing:0}
+.pain-entry{display:grid;grid-template-columns:minmax(145px,1.05fr) minmax(0,1.75fr) minmax(105px,.55fr);gap:24px;align-items:center;padding:20px 19px;border-top:1px solid #CACCC7}
+.pain-entry:nth-child(even){background:rgba(255,255,255,.27)}
+.pain-source{display:flex;align-items:center;gap:16px;font-size:13px;font-weight:650}
+.source-num{color:#777F81;font-size:10px;font-weight:700}
+.pain-data strong{display:block;font-size:14px;font-weight:650}
+.pain-data p{font-size:12px;color:#4D595E;margin-top:4px;line-height:1.55}
+.pain-pill{font-size:11px;font-variant-numeric:tabular-nums;text-align:center;border:1px solid #9FA7A4;padding:9px 8px;font-weight:700;background:rgba(255,255,255,.3);white-space:nowrap}
+.pain-pill.current{border-color:#2C6D58;color:#18533C;background:#DDE9DF}
+.pain-pill.outdated{border-color:#A45028;color:#8C3D1A;background:#F5DCCA}
+.pain-consequence{display:grid;grid-template-columns:180px minmax(0,1.4fr) minmax(0,.95fr);gap:25px;align-items:center;background:#111315;color:#fff;padding:31px 27px}
+.consequence-label{color:#FFA74A;font-size:10px;letter-spacing:.095em;font-weight:700}
+.pain-consequence strong{font-size:clamp(17px,1.85vw,24px);line-height:1.35;letter-spacing:-.025em;font-weight:600}
+.pain-consequence p{font-size:12px;color:#C4CBCF;line-height:1.6}
+.pain-bridge{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(30px,7vw,95px);padding-top:40px;align-items:start}
+.pain-bridge>div:first-child>span{display:block;font-size:10px;letter-spacing:.08em;font-weight:700;color:#875025;margin-bottom:11px}
+.pain-bridge strong{font-size:clamp(22px,2.5vw,34px);letter-spacing:-.04em;line-height:1.17;display:block;max-width:580px}
+.pain-bridge>div:last-child p{font-size:14px;line-height:1.7;color:#424B50;margin-bottom:14px}
+.pain-bridge .text-action.ink{display:inline-flex;align-items:center;gap:7px;color:#111315;font-size:13px;padding:6px 0;border-bottom:1px solid #A6ACA8}
+.pain-bridge .text-action.ink:hover{color:#93420E;border-bottom-color:#93420E}
+.pain-footnote{font-size:10px;color:#5B6467;line-height:1.55;margin-top:31px;max-width:970px}
+@media(max-width:970px){
+ .pain-heading{grid-template-columns:1fr;gap:22px}
+ .pain-heading>p{max-width:720px}
+ .pain-consequence{grid-template-columns:1fr 2fr;gap:14px 25px}
+ .pain-consequence p{grid-column:2}
+ .pain-bridge{grid-template-columns:1fr 1fr;gap:35px}
+}
+@media(max-width:650px){
+ .pain-section{padding:61px 0 59px;scroll-margin-top:65px}
+ .pain-heading{padding-bottom:25px}
+ .pain-heading h2{font-size:clamp(37px,9vw,51px)}
+ .pain-heading>p{font-size:14px}
+ .pain-ledger-heading{padding:13px 12px;flex-direction:column;gap:4px}
+ .pain-entry{grid-template-columns:minmax(0,1fr) auto;gap:9px;padding:18px 12px}
+ .pain-source{grid-column:1/-1;font-size:11px;gap:9px}
+ .pain-data{grid-column:1}
+ .pain-data strong{font-size:13px}
+ .pain-data p{font-size:11px}
+ .pain-pill{grid-column:2;grid-row:2;text-align:center;font-size:10px;white-space:normal;padding:7px 9px}
+ .pain-consequence{display:block;padding:25px 17px}
+ .pain-consequence strong{display:block;margin:13px 0}
+ .pain-consequence p{font-size:12px}
+ .pain-bridge{grid-template-columns:1fr;gap:17px;padding-top:29px}
+ .pain-bridge strong{font-size:26px}
+ .pain-footnote{font-size:10px}
+}
