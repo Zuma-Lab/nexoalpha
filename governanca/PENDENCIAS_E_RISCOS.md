@@ -7,7 +7,7 @@
 | R-001 | P0 crítico | Aberto | Snapshot SQLite e autenticação ainda requerem hardening para implantação real. | Revisão de segurança, banco transacional/infra, TLS, segredos, migrations, backups e E2E. | M2/M7 |
 | R-002 | P0 crítico | Parcial | BR de tenant/perfil deve ser validada em todos os endpoints, não apenas nos testes correntes. | Testes de autorização cruzada e análise de queries/escopos. | M2-M6 |
 | R-003 | P0 alto | Parcial | Portabilidade do legado ainda cobre só briefing em Python, não toda a lógica de `workflow.cjs`, `commercial.cjs` e `sourcing.cjs`. | Inventariar cenários, implementar Python independente, testes de paridade. | M3-M5 |
-| R-004 | P0 alto | Parcial | Sem editor visual definitivo de briefing/proposta no layout Alpha. | Wizard por serviço + editor novo com testes E2E. | M3/M5 |
+| R-004 | P0 alto | Parcial | Wizard de briefing e editor básico de proposta estão implementados na interface V2, mas editor de cláusulas avançado, templates, integrações e QA ainda faltam. | Completar revisão E2E, editor avançado, anexos e regras comerciais; exigir aprovação da proposta. | M3/M5 |
 | R-005 | P0 alto | Parcial | Link de RFQ/proposta expira; política operacional de renovação e reenvio ainda precisa desenho e teste. | Criar fluxo de renovação auditável sem reutilizar token vencido. | M4/M5 |
 | R-006 | P0 alto | Parcial | Privacidade de transcrições no histórico do Git público. | Avaliar tornar privado e/ou reescrever histórico com backup e aviso a colaboradores. | Aprovação |
 | R-007 | P1 alto | Bloqueado | Marca e URL final indefinidas; `nexo.com.br` indisponível segundo o proprietário. | Pesquisa marcária/domínio de Benexo/Nexobe/Bnexo e alternativa, aprovação do nome. | OPEN-01/02 |
