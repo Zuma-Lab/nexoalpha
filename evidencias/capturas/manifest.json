@@ -1,0 +1,35 @@
+{
+  "date_reference_local": "2026-11-23",
+  "generated_at_utc": "2026-11-24T03:12:13.998423+00:00",
+  "commit_source": "fc99988687b2713bf0b2d4f4ffbe29002c400446",
+  "branch": "feat/homepage-produto-revisao-claude-20261123",
+  "source": "Aplicação FastAPI servindo a homepage real de homepage/dist/",
+  "auth_note": "Formulários de exemplo sobre banco efêmero, sem dados reais",
+  "screenshots": [
+    "home-hero-desktop.png",
+    "home-completa-desktop.png",
+    "home-comparativo.png",
+    "home-demonstracao.png",
+    "home-login.png",
+    "home-mobile.png",
+    "home-menu-mobile.png"
+  ],
+  "viewport_check": {
+    "desktop": {
+      "doc": 1440,
+      "viewport": 1440,
+      "body": 1440
+    },
+    "mobile": {
+      "doc": 390,
+      "viewport": 390,
+      "body": 390
+    }
+  },
+  "disclaimer": "Capturas de branch de revisão; não são site de produção nem editor final do workspace",
+  "brandbook_v2": {
+    "path": "design/brandbook-v2/NEXO-Alpha-Brandbook-v2.pdf",
+    "pages": 8,
+    "cover_image": "evidencias/capturas/brandbook-v2-capa.png"
+  }
+}
