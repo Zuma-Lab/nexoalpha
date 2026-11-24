@@ -22,7 +22,7 @@ jobs:
       - name: Test Alpha workflows
         working-directory: alpha-snapshot
         run: python -m pytest -q
-      - uses: actions/setup-node@v4
+      - name: Verify governance IDs, dates, roadmap and tokens\n        run: python scripts/validate_governance.py\n      - uses: actions/setup-node@v4
         with:
           node-version: '24'
       - name: Check JavaScript syntax
