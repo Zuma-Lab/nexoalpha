@@ -4,15 +4,21 @@
 **Fuso:** America/Sao_Paulo. Commits automáticos podem aparecer em 2026-11-24 UTC embora os registros abaixo sejam de 2026-11-23 no fuso local.  
 **Primeira revisão estruturada:** 2026-11-23. **Última revisão técnica:** 2026-11-24. Não apagar entradas; substituir por nova entrada vinculada.
 
+## Correção de escopo — 2026-11-24
+
+| ID | Data | Mudança e justificativa | Arquivos / referência | Estado e evidência |
+|---|---|---|---|---|
+| CHG-035 | 2026-11-24 | **Rollback por escopo:** proprietário aprovou ajuste de mensagem sobre dores, não nova seção nem mudança de cor/layout. Retirado bloco `#retrabalho`, CSS e capturas correspondentes. Mantida apenas nova copy no hero e composição anterior da direção B. Tokens e manual retornaram à versão 2.1. | `homepage/dist/`, `design/brandbook-v2/`, `scripts/capture_screens.py`, `evidencias/capturas/` | Revertido; nova validação CI |
+ 
 ## Ajuste de mensagem da homepage — 2026-11-24
 
 | ID | Data | Mudança e justificativa | Arquivos / referência | Estado e evidência |
 |---|---|---|---|---|
 | CHG-030 | 2026-11-24 | Pesquisadas dores de fragmentação em operações de eventos, cruzando relatos do projeto com Forrester, ICE, Cvent e UX B2B; dados de quatro sistemas tratados como cenário, não estatística. | `governanca/PESQUISA_DORES_E_MENSAGEM_HOME_2026-11-24.md` | Pesquisa registrada com fontes e ressalvas |
 | CHG-031 | 2026-11-24 | Hero da homepage passou a reconhecer e-mails, planilhas e cadastros repetidos, preservando o conceito de versionamento V1/V2. | `homepage/dist/index.html` | Código implementado, revisão em andamento |
-| CHG-032 | 2026-11-24 | Nova seção no primeiro scroll apresenta fontes divergentes de um evento fictício (180/210 pessoas), efeito do retrabalho e limites de integração. | `homepage/dist/index.html`, `styles.css` | Código e layout responsivo implementados |
-| CHG-034 | 2026-11-24 | Revisão visual real desktop/mobile confirmou a leitura do fluxo e identificou necessidade de aumentar o texto de aviso de integrações; corrigido para 12px desktop e 11px mobile. | `homepage/dist/styles.css`, screenshots no GitHub | Ajustado, capturas em regeneração |
-| CHG-033 | 2026-11-24 | Teste automatizado e captura Chromium desktop/mobile adicionados para validar dor, disclaimer e responsividade. | `tests/test_workflow.py`, `scripts/capture_screens.py` | Execução CI em andamento |
+| CHG-032 | 2026-11-24 | Nova seção no primeiro scroll apresenta fontes divergentes de um evento fictício (180/210 pessoas), efeito do retrabalho e limites de integração. | `homepage/dist/index.html`, `styles.css` | Implementado experimentalmente, depois **revertido a pedido do proprietário** |
+| CHG-034 | 2026-11-24 | Revisão visual real desktop/mobile confirmou a leitura do fluxo e identificou necessidade de aumentar o texto de aviso de integrações; corrigido para 12px desktop e 11px mobile. | `homepage/dist/styles.css`, screenshots no GitHub | Alteração visual revertida no mesmo dia |
+| CHG-033 | 2026-11-24 | Teste automatizado e captura Chromium desktop/mobile adicionados para validar dor, disclaimer e responsividade. | `tests/test_workflow.py`, `scripts/capture_screens.py` | Capturas da seção experimental descontinuadas; smoke da mensagem mantido |
 
 ## Reformulação crítica — 2026-11-24 (America/Sao_Paulo)
 
@@ -62,7 +68,7 @@
 ## Como registrar a próxima alteração
 
 ```text
-ID: CHG-035 (sequencial)
+ID: CHG-036 (sequencial)
 Data local: AAAA-MM-DD (America/Sao_Paulo)
 Autor/PR:
 Motivo/decisão:
