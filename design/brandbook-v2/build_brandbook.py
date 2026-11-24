@@ -96,7 +96,7 @@ def footer(canvas,doc):
         canvas.setFont(regular,8.8)
         canvas.setFillColor(C["muted"])
         canvas.drawString(46,76,"NOME DE TRABALHO • MARCA DEFINITIVA EM ABERTO")
-        canvas.drawString(46,58,"2026-11-24  |  BRANDBOOK 2.1  |  REPOSITÓRIO NEXO ALPHA")
+        canvas.drawString(46,58,"2026-11-24  |  BRANDBOOK 2.2  |  REPOSITÓRIO NEXO ALPHA")
     else:
         canvas.setFillColor(C["cream"])
         canvas.rect(0,0,PAGE_W,PAGE_H,fill=1,stroke=0)
@@ -261,6 +261,7 @@ def add_screenshots(story):
     pic_dir=REPO/"evidencias"/"capturas"
     images=[
         ("home-hero-desktop.png","Hero real da homepage em 1440 × 960; valores simulados."),
+        ("home-retrabalho-desktop.png","A dor de e-mails, planilhas e versões desencontradas no primeiro scroll; cenário fictício."),
         ("home-comparativo.png","Matriz comparativa na homepage; dados fictícios e rotulados."),
     ]
     found=[(pic_dir/name,cap) for name,cap in images if (pic_dir/name).is_file()]
@@ -291,7 +292,7 @@ def build():
     story=[
         Spacer(1,126),
         p("NEXO / ALPHA","cover_mark"),
-        Paragraph("Brandbook<br/>de produto<br/>v2.1",S["cover_title"]),
+        Paragraph("Brandbook<br/>de produto<br/>v2.2",S["cover_title"]),
         Paragraph("A operação como protagonista.<br/>Interface editorial, decisões rastreáveis.",S["cover_sub"]),
         Spacer(1,54),
         p("Identidade de trabalho: grafite, laranja e off-white. Nome, domínio e geometria final do logo permanecem em avaliação.","cover_note"),
