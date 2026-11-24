@@ -20,7 +20,7 @@ from .db import init_db, connect, rows
 from .security import hash_password, verify_password, make_token, token_hash
 from .briefing_rules import collect_issues, prepare_submission
 
-FRONTEND = Path(__file__).resolve().parents[1]/'frontend'
+FRONTEND = Path(__file__).resolve().parents[1]/'workspace-v2'
 HOMEPAGE = Path(__file__).resolve().parents[2]/'homepage'/'dist'
 COOKIE_NAME = 'nexo_session'
 RATE_KEY = os.environ.get('NEXO_RATE_LIMIT_SECRET','').encode() or secrets.token_bytes(32)
