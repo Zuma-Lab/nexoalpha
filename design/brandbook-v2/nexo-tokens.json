@@ -1,10 +1,10 @@
 {
-  "schema_version": "2.0.0",
+  "schema_version": "2.1.0",
   "effective_date": "2026-11-23",
-  "last_modified": "2026-11-23",
+  "last_modified": "2026-11-24",
   "timezone": "America/Sao_Paulo",
   "identity": {
-    "working_name": "NEXO Alpha",
+    "working_name": "NEXO Alpha (provisório)",
     "name_status": "provisório; não fixar domínio",
     "alternatives_under_consideration": [
       "Benexo",
@@ -53,17 +53,17 @@
     ],
     "implementation_status": "Google Fonts na homepage; auto-hospedagem antes de produção",
     "body_px": {
-      "desktop": 16,
-      "mobile": 16
+      "desktop": 15,
+      "mobile": 14
     },
     "lead_px": 18,
-    "nav_px": 14,
-    "controls_px": 15,
+    "nav_px": 12,
+    "controls_px": 14,
     "mockup_min_px": 12,
     "small_note_min_px": 12,
-    "letter_spacing_heading": "-0.035em",
+    "letter_spacing_heading": "-0.045em",
     "line_height_body": 1.6,
-    "line_height_hero": 1.065
+    "line_height_hero": 1.01
   },
   "space": {
     "base_px": 4,
@@ -78,28 +78,28 @@
       64,
       96
     ],
-    "content_max_width_px": 1280,
+    "content_max_width_px": 1340,
     "container_horizontal_px": {
-      "desktop": 64,
+      "desktop": 96,
       "tablet": 48,
       "mobile": 32
     },
     "section_vertical_px": {
-      "desktop": 114,
-      "tablet": 80,
-      "mobile": 69
+      "desktop": 113,
+      "tablet": 82,
+      "mobile": 62
     },
     "header_height_px": {
-      "desktop": 80,
-      "mobile": 68
+      "desktop": 76,
+      "mobile": 65
     },
     "grid_gap_hero_desktop_px": 66
   },
   "radius": {
-    "button_px": 10,
-    "input_px": 8,
-    "card_px": 16,
-    "modal_px": 18,
+    "button_px": 5,
+    "input_px": 5,
+    "card_px": 8,
+    "modal_px": 8,
     "pill_px": 999
   },
   "borders": {
@@ -111,9 +111,9 @@
     "surface": "0 16px 50px #1113150d"
   },
   "breakpoints": {
-    "mobile_max_px": 620,
-    "tablet_max_px": 850,
-    "wide_compact_max_px": 1100,
+    "mobile_max_px": 650,
+    "tablet_max_px": 870,
+    "wide_compact_max_px": 1160,
     "desktop_design_start_px": 1200
   },
   "interaction": {
@@ -134,34 +134,37 @@
   },
   "content": {
     "voice": [
-      "profissional",
-      "objetiva",
+      "operacional",
+      "precisa",
       "consultiva",
-      "centrada no produto"
+      "com exemplos reais de processo"
     ],
     "avoid": [
       "promessas não verificadas",
       "fotos artificiais como clientes reais",
       "dados demonstrativos sem rótulo",
       "métricas inventadas",
-      "marca de terceiros"
+      "marca de terceiros",
+      "três cartões idênticos de perfis",
+      "hero corporativo texto+mockup genérico",
+      "botões visuais inertes sem rotulação"
     ],
-    "cta_primary": "Solicitar demonstração",
-    "cta_secondary": "Ver como funciona",
+    "cta_primary": "Conhecer a plataforma",
+    "cta_secondary": "Entenda o fluxo",
     "demo_label": "Exemplo ilustrativo",
     "financial_disclosure": "nunca mostrar NET/fee em vista pública",
     "sample_data": "sempre fictícios/rotulados"
   },
   "homepage": {
-    "direction": "A: produto como protagonista",
-    "hero": "Briefing V1/V2 comparativo em HTML, sem fotografia",
+    "direction": "B: narrativa editorial de impacto de alteração no briefing",
+    "hero": "O briefing mudou. A operação continua. Sem hero fotográfico nem botão simulado.",
     "sections": [
-      "fluxo 4 etapas",
-      "matriz cotação",
-      "papéis de acesso",
-      "demonstração"
+      "mudança V1/V2 e impactos",
+      "exemplo financeiro por room nights",
+      "visibilidade por perfis em matriz",
+      "contato e demonstração"
     ],
-    "mockup_approach": "HTML semântico, não screenshot minúsculo",
+    "mockup_approach": "Caso ilustrativo em três consequências; não prometer automação pendente",
     "desktop_evidence_viewport": [
       1440,
       960
@@ -170,7 +173,7 @@
       390,
       844
     ],
-    "status": "implementada na branch PR#1, não publicada em main"
+    "status": "implementada em branch PR #1; QA visual e inspeção real em andamento"
   },
   "delivery": {
     "design_source": "design/brandbook-v2/nexo-tokens.json",
@@ -178,5 +181,17 @@
     "documentation": "governanca/",
     "screenshots": "evidencias/capturas/",
     "publication": "pendente de nome, domínio, QA e infraestrutura"
+  },
+  "workspace": {
+    "version": "v2",
+    "path": "alpha-snapshot/workspace-v2/",
+    "design_language": "interface operacional editorial, superfícies claras para leitura, navegação grafite",
+    "navigation": "projeto como contexto; briefing, RFQ, cotação, proposta e execução por abas",
+    "operational_hero": "fila de decisões e próxima ação, sem cartões decorativos de métricas",
+    "controls": "tabelas, formulários e histórico ligados à API; valores brutos em centavos",
+    "desktop_min_width": 1000,
+    "mobile_stack_max_px": 640,
+    "status": "funcional em branch; testes E2E e revisão de segurança ainda necessários",
+    "legacy_snapshot": "alpha-snapshot/frontend/ não carregado; preservado como arquivo histórico"
   }
 }
