@@ -1,6 +1,6 @@
-# NEXO Alpha — API e workspace recuperados
+# NEXO Alpha — API e workspace operacional V2
 
-Aplicação independente em FastAPI/SQLite. Este diretório é um **snapshot de código recuperado**, não um atestado de prontidão para produção nem a interface definitiva da NEXO Alpha.
+Aplicação independente em FastAPI/SQLite. O backend FastAPI/SQLite ainda é uma base de desenvolvimento; a interface ativa em `/app` foi reconstruída em `workspace-v2/`, sem o CSS/layout do diretório `frontend/` histórico. **Não é sistema homologado para produção.**
 
 ## Executar
 
@@ -31,10 +31,21 @@ Testes incluem autenticação, CSRF, limite de tentativas, isolamento de cliente
 
 ## Para produção
 
-Necessário configurar infraestrutura de publicação, HTTPS, segredos, observabilidade, backups e políticas de retenção; exigir revisão de segurança. O workspace interno ainda não foi remodelado integralmente no novo design system. As credenciais de demonstração só devem ser ativadas localmente com `NEXO_DEMO=1`.
+Necessário configurar infraestrutura de publicação, HTTPS, segredos, observabilidade, backups e políticas de retenção; exigir revisão de segurança. O workspace V2 utiliza o design system operacional editorial, mas não possui editor avançado de propostas, rascunhos persistentes nem homologação completa. As credenciais de demonstração só devem ser ativadas localmente com `NEXO_DEMO=1`.
 
 Para consultar leads da homepage por API, configurar `NEXO_LEADS_ADMIN_EMAIL` com o e-mail exato do operador autorizado; administradores de workspaces de clientes não recebem acesso aos leads globais por padrão.
 
 **Portabilidade:** `backend/briefing_rules.py` valida e normaliza o formato detalhado por serviço (aéreo, hospedagem, salas/A&B e transfers); a API aceita esse formato e preserva versões anteriores. As regras de `commercial.cjs` e `sourcing.cjs` ainda não foram inteiramente portadas e precisam de cobertura de equivalência.
 
 **Privacidade comercial:** a API pública de proposta entrega apenas descrição, quantidade e total de venda de cada item. Custos NET, tributos e fees permanecem no snapshot privado do consultor.
+
+## Interface operacional V2 — 2026-11-24
+
+- `workspace-v2/index.html`: shell semântico e página de autenticação.
+- `workspace-v2/styles.css`: layout independente, navegação grafite, leitura em superfícies claras, componentes de formulário, cotação, versão e estados, mobile adaptado.
+- `workspace-v2/app.js`: usa as rotas reais de autenticação, projetos, briefing validado, fornecedor, lote RFQ, quote items, proposta, tarefa e links públicos. HTML dinâmico escapado para evitar injeção em conteúdo de negócio.
+- `frontend/`: frontend antigo preservado em Git para auditoria histórica, sem ser servido em `/app`.
+
+O wizard registra uma **nova versão imutável**, mas o rascunho ainda não é persistido no servidor antes do envio; fechar o navegador pode perder o conteúdo não enviado. O envio real de RFQ/proposta permanece **manual**, sem envio de e-mails.
+
+**Validação:** `scripts/capture_screens.py` agora também executa login, cria V2 e captura telas reais do workspace (CI). Contratos API, permissões por empresa e cálculos exigem revisão adicional antes do lançamento.
