@@ -82,6 +82,10 @@ def main():
                     page.goto(URL + "/",wait_until="domcontentloaded",timeout=30000)
                     page.locator(".case-board").wait_for()
                     metadata["desktop"] = assert_no_overflow(page,"desktop")
+                    page.locator("#retrabalho").wait_for()
+                    assert page.locator(".pain-entry").count()==4
+                    assert "NEXO Alpha ainda não sincroniza automaticamente" in page.locator(".pain-footnote").inner_text()
+                    snap(page,"home-retrabalho-desktop.png",selector="#retrabalho")
                     snap(page,"home-hero-desktop.png")
                     snap(page,"home-completa-desktop.png",full=True)
                     snap(page,"home-comparativo.png",selector="#decisao")
@@ -90,7 +94,7 @@ def main():
                     page.locator("#login-dialog[open]").wait_for()
                     snap(page,"home-login.png")
                     page.locator(".close-dialog").click()
-                    names.extend(["home-hero-desktop.png","home-completa-desktop.png",
+                    names.extend(["home-retrabalho-desktop.png","home-hero-desktop.png","home-completa-desktop.png",
                         "home-comparativo.png","home-demonstracao.png","home-login.png"])
                     mobile=browser.new_context(
                         viewport={"width":390,"height":844},device_scale_factor=1,
@@ -100,11 +104,13 @@ def main():
                     mob.goto(URL + "/",wait_until="domcontentloaded",timeout=30000)
                     mob.locator(".case-board").wait_for()
                     metadata["mobile"] = assert_no_overflow(mob,"mobile")
+                    assert mob.locator(".pain-entry").count()==4
+                    snap(mob,"home-retrabalho-mobile.png",selector="#retrabalho")
                     snap(mob,"home-mobile.png",full=True)
                     mob.locator(".menu-toggle").click()
                     assert mob.locator(".menu-toggle").get_attribute("aria-expanded") == "true"
                     snap(mob,"home-menu-mobile.png")
-                    names.extend(["home-mobile.png","home-menu-mobile.png"])
+                    names.extend(["home-retrabalho-mobile.png","home-mobile.png","home-menu-mobile.png"])
                     # Workspace V2: navegação real autenticada e um ciclo completo
                     # de briefing em banco efêmero, sem credenciais/cliente de produção.
                     work=browser.new_context(
