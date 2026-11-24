@@ -194,7 +194,7 @@ def test_demo_request_validation_and_persistence(client):
 def test_product_homepage_and_workspace_routes(client):
     home=client.get('/')
     assert home.status_code==200
-    assert 'Do briefing à proposta aprovada' in home.text
+    assert 'O briefing mudou.' in home.text
     assert client.get('/styles.css').status_code==200
     assert client.get('/app.js').status_code==200
     assert client.get('/assets/logo-white.svg').status_code==200
