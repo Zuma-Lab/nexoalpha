@@ -10,6 +10,8 @@ sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 def client(tmp_path,monkeypatch):
     monkeypatch.setenv('NEXO_DB_PATH',str(tmp_path/'test.sqlite3'))
     monkeypatch.setenv('NEXO_DEMO','1')
+    from backend import db as db_module
+    monkeypatch.setattr(db_module,'DB_PATH',tmp_path/'test.sqlite3')
     from backend.main import app
     with TestClient(app) as c:
         yield c
