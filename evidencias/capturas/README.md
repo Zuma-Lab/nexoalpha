@@ -1,39 +1,51 @@
-# Galeria de capturas — NEXO Alpha (nome provisório)
+# Galeria de capturas — direção editorial B + workspace operacional V2
 
-**Direção:** homepage produto como protagonista. **Data editorial:** 2026-11-23.  
-**Fonte:** navegador Chromium executando a homepage real da branch de revisão via FastAPI local.  
-**Dados:** fictícios e rotulados. Não são telas do workspace final nem de um produto em produção.
+**Atualizado:** 2026-11-24 (America/Sao_Paulo)  
+**Fonte:** Chromium real via FastAPI local, com dados de demonstração e autenticação no workspace.  
+**Estado:** branch de revisão; não é produto publicado ou homologado.
 
-O pipeline `.github/workflows/alpha-evidence.yml` gera estas imagens a cada revisão visual relevante e salva o manifesto com commit/viewport.
+> A execução do pipeline deve produzir os arquivos abaixo e atualizar `manifest.json`. Se a imagem estiver ausente, consulte a execução mais recente do GitHub Actions. Não substitua capturas por renders conceituais.
 
-## 1. Hero — desktop (1440 × 960)
+## Homepage — direção editorial B
 
-![Hero de produto com briefing V1/V2](home-hero-desktop.png)
+### Hero editorial
+![Hero editorial — problema de briefing alterado](home-hero-desktop.png)
 
-## 2. Homepage completa — desktop
+### Página completa desktop
+![Homepage editorial completa](home-completa-desktop.png)
 
-![Homepage completa](home-completa-desktop.png)
+### Explicação financeira
+![Raciocínio financeiro por room nights](home-comparativo.png)
 
-## 3. Matriz de cotação
-
-![Comparação comercial de fornecedores](home-comparativo.png)
-
-## 4. Formulário de demonstração
-
-![Formulário de demonstração](home-demonstracao.png)
-
-## 5. Login
-
-![Diálogo de acesso](home-login.png)
-
-## 6. Mobile completo — 390 × 844
-
+### Contato, login e mobile
+![Formulário de contato](home-demonstracao.png)
+![Login](home-login.png)
 ![Homepage mobile](home-mobile.png)
+![Navegação mobile](home-menu-mobile.png)
 
-## 7. Menu mobile
+## Workspace operacional — interface nova
 
-![Menu de navegação mobile](home-menu-mobile.png)
+Estas capturas representam código executado com sessão de demonstração e banco efêmero.
 
-[Consultar manifesto técnico](manifest.json).
+### Fila de operações
+![Workspace V2 — fila de trabalho](workspace-fila-desktop.png)
 
-**Observação:** a imagem da homepage contém informações comerciais de exemplo. O fluxo de login/lead deve ser homologado com backend antes da publicação. Screenshots não substituem testes.
+### Contexto completo de projeto
+![Workspace V2 — projeto e decisões](workspace-projeto-desktop.png)
+
+### Cotação com origem financeira
+![Workspace V2 — grade de orçamento e matriz](workspace-cotacao-desktop.png)
+
+### Wizard por serviço
+![Workspace V2 — editor de briefing por serviço](workspace-briefing-desktop.png)
+
+### Versão V2 registrada na API
+![Workspace V2 — histórico e diff após mudança de participantes](workspace-versoes-desktop.png)
+
+### Workspace mobile
+![Workspace V2 — fila de trabalho mobile](workspace-fila-mobile.png)
+![Workspace V2 — projeto mobile](workspace-projeto-mobile.png)
+
+[Manifesto técnico com data, branch e dimensões](manifest.json) · [Brandbook v2.1](../../design/brandbook-v2/BRANDBOOK_V2.md) · [Roadmap](../../governanca/ROADMAP.md)
+
+**Limite:** screenshot não atesta correção de permissões, acessibilidade completa, autenticação em produção, LGPD ou entrega de e-mails. O marcador Alpha e o nome NEXO são provisórios.
