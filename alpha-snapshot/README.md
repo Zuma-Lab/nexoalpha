@@ -34,3 +34,7 @@ Testes incluem autenticação, CSRF, limite de tentativas, isolamento de cliente
 Necessário configurar infraestrutura de publicação, HTTPS, segredos, observabilidade, backups e políticas de retenção; exigir revisão de segurança. O workspace interno ainda não foi remodelado integralmente no novo design system. As credenciais de demonstração só devem ser ativadas localmente com `NEXO_DEMO=1`.
 
 Para consultar leads da homepage por API, configurar `NEXO_LEADS_ADMIN_EMAIL` com o e-mail exato do operador autorizado; administradores de workspaces de clientes não recebem acesso aos leads globais por padrão.
+
+**Portabilidade:** `backend/briefing_rules.py` valida e normaliza o formato detalhado por serviço (aéreo, hospedagem, salas/A&B e transfers); a API aceita esse formato e preserva versões anteriores. As regras de `commercial.cjs` e `sourcing.cjs` ainda não foram inteiramente portadas e precisam de cobertura de equivalência.
+
+**Privacidade comercial:** a API pública de proposta entrega apenas descrição, quantidade e total de venda de cada item. Custos NET, tributos e fees permanecem no snapshot privado do consultor.
