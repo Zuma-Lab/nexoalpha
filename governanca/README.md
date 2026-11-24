@@ -28,4 +28,4 @@
 
 Cada mudança relevante deve registrar ID, descrição, data local (AAAA-MM-DD), motivo, arquivos impactados, status, evidência/PR, risco e alternativa considerada quando houver. Incluir também o resultado dos testes. Não reescrever o histórico de decisões; adicionar um novo registro que substitua o anterior.
 
-**Criado/atualizado:** 2026-11-23.
+**Criado:** 2026-11-23. **Última verificação da estrutura:** 2026-11-24.
