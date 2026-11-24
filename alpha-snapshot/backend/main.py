@@ -185,6 +185,7 @@ def login(body:Login,request:Request,response:Response):
         match=next((dict(x) for x in users if verify_password(body.password,x['password_hash'])),None)
         if not match:
             db.executemany('INSERT INTO login_attempts(key,occurred_at) VALUES (?,?)',[(userkey,now()),(ipkey,now())])
+            db.commit()
             raise HTTPException(401,'E-mail ou senha inválidos')
         db.execute('DELETE FROM login_attempts WHERE key=?',(userkey,))
         token=make_token()
@@ -206,6 +207,26 @@ def logout(request:Request,response:Response,user=Depends(me)):
         db.execute('DELETE FROM sessions WHERE token_hash=?',(token_hash(request.cookies[COOKIE_NAME]),))
     response.delete_cookie(COOKIE_NAME,path='/',samesite='strict')
     return {'ok':True}
+
+@app.post('/api/public/demo-requests',status_code=201)
+def request_demo(body:DemoRequestIn,request:Request):
+    if body.website:return {'ok':True}
+    if not re.fullmatch(r'[^@\s]+@[^@\s]+\.[^@\s]+',body.email.strip()):
+        raise HTTPException(422,'E-mail inválido')
+    ip=request.client.host if request.client else 'unknown'
+    iphash=fingerprint('demo',ip)
+    with connect() as db:
+        count=db.execute("SELECT COUNT(*) FROM demo_requests WHERE source_ip_hash=? AND created_at>datetime('now','-1 day')",(iphash,)).fetchone()[0]
+        if count>=5:raise HTTPException(429,'Limite de solicitações atingido.')
+        db.execute('INSERT INTO demo_requests(name,email,company,event_type,source_ip_hash) VALUES (?,?,?,?,?)',
+            (body.name.strip(),body.email.strip().lower(),body.company.strip(),body.event_type.strip(),iphash))
+    return {'ok':True}
+
+@app.get('/api/demo-requests')
+def get_demo_requests(user=Depends(me)):
+    allow(user,('admin',))
+    with connect() as db:
+        return rows(db.execute('SELECT id,name,email,company,event_type,created_at FROM demo_requests ORDER BY id DESC LIMIT 200'))
 
 @app.get('/api/dashboard')
 def dashboard(user=Depends(me)):
