@@ -96,7 +96,7 @@ def footer(canvas,doc):
         canvas.setFont(regular,8.8)
         canvas.setFillColor(C["muted"])
         canvas.drawString(46,76,"NOME DE TRABALHO • MARCA DEFINITIVA EM ABERTO")
-        canvas.drawString(46,58,"2026-11-23  |  BRANDBOOK 2.0  |  REPOSITÓRIO NEXO ALPHA")
+        canvas.drawString(46,58,"2026-11-24  |  BRANDBOOK 2.1  |  REPOSITÓRIO NEXO ALPHA")
     else:
         canvas.setFillColor(C["cream"])
         canvas.rect(0,0,PAGE_W,PAGE_H,fill=1,stroke=0)
@@ -114,7 +114,7 @@ def footer(canvas,doc):
         canvas.line(46,46,PAGE_W-46,46)
         canvas.setFont(regular,8)
         canvas.setFillColor(C["light_muted"])
-        canvas.drawString(46,32,"2026-11-23 • Fonte: brandbook-v2 + governança")
+        canvas.drawString(46,32,"2026-11-24 • Fonte: brandbook-v2 + governança")
         canvas.drawRightString(PAGE_W-46,32,f"{doc.page:02d}")
     canvas.restoreState()
 
@@ -291,14 +291,14 @@ def build():
     story=[
         Spacer(1,126),
         p("NEXO / ALPHA","cover_mark"),
-        Paragraph("Brandbook<br/>de produto<br/>v2.0",S["cover_title"]),
-        Paragraph("O produto como protagonista.<br/>Do briefing à proposta aprovada.",S["cover_sub"]),
+        Paragraph("Brandbook<br/>de produto<br/>v2.1",S["cover_title"]),
+        Paragraph("A operação como protagonista.<br/>Interface editorial, decisões rastreáveis.",S["cover_sub"]),
         Spacer(1,54),
         p("Identidade de trabalho: grafite, laranja e off-white. Nome, domínio e geometria final do logo permanecem em avaliação.","cover_note"),
         PageBreak(),
         p("Índice e status do documento","major"),
         p("Este PDF consolida as 12 seções do Markdown canônico. Cores e medidas são parâmetros de implementação, enquanto o nome, o domínio e o símbolo final não estão homologados.","body"),
-        p("Registro da alteração: 2026-11-23 • Fonte: design/brandbook-v2/BRANDBOOK_V2.md","caption"),
+        p("Registro da alteração: 2026-11-24 • Fonte: design/brandbook-v2/BRANDBOOK_V2.md","caption"),
         Spacer(1,17),
     ]
     story.extend(markdown_story(markdown))
