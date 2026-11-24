@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -70,7 +71,9 @@ def main():
             try:
                 wait_for_server()
                 with sync_playwright() as p:
-                    browser=p.chromium.launch(headless=True,args=["--no-sandbox"])
+                    chrome=shutil.which("google-chrome") or shutil.which("google-chrome-stable") or shutil.which("chromium")
+                    launch_args={"executable_path":chrome} if chrome else {}
+                    browser=p.chromium.launch(headless=True,args=["--no-sandbox"],**launch_args)
                     desktop=browser.new_context(
                         viewport={"width":1440,"height":960},
                         device_scale_factor=1,reduced_motion="reduce",
