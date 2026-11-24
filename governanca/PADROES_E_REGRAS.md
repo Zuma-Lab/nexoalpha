@@ -1,6 +1,6 @@
 # Padrões e regras do produto — catálogo normativo
 
-**Versão:** 1.0 · **Data de criação:** 2026-11-23 · **Última revisão:** 2026-11-24 · **Timezone:** America/Sao_Paulo.  
+**Versão:** 1.1 · **Data de criação:** 2026-11-23 · **Última revisão:** 2026-11-24 · **Timezone:** America/Sao_Paulo.  
 **Nome de trabalho:** NEXO Alpha. **Marca/domínio finais: em aberto.**
 
 > **Legenda:** Decidido = regra de produto; Implementado = código existe no PR #1; Validado = teste de CI com evidência; Pendente = trabalho futuro. "Implementado" não significa homologado nem em produção.
@@ -9,10 +9,10 @@
 
 | ID | Data | Regra | Estado |
 |---|---|---|---|
-| BR-001 | 2026-11-23 | Homepage centrada em operação e produto (briefing V1/V2 no hero), não em fotografia artificial. | Implementado na branch |
+| BR-001 | 2026-11-23 | Homepage centrada em operação e produto (briefing V1/V2 no hero), não em fotografia artificial. | **Substituído por BR-036 (2026-11-24)** |
 | BR-002 | 2026-11-23 | Grafite `#111315`, canvas `#0B0D0F`, off-white `#F3EFE9`, laranja `#FF850D`; sempre consultar tokens v2 antes de criar componentes. | Decidido/implementado na home |
 | BR-003 | 2026-11-23 | Inter 400/500/600/700 é família primária; fallback system-ui/Arial; empacotar fonte localmente antes de go-live. | Proposto; fonte externa atual |
-| BR-004 | 2026-11-23 | Contraste AA: ≥4,5:1 para texto normal, ≥3:1 para texto grande e UI pertinente; não usar textos de UI de 7–10px. Preferir ≥12px em mockups, ≥14px em controles, ≥16px no corpo. | Decidido; QA final pendente |
+| BR-004 | 2026-11-23 | Contraste AA: ≥4,5:1 texto normal e ≥3:1 texto grande e controles relevantes. Labels editoriais secundários podem ser menores quando não são o único caminho para informação; tabelas, controles e conteúdo operacional devem ser legíveis e testados a zoom 200%. | Revisado 2026-11-24; QA pendente |
 | BR-005 | 2026-11-23 | Evitar componentes genéricos ou imitação das telas antigas; priorizar legibilidade, hierarquia, foco, layout responsivo e estados explícitos. | Decidido |
 | BR-006 | 2026-11-23 | Toda interface demonstrativa deve indicar dados fictícios; nunca simular clientes ou operações reais. | Implementado na home |
 | BR-007 | 2026-11-23 | Tela de produto real substitui mockup ilustrativo somente após existir e ser homologada. | Pendente |
@@ -60,12 +60,26 @@
 | BR-034 | 2026-11-23 | Toda regra, mudança e padrão novo precisa de ID, data da alteração, justificativa, estado, arquivo afetado e PR/teste. | Decidido |
 | BR-035 | 2026-11-23 | Não declarar website/app "pronto para produção" sem validação visual, testes end-to-end, LGPD, segurança, carga, observabilidade e aprovação explícita. | Decidido |
 
+## Revisão editorial e operacional — 2026-11-24
+
+| ID | Data | Regra | Estado |
+|---|---|---|---|
+| BR-036 | 2026-11-24 | Homepage B usa história específica: mudança de briefing → impacto operacional ilustrativo → decisão, cálculo de room nights e visibilidade por perfis. Proibidos painéis falsamente acionáveis. | Implementado em branch; QA pendente |
+| BR-037 | 2026-11-24 | Interface ativa do workspace em `workspace-v2/`. Não carregar sidebar azul, DM Sans, Manrope ou classes de `frontend/` histórico. | Implementado em branch |
+| BR-038 | 2026-11-24 | Projetos são contexto de trabalho; briefing, RFQ, cotação, proposta e execução usam navegação e histórico do mesmo projeto. | Implementado em branch; testes E2E pendentes |
+| BR-039 | 2026-11-24 | Nova versão do briefing só é persistida depois da validação condicional Python. RFQs previamente geradas continuam ligadas à versão original. | Implementado em branch; teste e revisão pendentes |
+| BR-040 | 2026-11-24 | Tabela financeira mostra NET, tributos, fee e venda somente ao perfil autorizado; cliente público recebe somente total comercial. Comparação de fornecedores exige escopo equivalente. | Implementado parcialmente; revisão de fórmulas pendente |
+| BR-041 | 2026-11-24 | Links criados para RFQ/proposta são mostrados apenas no momento da criação e envio é **manual**, não simular notificações ou disparos automáticos. | Implementado em branch; E2E pendente |
+| BR-042 | 2026-11-24 | Mobile deve reordenar informação: painel V1/V2 em leitura vertical e opções de hotel com tarifas/condições completas, sem cortar informação essencial. | Implementado na home; QA de aparelho pendente |
+| BR-043 | 2026-11-24 | Captura de workspace deve registrar login de demonstração, visual do projeto, wizard e cotação do código real, sem screenshot sintético de UI futura. | Pipeline ampliado; confirmação pendente |
+| BR-044 | 2026-11-24 | Padrões de interface datados são revisáveis. Nova diretriz exige ADR e changelog, com divergências documentadas, não alteração silenciosa. | Decidido |
+
 ## Contratos de implementação (status atual)
 
 - Frontend homepage: `homepage/dist/index.html`, `styles.css`, `app.js`.
-- Workspace recuperado: `alpha-snapshot/frontend/` (**não é o layout definitivo**).
+- Workspace **ativo na branch**: `alpha-snapshot/workspace-v2/` (interface nova operacional). `alpha-snapshot/frontend/` é somente histórico e não é carregado.
 - API FastAPI/SQLite: `alpha-snapshot/backend/`; rota `/` (home), `/app` (workspace), `/api/auth/login`, `/api/public/demo-requests`, links públicos de RFQ e proposta.
 - Fonte visual canônica: `design/brandbook-v2/nexo-tokens.json` / `BRANDBOOK_V2.md`; versão v1 preservada.
 - Evidências: GitHub Actions, `evidencias/`; leia o README para ver se capturas e PDF gerado estão presentes.
 
-**Última revisão:** 2026-11-23. Itens P0/P1/P2 e próximos marcos em [ROADMAP.md](ROADMAP.md).
+**Última revisão:** 2026-11-24. Itens P0/P1/P2 e próximos marcos em [ROADMAP.md](ROADMAP.md).
