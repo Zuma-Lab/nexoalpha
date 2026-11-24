@@ -1,18 +1,16 @@
 {
   "date_reference_local": "2026-11-24",
-  "generated_at_utc": "2026-11-24T04:33:20.567056+00:00",
-  "commit_source": "54e6f70bfe8adfd82f86cfb2be28cd651e0a2a36",
+  "generated_at_utc": "2026-11-24T04:40:06.304213+00:00",
+  "commit_source": "cbe16c992052c209be1886fe616dce4ca0cb27b8",
   "branch": "feat/homepage-produto-revisao-claude-20261123",
   "source": "Aplicação FastAPI servindo a homepage real e o workspace-v2, em banco efêmero",
   "auth_note": "Formulários de exemplo sobre banco efêmero, sem dados reais",
   "screenshots": [
-    "home-retrabalho-desktop.png",
     "home-hero-desktop.png",
     "home-completa-desktop.png",
     "home-comparativo.png",
     "home-demonstracao.png",
     "home-login.png",
-    "home-retrabalho-mobile.png",
     "home-mobile.png",
     "home-menu-mobile.png",
     "workspace-fila-desktop.png",
@@ -53,7 +51,7 @@
   "disclaimer": "Capturas de branch de revisão; workspace-v2 funcional em desenvolvimento, não homologado ou publicado",
   "brandbook_v2": {
     "path": "design/brandbook-v2/NEXO-Alpha-Brandbook-v2.pdf",
-    "pages": 12,
+    "pages": 10,
     "cover_image": "evidencias/capturas/brandbook-v2-capa.png"
   }
 }
