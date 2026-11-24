@@ -1,8 +1,8 @@
-# NEXO — Homepage centrada no produto
+# NEXO — Homepage centrada no produto (nome provisório)
 
 ## Direção A
 
-Homepage em HTML/CSS/JavaScript sem runtime do mockup exportado. A narrativa destaca briefing V1/V2, cotação comparativa, permissões por perfil e agendamento de demonstração. Composição e cores seguem `../design/brandbook-v1/nexo-tokens.json`.
+Homepage em HTML/CSS/JavaScript sem runtime do mockup exportado. A narrativa destaca briefing V1/V2, cotação comparativa, permissões por perfil e agendamento de demonstração. Composição e cores seguem `../design/brandbook-v2/nexo-tokens.json`.
 
 - `dist/index.html`: documento semântico, navegação, simulações com dados fictícios e formulários.
 - `dist/styles.css`: sistema de estilo responsivo, acessível, sem textos menores que 12px no conteúdo ilustrativo principal.
@@ -27,3 +27,7 @@ A prévia estática permite avaliar o layout, mas **não autentica ou recebe ped
 6. Publicar política de privacidade e retenção de dados antes de capturar leads em produção.
 
 A referência exportada `A · Homepage` não foi copiada como runtime. A seção de fotos reais fica para quando houver acervo com licença/autorização. Não gerar fotografias artificiais para simular clientes.
+
+## Evidências e identidade atualizada
+
+As capturas reais em desktop e mobile ficam em [evidencias/capturas](../evidencias/capturas/README.md). O brandbook atualizado (v2) está em [design/brandbook-v2](../design/brandbook-v2/BRANDBOOK_V2.md), e todas as regras/alterações/roadmap ficam em [governanca](../governanca/README.md). Nenhum domínio está definido; `nexo.com.br` não deve ser usado. Nome atual apenas de trabalho.
