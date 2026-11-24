@@ -1,7 +1,7 @@
 {
   "date_reference_local": "2026-11-24",
-  "generated_at_utc": "2026-11-24T04:40:06.304213+00:00",
-  "commit_source": "cbe16c992052c209be1886fe616dce4ca0cb27b8",
+  "generated_at_utc": "2026-11-24T04:41:00.696271+00:00",
+  "commit_source": "55319a5d7428a9b4d15eb8ccbde1065706b09e49",
   "branch": "feat/homepage-produto-revisao-claude-20261123",
   "source": "Aplicação FastAPI servindo a homepage real e o workspace-v2, em banco efêmero",
   "auth_note": "Formulários de exemplo sobre banco efêmero, sem dados reais",
