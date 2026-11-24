@@ -1,0 +1,66 @@
+[
+  {
+    "file": "01-homepage-primeira-aprovada.png",
+    "source_filename": "a_clean_modern_professional_website_landing_page.png",
+    "description": "Home institucional: 1ª prévia aprovada; fonte principal da direção visual.",
+    "sha256": "938636905a22401fcb341ba00ffe5e6e71b68ace6904ebcd71f9291d8a4df4af",
+    "size_bytes": 1708872,
+    "available_in_library": true
+  },
+  {
+    "file": "02-homepage-refino-exploratorio.png",
+    "source_filename": "a_high_end_modern_saas_landing_page_mockup_for.png",
+    "description": "Refino posterior com muitos elementos; não aprovado como referência principal.",
+    "sha256": "d2ae49fa78ca32f26c0d0f2f3e800f6fe598ee6ff4db225f2d427d8428c7e4c2",
+    "size_bytes": 1914181,
+    "available_in_library": true
+  },
+  {
+    "file": "03-homepage-alternativa-comparativa.png",
+    "source_filename": "a_polished_cinematic_dark_themed_corporate_saas.png",
+    "description": "Alternativa criada para comparação, considerada carregada.",
+    "sha256": "d4638d574b813db89efc9ba9663b0375a91edb2ba7110668ca94396fbd219c55",
+    "size_bytes": 1772530,
+    "available_in_library": true
+  },
+  {
+    "file": "04-homepage-marcacao-usuario.png",
+    "source_filename": "image-markup-preview-file_0000000079f8820ea37f875c7de92e13.png",
+    "description": "Anotação do usuário: marrom hero, vermelho áreas de rolagem.",
+    "sha256": "95fd3f21146ab605477918457da47eae8ec5ede33a7424b2e817f55ae548b181",
+    "size_bytes": 2014330,
+    "available_in_library": true
+  },
+  {
+    "file": "05-briefing-etapas-exploratorio.png",
+    "source_filename": "a_wide_ultra_polished_dark_themed_dashboard_ui_sc.png",
+    "description": "Mockup fluxo de briefing guiado; conceito não implementado.",
+    "sha256": "d7b04482755a3da722c09ac694ba6dbdf117a42247302f5c8415ce2e96ffcfc7",
+    "size_bytes": 1631616,
+    "available_in_library": true
+  },
+  {
+    "file": "06-briefing-inteligente-exploratorio.png",
+    "source_filename": "a_polished_high_end_dark_ui_dashboard_screenshot.png",
+    "description": "Mockup confirmação de briefing pré-preenchido; conceito não implementado.",
+    "sha256": "e63d6011837594532c9c08bd8dd3eb7f48f9fb77b954b64bcba2684ca0601d5e",
+    "size_bytes": 1573920,
+    "available_in_library": true
+  },
+  {
+    "file": "07-logo-recorte-original.png",
+    "source_filename": "image(20261123-205826).png",
+    "description": "Recorte de logo e ícone aprovado pelo usuário.",
+    "sha256": "89090a5b0ce0a697a25ba42253d2121c691bc97bf4cda099cad2ec8cc32bc553",
+    "size_bytes": 4549,
+    "available_in_library": true
+  },
+  {
+    "file": "08-logo-HD-gerado.png",
+    "source_filename": "logo_nexo_em_laranja_e_branco.png",
+    "description": "Logotipo gerado em alta definição; conferir fidelidade com recorte.",
+    "sha256": "68fc7be96d60f794a274334a3ee2886924c0404608043142c81328e6087f5467",
+    "size_bytes": 1106089,
+    "available_in_library": true
+  }
+]
