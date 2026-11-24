@@ -1,9 +1,9 @@
 {
-  "date_reference_local": "2026-11-23",
-  "generated_at_utc": "2026-11-24T03:38:18.439728+00:00",
-  "commit_source": "1a982aa35263e2e0d3cc0e31b5520d304b4e24aa",
+  "date_reference_local": "2026-11-24",
+  "generated_at_utc": "2026-11-24T03:54:07.110424+00:00",
+  "commit_source": "9033d37f12e391bba139e4e7fa576a1fa77e477a",
   "branch": "feat/homepage-produto-revisao-claude-20261123",
-  "source": "Aplicação FastAPI servindo a homepage real de homepage/dist/",
+  "source": "Aplicação FastAPI servindo a homepage real e o workspace-v2, em banco efêmero",
   "auth_note": "Formulários de exemplo sobre banco efêmero, sem dados reais",
   "screenshots": [
     "home-hero-desktop.png",
@@ -12,7 +12,14 @@
     "home-demonstracao.png",
     "home-login.png",
     "home-mobile.png",
-    "home-menu-mobile.png"
+    "home-menu-mobile.png",
+    "workspace-fila-desktop.png",
+    "workspace-projeto-desktop.png",
+    "workspace-cotacao-desktop.png",
+    "workspace-briefing-desktop.png",
+    "workspace-versoes-desktop.png",
+    "workspace-fila-mobile.png",
+    "workspace-projeto-mobile.png"
   ],
   "viewport_check": {
     "desktop": {
@@ -24,12 +31,27 @@
       "doc": 390,
       "viewport": 390,
       "body": 390
+    },
+    "workspace_desktop": {
+      "doc": 1440,
+      "viewport": 1440,
+      "body": 1440
+    },
+    "workspace_mobile": {
+      "doc": 390,
+      "viewport": 390,
+      "body": 390
+    },
+    "workspace_project_mobile": {
+      "doc": 390,
+      "viewport": 390,
+      "body": 390
     }
   },
-  "disclaimer": "Capturas de branch de revisão; não são site de produção nem editor final do workspace",
+  "disclaimer": "Capturas de branch de revisão; workspace-v2 funcional em desenvolvimento, não homologado ou publicado",
   "brandbook_v2": {
     "path": "design/brandbook-v2/NEXO-Alpha-Brandbook-v2.pdf",
-    "pages": 8,
+    "pages": 10,
     "cover_image": "evidencias/capturas/brandbook-v2-capa.png"
   }
 }
