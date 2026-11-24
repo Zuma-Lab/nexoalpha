@@ -1,6 +1,6 @@
 # Contribuição, revisão e governança de alterações
 
-**Criado em:** 2026-11-23 · **Última modificação:** 2026-11-23.
+**Criado em:** 2026-11-23 · **Última revisão:** 2026-11-24.
 
 ## Fluxo obrigatório
 
