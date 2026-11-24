@@ -1,3 +1,5 @@
+> **DOCUMENTO HISTÓRICO — NÃO CANÔNICO.** Este design system foi preservado com o snapshot recuperado. Para novas telas use exclusivamente os valores de [nexo-tokens.json](../../../design/brandbook-v1/nexo-tokens.json). As fontes e cores aqui descritas não devem ser usadas para novos componentes.
+
 # NEXO Alpha — Direção visual homepage (v1)
 
 **Estado:** tokens propostos por aproximação visual da primeira prévia aprovada, **não são valores extraídos de um brandbook oficial**.
