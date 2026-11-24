@@ -24,6 +24,16 @@
 
 **Uso recomendado:** mencionar as fontes em documentos de posicionamento/apresentações com contexto, mas **não inserir percentuais globais no hero** como se fossem métricas do NEXO ou do Brasil.
 
+## 2A. Concorrência — dor não é diferencial por si só
+
+- **Qondor** (`https://qondor.com/`, `https://qondor.com/project-management`): já posiciona o produto como plataforma de operação de eventos/agências com menos procura de atualizações em planilhas e e-mails. **Não copiar slogans, marca ou telas.**
+- **Perk Events** (`https://www.perk.com/platform/events/`, `https://www.perk.com/press-release/perk-launches-new-ai-powered-events-solution-to-automate-team-event-planning/`): promete centralização, automação e redução de tarefas manuais, com escopo amplo de viagem, participantes e eventos.
+- **Cvent** (`https://release.cvent.com/eventmanagement/announcements/launch-vendor-rfps-directly-from-meeting-request-form-with-reposite`): descreve precisamente copiar solicitações para outra ferramenta e rastrear vendor RFPs em planilha e e-mail; soluções atuais endereçam parte dessa dor.
+
+**Conclusão:** não competir só com “tudo em um só lugar”. Conectar a dor ao **diferencial verificável do Alpha**: briefing versionado, vínculo ao lote de RFQ, memória de cotação, cálculo auditável e snapshot de proposta. **Automação de impacto e integrações externas não concluídas** e não devem ser apresentadas como existentes.
+
+**Próxima descoberta:** comparar o caso NEXO com soluções concorrentes por tarefas de negócio, não por aparência; validar qual cliente paga por reduzir reentrada e qual valor atribui a governança comercial, compliance e cotação por serviço.
+
 ## 3. Avaliação de dores e prioridade
 
 | Dor | Intensidade provável | Público | Estado de suporte no Alpha | Abordagem ética de copy |
