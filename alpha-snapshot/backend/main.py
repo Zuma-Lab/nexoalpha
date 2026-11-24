@@ -305,6 +305,31 @@ def get_project(pid:int,user=Depends(me)):
           WHERE a.project_id=? ORDER BY a.id DESC LIMIT 75''',(pid,))) if user['role']!='client' else []
         return p
 
+@app.get('/api/projects/{pid}/briefing-draft')
+def get_briefing_draft(pid:int,user=Depends(me)):
+    allow(user,('admin','consultant','client'))
+    with connect() as db:
+        project(db,pid,user)
+        r=db.execute('SELECT payload,updated_at FROM briefing_drafts WHERE company_id=? AND project_id=? AND user_id=?',
+            (user['company_id'],pid,user['id'])).fetchone()
+        return {'payload':jload(r['payload']) if r else None,'updated_at':r['updated_at'] if r else None}
+
+@app.put('/api/projects/{pid}/briefing-draft')
+def put_briefing_draft(pid:int,body:BriefingIn,user=Depends(me)):
+    allow(user,('admin','consultant','client'))
+    raw=json.dumps(body.payload,ensure_ascii=False)
+    if len(raw.encode('utf-8'))>65536:
+        raise HTTPException(422,'Rascunho excede o tamanho permitido')
+    with connect() as db:
+        project(db,pid,user)
+        db.execute('''INSERT INTO briefing_drafts(company_id,project_id,user_id,payload,updated_at)
+          VALUES (?,?,?,?,CURRENT_TIMESTAMP)
+          ON CONFLICT(company_id,project_id,user_id)
+          DO UPDATE SET payload=excluded.payload,updated_at=CURRENT_TIMESTAMP''',
+          (user['company_id'],pid,user['id'],raw))
+        audit(db,user['company_id'],user['id'],'briefing.draft_saved',pid,'Rascunho privado atualizado')
+        return {'ok':True,'saved':True}
+
 @app.post('/api/projects/{pid}/briefings',status_code=201)
 def new_briefing(pid:int,body:BriefingIn,user=Depends(me)):
     allow(user,('admin','consultant','client'))
@@ -328,6 +353,8 @@ def new_briefing(pid:int,body:BriefingIn,user=Depends(me)):
         for key,col in [('destination','destination'),('start_date','starts_at'),('end_date','ends_at'),('attendees','attendees')]:
             if key in canonical and type(canonical[key]) in (str,int):
                 db.execute(f'UPDATE projects SET {col}=?,updated_at=CURRENT_TIMESTAMP WHERE id=?',(canonical[key],pid))
+        db.execute('DELETE FROM briefing_drafts WHERE company_id=? AND project_id=? AND user_id=?',
+          (user['company_id'],pid,user['id']))
         audit(db,user['company_id'],user['id'],'briefing.versioned',pid,f'V{version}')
         return {'version':version,'project_id':pid}
 
