@@ -66,6 +66,13 @@ M0 contexto/ADR -> M1 identidade -> M2 segurança -> M3 briefing -> M4 sourcing 
 | Operação | Configuração por ambiente, backup, monitoração, logs, runbook |
 | Registro | Changelog, ADR, README e roadmap atualizados, com commit/data |
 
+## Evidência de mercado e posicionamento — 2026-11-24
+
+- Nova seção de dor e retrabalho na homepage logo após o hero, com fontes fictícias 180/210 pessoas; subtítulo de e-mails/planilhas/cadastros repetidos.
+- [Pesquisa com fontes e ressalvas](PESQUISA_DORES_E_MENSAGEM_HOME_2026-11-24.md): validar com 5–8 consultores/gestores antes de afirmar resultados.
+- **Dependência M4–M9:** sincronização de e-mail, CRM ou ERP externos não existe; priorizar conforme requisitos e segurança, sem prometer centralização de todos os sistemas.
+- **Critério de aceite M1:** clareza e compreensão da dor, leitura mobile, ausência de métricas fabricadas e ligação visível com o produto demonstrado.
+
 ## Critério de maturidade após direção B (2026-11-24)
 
 - **Implantado no código não significa pronto em produção**: validação manual, teste multitenant, dados reais com autorização, serviço de e-mail e política LGPD continuam como gates.
