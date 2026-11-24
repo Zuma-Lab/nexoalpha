@@ -1,5 +1,5 @@
 {
-  "schema_version": "2.1.0",
+  "schema_version": "2.2.0",
   "effective_date": "2026-11-23",
   "last_modified": "2026-11-24",
   "timezone": "America/Sao_Paulo",
@@ -147,7 +147,10 @@
       "marca de terceiros",
       "três cartões idênticos de perfis",
       "hero corporativo texto+mockup genérico",
-      "botões visuais inertes sem rotulação"
+      "botões visuais inertes sem rotulação",
+      "prometer substituir os sistemas internos existentes sem integração real",
+      "usar quatro sistemas internos como dado estatístico do mercado",
+      "depoimentos, ROI ou economia sem medição"
     ],
     "cta_primary": "Conhecer a plataforma",
     "cta_secondary": "Entenda o fluxo",
@@ -156,9 +159,10 @@
     "sample_data": "sempre fictícios/rotulados"
   },
   "homepage": {
-    "direction": "B: narrativa editorial de impacto de alteração no briefing",
-    "hero": "O briefing mudou. A operação continua. Sem hero fotográfico nem botão simulado.",
+    "direction": "B.1: hero de versionamento + dor da fragmentação já na dobra + cena operacional na primeira rolagem",
+    "hero": "O briefing mudou. A operação continua. Subtítulo menciona e-mails, planilhas e cadastros duplicados, sem métricas não verificadas",
     "sections": [
+      "problema concreto de e-mails/planilhas/sistemas contraditórios na primeira rolagem",
       "mudança V1/V2 e impactos",
       "exemplo financeiro por room nights",
       "visibilidade por perfis em matriz",
@@ -173,7 +177,15 @@
       390,
       844
     ],
-    "status": "implementada em branch PR #1; QA visual e inspeção real em andamento"
+    "status": "implementada em branch PR #1; QA visual e inspeção real em andamento",
+    "pain_section": {
+      "id": "retrabalho",
+      "background": "#E9E5DD",
+      "visual": "registro editorial de quatro fontes com 180/210 pessoas",
+      "role": "reconhecimento da dor, não alegação estatística",
+      "cross_system_integration": "não implementada; não prometer sincronização automática",
+      "mobile": "linhas reordenadas, valores e divergências legíveis"
+    }
   },
   "delivery": {
     "design_source": "design/brandbook-v2/nexo-tokens.json",
