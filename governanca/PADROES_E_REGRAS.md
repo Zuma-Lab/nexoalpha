@@ -77,9 +77,9 @@
 | BR-045 | 2026-11-24 | Rascunhos são privados por usuário/empresa/projeto; salvar não cria V2, publicar versão válida apaga somente rascunho do autor. Todas as operações usam CSRF e permissão do servidor. | Implementado e testado |
 | BR-046 | 2026-11-24 | Texto de apresentação e condições comerciais são integrados ao snapshot imutável da proposta; o público não recebe colunas NET, impostos ou fee internos. | Implementado em branch; revisão editorial pendente |
 
-| BR-047 | 2026-11-24 | Hero deve nomear e-mails, planilhas e digitação repetida, sem slogans de centralização vazios; o primeiro scroll mostra o custo de perder a versão correta, com cenário fictício claramente marcado. | Implementado em branch, QA em execução |
-| BR-048 | 2026-11-24 | Nunca afirmar integrações automáticas ERP/CRM/e-mail ou substituição dos sistemas existentes enquanto não existirem; diferenciar fluxo Alpha de conectores corporativos futuros. | Decidido; texto explícito na home |
-| BR-049 | 2026-11-24 | Narrativa começa na dor, passa pela divergência de dados e oferece prova funcional: briefing imutável, RFQ por versão, cálculo e proposta. O exemplo “quatro cadastros” é hipótese qualitativa, nunca percentual de mercado. | Decidido; implementação em revisão |
+| BR-047 | 2026-11-24 | Hero pode nomear e-mails, planilhas e digitação repetida **sem alterar layout, cores ou componentes existentes**. A ideia de cenário fictício no primeiro scroll é pesquisa não aprovada. | Somente copy implementada; seção experimental revertida |
+| BR-048 | 2026-11-24 | Nunca afirmar integrações automáticas ERP/CRM/e-mail ou substituição dos sistemas existentes enquanto não existirem; diferenciar fluxo Alpha de conectores corporativos futuros. | Decidido; requisitos documentados, sem seção visual adicional |
+| BR-049 | 2026-11-24 | Posicionamento pela dor é permitido **como texto no hero existente** e conectado à prova V1/V2 já aprovada. O exemplo “quatro cadastros” é hipótese qualitativa, não percentual de mercado, e não exige criar seção visual. | Copy implementada; demais aplicações dependem de aprovação |
 | BR-050 | 2026-11-24 | Antes de publicar prova social/ROI, entrevistar operadores e verificar métricas reais de retrabalho, tempo e erro; dados externos devem conservar amostra, período e geografia. | Pesquisa pendente |
 
 ## Contratos de implementação (status atual)
