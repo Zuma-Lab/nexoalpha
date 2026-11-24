@@ -32,3 +32,5 @@ Testes incluem autenticação, CSRF, limite de tentativas, isolamento de cliente
 ## Para produção
 
 Necessário configurar infraestrutura de publicação, HTTPS, segredos, observabilidade, backups e políticas de retenção; exigir revisão de segurança. O workspace interno ainda não foi remodelado integralmente no novo design system. As credenciais de demonstração só devem ser ativadas localmente com `NEXO_DEMO=1`.
+
+Para consultar leads da homepage por API, configurar `NEXO_LEADS_ADMIN_EMAIL` com o e-mail exato do operador autorizado; administradores de workspaces de clientes não recebem acesso aos leads globais por padrão.
