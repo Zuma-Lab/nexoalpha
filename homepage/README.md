@@ -2,7 +2,7 @@
 
 ## Direção B — revisão crítica 2026-11-24
 
-Homepage em HTML/CSS/JavaScript sem runtime do mockup exportado. A narrativa começa na dor da fragmentação (e-mails, planilhas, sistemas e informação duplicada), mostra cenários fictícios conflitantes na primeira rolagem e segue para alteração de briefing, impactos operacionais ilustrativos, comparação financeira de 315 room nights e uma matriz de visibilidade por perfil. Composição e cores seguem `../design/brandbook-v2/nexo-tokens.json`.
+Homepage em HTML/CSS/JavaScript sem runtime do mockup exportado. A narrativa inclui a dor da fragmentação (e-mails, planilhas, sistemas e informação duplicada) **apenas no texto do hero**, preservando o layout aprovado, e segue para alteração de briefing, impactos operacionais ilustrativos, comparação financeira de 315 room nights e uma matriz de visibilidade por perfil. Composição e cores seguem `../design/brandbook-v2/nexo-tokens.json`.
 
 - `dist/index.html`: documento semântico, navegação, simulações com dados fictícios e formulários.
 - `dist/styles.css`: sistema editorial responsivo em grafite/creme, sem painel SaaS genérico. Textos secundários de 10–11px ainda devem passar por auditoria visual e zoom.
@@ -12,7 +12,7 @@ Homepage em HTML/CSS/JavaScript sem runtime do mockup exportado. A narrativa com
 ## Mensagem de dor — revisão de 24/11/2026
 
 - **Hero:** “O briefing mudou. A operação continua.” com subtítulo de e-mails, planilhas e cadastros repetidos.
-- **Primeiro scroll / `#retrabalho`:** 4 registros de um mesmo evento ilustrativo com 180/210 participantes, mostrando perda de contexto entre caixa de entrada, planilha, sistema comercial e sistema operacional.
+- **Primeira rolagem:** mantém o caso V1/V2 original, sem nova seção, paleta, grades ou componentes. A proposta da seção ilustrativa com quatro fontes permanece somente na pesquisa, **não aprovada**.
 - **Ponte:** a plataforma estrutura briefing, RFQ, comparação e proposta em um projeto, mas **não** sincroniza automaticamente sistemas externos ou e-mails.
 - Pesquisa qualitativa, fontes e limites: [pesquisa e arquitetura editorial](../governanca/PESQUISA_DORES_E_MENSAGEM_HOME_2026-11-24.md).
 - Imagens reais do novo trecho: [desktop e mobile](../evidencias/capturas/README.md) após CI.
