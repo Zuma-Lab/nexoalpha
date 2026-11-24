@@ -8,6 +8,7 @@ on:
       - 'homepage/**'
       - 'alpha-snapshot/**'
       - 'design/brandbook-v2/**'
+      - '!design/brandbook-v2/NEXO-Alpha-Brandbook-v2.pdf'
       - 'scripts/capture_screens.py'
       - '.github/workflows/alpha-evidence.yml'
   workflow_dispatch:
@@ -45,7 +46,7 @@ jobs:
           else
             python -m playwright install chromium
           fi
-      - name: Capture actual product homepage in Chromium
+      - name: Capture actual homepage and workspace V2 in Chromium
         run: python scripts/capture_screens.py
       - name: Build PDF brandbook v2 from canonical Markdown
         run: python design/brandbook-v2/build_brandbook.py
