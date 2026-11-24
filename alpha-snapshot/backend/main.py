@@ -453,8 +453,13 @@ def public_proposal(token:str):
     with connect() as db:
         p=required(db,'SELECT id,project_id,company_id,version,status,snapshot,total_cents,published_at FROM proposals WHERE token_hash=? AND expires_at>? AND revoked_at IS NULL',(token_hash(token),now()))
         if p['status']=='draft':raise HTTPException(404,'Proposta ainda não publicada')
-        p['snapshot']=jload(p['snapshot'])
-        return p
+        private=jload(p['snapshot']) or {}
+        # Cliente jamais recebe custos NET, tributos, fees, margens ou IDs internos.
+        public_items=[{key:item.get(key) for key in ('category','description','quantity','sale_total_cents')}
+          for item in private.get('items',[])]
+        snapshot={'project':private.get('project',{}),'items':public_items,'total_cents':p['total_cents']}
+        return {'version':p['version'],'status':p['status'],
+          'snapshot':snapshot,'total_cents':p['total_cents'],'published_at':p['published_at']}
 
 @app.post('/api/public/proposal/{token}/decision')
 def public_decide(token:str,body:DecisionIn):
