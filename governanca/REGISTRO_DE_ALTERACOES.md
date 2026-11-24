@@ -4,6 +4,18 @@
 **Fuso:** America/Sao_Paulo. Commits automáticos podem aparecer em 2026-11-24 UTC embora os registros abaixo sejam de 2026-11-23 no fuso local.  
 **Primeira revisão estruturada:** 2026-11-23. **Última revisão técnica:** 2026-11-24. Não apagar entradas; substituir por nova entrada vinculada.
 
+## Reformulação crítica — 2026-11-24 (America/Sao_Paulo)
+
+| ID | Data | Mudança e justificativa | Arquivos / referência | Estado e evidência |
+|---|---|---|---|---|
+| CHG-020 | 2026-11-24 | Workspace com estilo corporativo genérico foi mantido como histórico; criada interface independente com superfícies neutras, navegação escura e componentes operacionais. | `alpha-snapshot/workspace-v2/index.html`, `styles.css` | Implementado na PR #1 |
+| CHG-021 | 2026-11-24 | Fluxos de trabalho ligados à API: fila, projetos, briefing guiado, fornecedores, RFQs por link, itens financeiros, propostas, tarefas e acesso público. | `workspace-v2/app.js` | Implementado em branch; QA funcional |
+| CHG-022 | 2026-11-24 | `/app` passou a servir interface V2; snapshot anterior não é carregado, porém arquivos permanecem preservados. | `backend/main.py` | Implementado; smoke CI |
+| CHG-023 | 2026-11-24 | Homepage deixou a direção SaaS genérica A e adotou narrativa editorial B, com alteração de briefing, impactos, raciocínio financeiro e matriz de acessos. | `homepage/dist/index.html`, `styles.css` | Implementado em branch; revisão visual |
+| CHG-024 | 2026-11-24 | Sistema de evidência ampliado para autenticar no Alpha e capturar tela real de fila, projeto, orçamento, wizard e versões em desktop/mobile. | `scripts/capture_screens.py` | Pipeline E2E em revisão |
+| CHG-025 | 2026-11-24 | Brandbook e tokens elevados a v2.1 para regular interface editorial e workspace operacional. | `design/brandbook-v2/` | Fonte alterada; PDF regenerado no pipeline |
+| CHG-026 | 2026-11-24 | Verificações CI migradas para arquivos V2 e smoke de rotas ajustado; problemas no runner foram corrigidos. | `.github/workflows/alpha-ci.yml`, `tests/test_workflow.py` | CI Python/JS verde em execução recente; screenshot E2E ainda em validação |
+
 ## Atualização técnica de 2026-11-24 (America/Sao_Paulo)
 
 | ID | Data | Mudança e justificativa | Arquivos / referência | Status e evidência |
@@ -36,7 +48,7 @@
 ## Como registrar a próxima alteração
 
 ```text
-ID: CHG-015 (sequencial)
+ID: CHG-027 (sequencial)
 Data local: AAAA-MM-DD (America/Sao_Paulo)
 Autor/PR:
 Motivo/decisão:
