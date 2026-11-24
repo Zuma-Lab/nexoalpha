@@ -4,11 +4,15 @@ Run: uvicorn backend.main:app --reload
 from __future__ import annotations
 import json
 import os
+import hmac
+import hashlib
+import secrets
+import re
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Literal
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Depends, HTTPException, Header, Body
+from fastapi import FastAPI, Depends, HTTPException, Header, Body, Request, Response
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
@@ -16,6 +20,9 @@ from .db import init_db, connect, rows
 from .security import hash_password, verify_password, make_token, token_hash
 
 FRONTEND = Path(__file__).resolve().parents[1]/'frontend'
+HOMEPAGE = Path(__file__).resolve().parents[2]/'homepage'/'dist'
+COOKIE_NAME = 'nexo_session'
+RATE_KEY = os.environ.get('NEXO_RATE_LIMIT_SECRET','').encode() or secrets.token_bytes(32)
 
 def jload(x):
     try: return json.loads(x or 'null')
@@ -68,6 +75,20 @@ app=FastAPI(title='NEXO Alpha API',version='0.1.0',lifespan=lifespan)
 class Login(BaseModel):
     email:str
     password:str
+
+class DemoRequestIn(BaseModel):
+    name:str=Field(min_length=2,max_length=100)
+    email:str=Field(min_length=5,max_length=160)
+    company:str=Field(min_length=2,max_length=160)
+    event_type:str=Field(default='',max_length=100)
+    website:str=Field(default='',max_length=200)
+
+def fingerprint(kind:str,value:str)->str:
+    return hmac.new(RATE_KEY,(kind+':'+value).encode(),hashlib.sha256).hexdigest()
+
+def attempt_count(db,key,minutes):
+    cutoff=(datetime.now(timezone.utc)-timedelta(minutes=minutes)).isoformat()
+    return db.execute('SELECT COUNT(*) FROM login_attempts WHERE key=? AND occurred_at>?',(key,cutoff)).fetchone()[0]
 class ProjectIn(BaseModel):
     title:str=Field(min_length=3,max_length=160)
     client_id:int
@@ -125,13 +146,18 @@ class UserIn(BaseModel):
     role:Literal['admin','consultant','client','viewer']
     client_id:int|None=None
 
-def me(authorization:str|None=Header(default=None)):
-    if not authorization or not authorization.startswith('Bearer '): raise HTTPException(401,'Acesso não autenticado')
-    t=authorization[7:]
+def me(request:Request):
+    token=request.cookies.get(COOKIE_NAME)
+    if not token:raise HTTPException(401,'Acesso não autenticado')
     with connect() as db:
-        user=db.execute('''SELECT u.id,u.company_id,u.client_id,u.full_name,u.email,u.role,u.active FROM sessions s
-        JOIN users u ON u.id=s.user_id WHERE s.token_hash=? AND s.expires_at>?''',(token_hash(t),now())).fetchone()
-    if not user or not user['active']: raise HTTPException(401,'Sessão inválida ou expirada')
+        user=db.execute('''SELECT u.id,u.company_id,u.client_id,u.full_name,u.email,u.role,u.active,s.csrf_token
+          FROM sessions s JOIN users u ON u.id=s.user_id
+          WHERE s.token_hash=? AND s.expires_at>?''',(token_hash(token),now())).fetchone()
+    if not user or not user['active']:raise HTTPException(401,'Sessão inválida ou expirada')
+    if request.method not in ('GET','HEAD','OPTIONS'):
+        given=request.headers.get('X-Nexo-CSRF','')
+        if not given or not hmac.compare_digest(given,user['csrf_token']):
+            raise HTTPException(403,'CSRF inválido')
     return dict(user)
 
 def allow(user,roles):
@@ -147,22 +173,38 @@ def normalize_project(p):
     return p
 
 @app.post('/api/auth/login')
-def login(body:Login):
+def login(body:Login,request:Request,response:Response):
+    ip=request.client.host if request.client else 'unknown'
+    ipkey=fingerprint('ip',ip)
+    userkey=fingerprint('email',body.email.strip().lower())
     with connect() as db:
-        u=db.execute('SELECT * FROM users WHERE email=? COLLATE NOCASE AND active=1',(body.email,)).fetchall()
-        match=next((dict(x) for x in u if verify_password(body.password,x['password_hash'])),None)
-        if not match: raise HTTPException(401,'E-mail ou senha inválidos')
+        db.execute('DELETE FROM login_attempts WHERE occurred_at<?',((datetime.now(timezone.utc)-timedelta(days=2)).isoformat(),))
+        if attempt_count(db,userkey,15)>=5 or attempt_count(db,ipkey,15)>=30:
+            raise HTTPException(429,'Muitas tentativas. Tente mais tarde.')
+        users=db.execute('SELECT * FROM users WHERE email=? COLLATE NOCASE AND active=1',(body.email.strip(),)).fetchall()
+        match=next((dict(x) for x in users if verify_password(body.password,x['password_hash'])),None)
+        if not match:
+            db.executemany('INSERT INTO login_attempts(key,occurred_at) VALUES (?,?)',[(userkey,now()),(ipkey,now())])
+            raise HTTPException(401,'E-mail ou senha inválidos')
+        db.execute('DELETE FROM login_attempts WHERE key=?',(userkey,))
         token=make_token()
+        csrf=make_token()
         expires=(datetime.now(timezone.utc)+timedelta(hours=12)).isoformat()
-        db.execute('INSERT INTO sessions(user_id,token_hash,expires_at) VALUES (?,?,?)',(match['id'],token_hash(token),expires))
-        return {'access_token':token,'user':{k:match[k] for k in ('id','company_id','client_id','full_name','email','role')}}
+        db.execute('INSERT INTO sessions(user_id,token_hash,csrf_token,expires_at) VALUES (?,?,?,?)',(match['id'],token_hash(token),csrf,expires))
+    response.set_cookie(COOKIE_NAME,token,max_age=43200,httponly=True,
+        secure=os.environ.get('NEXO_SECURE_COOKIES')=='1',
+        samesite='strict',path='/')
+    response.headers['Cache-Control']='no-store'
+    return {'user':{k:match[k] for k in ('id','company_id','client_id','full_name','email','role')},'csrf_token':csrf}
 
 @app.get('/api/auth/me')
-def auth_me(user=Depends(me)): return user
+def auth_me(user=Depends(me)):return user
 
 @app.post('/api/auth/logout')
-def logout(authorization:str|None=Header(default=None),user=Depends(me)):
-    with connect() as db: db.execute('DELETE FROM sessions WHERE token_hash=?',(token_hash(authorization[7:]),))
+def logout(request:Request,response:Response,user=Depends(me)):
+    with connect() as db:
+        db.execute('DELETE FROM sessions WHERE token_hash=?',(token_hash(request.cookies[COOKIE_NAME]),))
+    response.delete_cookie(COOKIE_NAME,path='/',samesite='strict')
     return {'ok':True}
 
 @app.get('/api/dashboard')
@@ -426,9 +468,21 @@ def create_user(body:UserIn,user=Depends(me)):
 @app.get('/api/health')
 def health():return {'status':'ok','app':'nexo-alpha'}
 
-app.mount('/assets',StaticFiles(directory=str(FRONTEND)),name='assets')
+app.mount('/assets',StaticFiles(directory=str(HOMEPAGE/'assets')),name='homepage-assets')
+app.mount('/app-assets',StaticFiles(directory=str(FRONTEND)),name='app-assets')
+
+@app.get('/',include_in_schema=False)
+def homepage():
+    return FileResponse(str(HOMEPAGE/'index.html'))
+
+@app.get('/styles.css',include_in_schema=False)
+def homepage_css():
+    return FileResponse(str(HOMEPAGE/'styles.css'),media_type='text/css')
+
+@app.get('/app.js',include_in_schema=False)
+def homepage_js():
+    return FileResponse(str(HOMEPAGE/'app.js'),media_type='application/javascript')
 
 @app.get('/{path:path}',include_in_schema=False)
 def frontend(path:str):
-    # Client-side routes and the public RFQ / proposal paths resolve to the app shell.
     return FileResponse(str(FRONTEND/'index.html'))
