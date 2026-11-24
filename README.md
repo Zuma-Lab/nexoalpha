@@ -33,3 +33,5 @@ A homepage aprovada como **direção A** é centrada no produto, não na fotogra
 A automação em `.github/workflows/alpha-ci.yml` verifica sintaxe e roda os testes Python em pull requests. Não presumir que um teste não executado passou.
 
 Para consultar leads da homepage por API, configurar `NEXO_LEADS_ADMIN_EMAIL` com o e-mail exato do operador autorizado; administradores de workspaces de clientes não recebem acesso aos leads globais por padrão.
+
+**Regras de briefing por serviço:** [validação Python](alpha-snapshot/backend/briefing_rules.py) reproduz as decisões e casos essenciais de `Zuma-Lab/nexo/briefing-rules.js` (sem importar código ou frontend). O editor visual por serviço e o editor completo de propostas continuam planejados na issue #2.
