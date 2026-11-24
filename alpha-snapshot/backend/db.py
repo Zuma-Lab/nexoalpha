@@ -42,6 +42,13 @@ CREATE TABLE IF NOT EXISTS briefing_versions (
   payload TEXT NOT NULL, created_by INTEGER NOT NULL REFERENCES users(id),
   created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, UNIQUE(project_id,version)
 );
+CREATE TABLE IF NOT EXISTS briefing_drafts (
+  id INTEGER PRIMARY KEY, company_id INTEGER NOT NULL REFERENCES companies(id),
+  project_id INTEGER NOT NULL REFERENCES projects(id), user_id INTEGER NOT NULL REFERENCES users(id),
+  payload TEXT NOT NULL, updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(company_id,project_id,user_id)
+);
+CREATE INDEX IF NOT EXISTS ix_briefing_drafts_owner ON briefing_drafts(company_id,project_id,user_id);
 CREATE TABLE IF NOT EXISTS suppliers (
   id INTEGER PRIMARY KEY, company_id INTEGER NOT NULL REFERENCES companies(id),
   name TEXT NOT NULL, category TEXT NOT NULL, city TEXT NOT NULL DEFAULT '',
