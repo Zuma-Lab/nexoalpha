@@ -86,7 +86,19 @@ jobs:
           git add evidencias/capturas/*.png evidencias/capturas/manifest.json design/brandbook-v2/NEXO-Alpha-Brandbook-v2.pdf
           if ! git diff --cached --quiet; then
             git commit -m "docs(evidencias): screenshots reais e brandbook PDF regenerados"
-            git push origin "HEAD:${GITHUB_REF_NAME}"
+            # A branch pode receber documentação enquanto Chromium gera imagens;
+            # rebase é não-destrutivo e preserva novos commits remotos.
+            for tentativa in 1 2 3 4 5; do
+              git fetch origin "${GITHUB_REF_NAME}"
+              git rebase "origin/${GITHUB_REF_NAME}"
+              if git push origin "HEAD:${GITHUB_REF_NAME}"; then
+                echo "Evidências salvas na branch (tentativa ${tentativa})"
+                exit 0
+              fi
+              echo "Branch recebeu commits novos; revalidando estado remoto..."
+            done
+            echo "Não foi possível publicar as evidências sem conflito; artifact permanece acessível."
+            exit 1
           else
             echo "Nenhuma alteração nas evidências"
           fi
