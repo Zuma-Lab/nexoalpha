@@ -228,7 +228,7 @@ function wizard(){
  const services=[["Aéreo",d.svcAereo],["Hospedagem",d.svcHospedagem],["Salas e alimentação",d.svcEspacoAlimentacao],["Transfers",d.svcTransfers]].filter(x=>x[1]).map(x=>x[0]);
  body='<h2 class="form-heading">Revise antes de registrar V'+((state.project?.briefings?.[0]?.version||0)+1)+'</h2><p class="form-intro">A versão anterior continuará acessível. Após salvar, não será possível editar este snapshot; para alterar, crie outra versão.</p><div class="review-box">'+row("Evento",d.eventName)+row("Destino",d.destination)+row("Participantes",d.participantsUnknown?"Não definidos":d.totalPassengers)+row("Período",d.datesUnknown?"Indefinido":date(d.departureDate)+" — "+date(d.returnDate))+row("Serviços",services.join(", "))+'<p class="field-help" style="margin-top:15px">Validação de campos condicionais no servidor. RFQs já existentes não mudam automaticamente.</p></div>';
  }
- const footer='<div class="form-footer"><button type="button" class="btn" data-action="wizard-back">'+(step===0?"Cancelar":"Voltar")+'</button><button class="btn btn-primary" type="submit">'+(step===3?"Registrar nova versão imutável":"Continuar "+icon("arrow"))+'</button></div>';
+ const footer='<div class="form-footer"><button type="button" class="btn" data-action="wizard-back">'+(step===0?"Voltar ao projeto":"Voltar")+'</button><div class="actions"><button type="button" class="btn" data-action="save-draft">Salvar rascunho</button><button class="btn btn-primary" type="submit">'+(step===3?"Registrar nova versão imutável":"Continuar "+icon("arrow"))+'</button></div></div>';
  return header("Briefing versionado","Nova versão do briefing","Estruture o pedido de forma guiada e preserve exatamente o escopo usado nos convites anteriores.")+nav+surf(steps[step],"Etapa "+(step+1)+" de 4",'<form class="form surface-body" data-form="wizard">'+body+footer+'</form>');
 }
 function render(){
@@ -278,7 +278,16 @@ function captureWizard(form){
  if(state.wizardStep===1){for(const name of ["svcAereo","svcHospedagem","svcEspacoAlimentacao","svcTransfers"])state.draft[name]=!!value[name];}
  if(state.wizardStep===2){Object.assign(state.draft,value);state.draft.cateringServices=value.cateringServices||[];state.draft.transferTypes=value.transferTypes||[];}
 }
-function startWizard(){state.wizardStep=0;state.draft=wizardPayload();state.route="wizard";updateURL();render();window.scrollTo(0,0);}
+async function startWizard(){
+ state.wizardStep=0;
+ state.draft=wizardPayload();
+ const stored=await api("/api/projects/"+state.pid+"/briefing-draft");
+ if(stored?.payload&&typeof stored.payload==="object"){
+   state.draft={...state.draft,...stored.payload};
+   notify("Rascunho privado recuperado. Nenhuma versão foi publicada.");
+ }
+ state.route="wizard";updateURL();render();window.scrollTo(0,0);
+}
 function calcPreviewFromForm(f){
  const obj=getForm(f);let unit=0;try{unit=toCents(obj.unit_net);}catch{return "Revise o custo NET unitário.";}
  const q=Number(obj.quantity)||0,tax=Number(obj.tax_pct)||0,fee=Number(obj.fee_pct)||0;
@@ -307,7 +316,7 @@ async function submitForm(form){
    await loadLists();await navigate("new_project");notify("Cliente registrado.");
   }else if(kind==="new-project"){
    const resp=await api("/api/projects",{method:"POST",body:{title:data.title,client_id:Number(data.client_id),destination:data.destination||"",starts_at:data.starts_at||"",ends_at:data.ends_at||"",attendees:Number(data.attendees||0),services:data.services||[]}});
-   await loadLists();await openProject(resp.id);startWizard();notify("Projeto criado. Preencha a primeira revisão do briefing.");
+   await loadLists();await openProject(resp.id);await startWizard();notify("Projeto criado. Preencha a primeira revisão do briefing.");
   }else if(kind==="new-supplier"){
    await api("/api/suppliers",{method:"POST",body:{name:data.name,category:data.category,city:data.city||"",contact_name:data.contact_name||"",email:data.email||"",phone:data.phone||""}});
    await loadLists();await navigate("suppliers");notify("Fornecedor cadastrado.");
@@ -355,7 +364,13 @@ async function action(button){
  else if(name==="project-tab"){state.tab=button.dataset.tab;state.route="project";updateURL();render();}
  else if(name==="go-briefing"){state.tab="briefing";state.route="project";updateURL();render();}
  else if(name==="go-quotes"){state.tab="quotes";state.route="project";updateURL();render();}
- else if(name==="start-briefing"){startWizard();}
+ else if(name==="start-briefing"){await startWizard();}
+ else if(name==="save-draft"){
+   const form=document.querySelector('form[data-form="wizard"]');
+   if(form)captureWizard(form);
+   await api("/api/projects/"+state.pid+"/briefing-draft",{method:"PUT",body:{payload:state.draft}});
+   notify("Rascunho salvo para este usuário e projeto. Ainda não é uma versão publicada.");
+ }
  else if(name==="wizard-back"){if(state.wizardStep===0){state.draft=null;await navigate("project","briefing");}else{state.wizardStep--;render();}}
  else if(name==="wizard-jump"){const jump=Number(button.dataset.step);if(jump<=state.wizardStep){state.wizardStep=jump;render();}}
  else if(name==="remove-item"){if(confirm("Excluir este item do orçamento? O valor da cotação será recalculado.")){await api("/api/projects/"+state.pid+"/quote-items/"+Number(button.dataset.id),{method:"DELETE"});await refreshProject();render();notify("Item excluído.");}}
