@@ -71,6 +71,7 @@ M0 contexto/ADR -> M1 identidade -> M2 segurança -> M3 briefing -> M4 sourcing 
 - Nova seção de dor e retrabalho na homepage logo após o hero, com fontes fictícias 180/210 pessoas; subtítulo de e-mails/planilhas/cadastros repetidos.
 - [Pesquisa com fontes e ressalvas](PESQUISA_DORES_E_MENSAGEM_HOME_2026-11-24.md): validar com 5–8 consultores/gestores antes de afirmar resultados.
 - **Dependência M4–M9:** sincronização de e-mail, CRM ou ERP externos não existe; priorizar conforme requisitos e segurança, sem prometer centralização de todos os sistemas.
+- **Discovery P1 antes de escalar a promessa de centralização:** registro canônico do evento, mapa de campos duplicados e escolha das primeiras integrações/API/exportação, com critérios mensuráveis. [Issue #6](https://github.com/Zuma-Lab/nexoalpha/issues/6). Não antecipar go-live sem testes e LGPD.
 - **Critério de aceite M1:** clareza e compreensão da dor, leitura mobile, ausência de métricas fabricadas e ligação visível com o produto demonstrado.
 
 ## Critério de maturidade após direção B (2026-11-24)
