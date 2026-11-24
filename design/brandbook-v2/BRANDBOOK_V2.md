@@ -1,6 +1,6 @@
-# Brandbook v2.1 — NEXO Alpha (nome provisório)
+# Brandbook v2.2 — NEXO Alpha (nome provisório)
 
-**Versão:** 2.1 · **Data de edição:** 2026-11-24 (America/Sao_Paulo)  
+**Versão:** 2.2 · **Data de edição:** 2026-11-24 (America/Sao_Paulo)  
 **Fonte técnica canônica:** [nexo-tokens.json](nexo-tokens.json)  
 **PDF gerado:** [NEXO-Alpha-Brandbook-v2.pdf](NEXO-Alpha-Brandbook-v2.pdf)  
 **Governança:** [regras BR](../../governanca/PADROES_E_REGRAS.md) · [ADRs](../../governanca/DECISOES_ARQUITETURAIS.md) · [roadmap](../../governanca/ROADMAP.md)
@@ -31,6 +31,18 @@ A direção A, com painel V1/V2 isolado à direita de um grande título, tornou-
 O laranja identifica uma ação, campo alterado ou algo que exige atenção; não deve colorir palavras aleatórias dos títulos. Ilustrações sem resultado real devem ser explicitamente rotuladas.
 
 **Importante:** a nova homepage ainda é material do Alpha, não a confirmação de que todas as automações de impacto/cotação estão implementadas. O workspace V2 tem backend funcional parcial, mas demanda homologação.
+
+## 02A. Reconhecimento da dor no primeiro contato — revisão B.1
+
+**Tese:** o problema para o consultor não é usar e-mail ou Excel isoladamente. É reconstruir o estado de um mesmo evento entre mensagens, planilhas e diferentes sistemas sem saber qual campo foi atualizado e quem já recebeu a mudança.
+
+- **Hero:** manter “O briefing mudou. A operação continua.”, mas explicitar no subtítulo e-mails, planilhas e cadastros repetidos. O CTA secundário aponta para a primeira seção de dor.
+- **Primeiro scroll `#retrabalho`:** mostrar um registro operacional fictício de um evento que aparece com 210 participantes no e-mail e sistema comercial, mas 180 na planilha e sistema operacional. A pergunta é “Qual informação está valendo — e quem precisa ser avisado?”.
+- **Não criar quatro cartões com ícones de ferramentas.** Apresentar um único registro editorial tabular, com divergências visíveis e consequência comercial, sem caricaturar quem usa planilhas.
+- **Paleta:** novo fundo de seção `#E9E5DD` entre hero grafite e caso de uso claro. Sinalização de registro atual `#DDE9DF` e desatualizado `#F5DCCA`, com texto e rótulos sempre presentes (não confiar só na cor).
+- **Ponte:** o Alpha conecta briefing, RFQ, cotação e proposta **dentro do projeto**, mas não recebe e-mails automaticamente nem sincroniza os ERPs e CRMs corporativos. Essas funcionalidades são futuras e exigem integrações.
+- **Dados:** “quatro registros” é um **cenário inventado para explicar a dor relatada pelo proprietário**, não um número estatístico de usuários. Não exibir economias de tempo ou ROI não mensurados.
+- **Validação futura:** entrevistar operadores, testar clareza da seção e instrumentar retrabalho, divergência, tempo de buscar versão e conversão em demonstrações. Evidências de mercado e ressalvas em [pesquisa](../../governanca/PESQUISA_DORES_E_MENSAGEM_HOME_2026-11-24.md).
 
 ## 03. Cores — tokens de referência
 
