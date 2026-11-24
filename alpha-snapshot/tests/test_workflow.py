@@ -157,7 +157,13 @@ def test_proposal_snapshots_and_public_expiration(client):
     v1=client.post(f'/api/projects/{pid}/proposals',headers=h).json()
     assert client.post(f"/api/proposals/{v1['id']}/publish",headers=h).status_code==200
     t1=v1['review_path'].rsplit('/',1)[-1]
-    snap1=client.get('/api/public/proposal/'+t1).json()['snapshot']
+    public_v1=client.get('/api/public/proposal/'+t1).json()
+    assert 'company_id' not in public_v1
+    snap1=public_v1['snapshot']
+    assert all('unit_net_cents' not in item and 'net_total_cents' not in item and
+               'tax_cents' not in item and 'fee_cents' not in item and
+               'supplier_id' not in item for item in snap1['items'])
+    assert snap1['items'][0]['sale_total_cents']==117
     client.post(f'/api/projects/{pid}/quote-items',headers=h,json={
         'category':'Aéreo','description':'Item B','quantity':1,'unit_net_cents':99})
     v2=client.post(f'/api/projects/{pid}/proposals',headers=h).json()
