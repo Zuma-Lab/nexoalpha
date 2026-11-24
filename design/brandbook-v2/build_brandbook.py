@@ -291,8 +291,8 @@ def build():
     story=[
         Spacer(1,126),
         p("NEXO / ALPHA","cover_mark"),
-        p("Brandbook<br/>de produto<br/>v2.0","cover_title"),
-        p("O produto como protagonista.<br/>Do briefing à proposta aprovada.","cover_sub"),
+        Paragraph("Brandbook<br/>de produto<br/>v2.0",S["cover_title"]),
+        Paragraph("O produto como protagonista.<br/>Do briefing à proposta aprovada.",S["cover_sub"]),
         Spacer(1,54),
         p("Identidade de trabalho: grafite, laranja e off-white. Nome, domínio e geometria final do logo permanecem em avaliação.","cover_note"),
         PageBreak(),
