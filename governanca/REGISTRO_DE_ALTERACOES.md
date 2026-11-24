@@ -16,6 +16,10 @@
 | CHG-025 | 2026-11-24 | Brandbook e tokens elevados a v2.1 para regular interface editorial e workspace operacional. | `design/brandbook-v2/` | Fonte alterada; PDF regenerado no pipeline |
 | CHG-026 | 2026-11-24 | Verificações CI migradas para arquivos V2 e smoke de rotas ajustado; problemas no runner foram corrigidos. | `.github/workflows/alpha-ci.yml`, `tests/test_workflow.py` | CI Python/JS verde em execução recente; screenshot E2E ainda em validação |
 
+| CHG-027 | 2026-11-24 | Rascunho persistente por usuário/projeto, protegido por CSRF, recuperável e limpo na publicação. | `db.py`, `main.py`, `workspace-v2/app.js`, testes | API e UI implementadas, CI automatizada |
+| CHG-028 | 2026-11-24 | Editor básico de termos e apresentação comercial da proposta, gravados no snapshot versionado e mostrados em página pública sem custos internos. | `main.py`, `workspace-v2/app.js`, testes | Implementado e coberto por testes |
+| CHG-029 | 2026-11-24 | Fluxo de wizard aprimorado ao retornar/avançar etapas, preservando edições locais. | `workspace-v2/app.js` | Implementado; teste visual pendente |
+
 ## Atualização técnica de 2026-11-24 (America/Sao_Paulo)
 
 | ID | Data | Mudança e justificativa | Arquivos / referência | Status e evidência |
@@ -48,7 +52,7 @@
 ## Como registrar a próxima alteração
 
 ```text
-ID: CHG-027 (sequencial)
+ID: CHG-030 (sequencial)
 Data local: AAAA-MM-DD (America/Sao_Paulo)
 Autor/PR:
 Motivo/decisão:
