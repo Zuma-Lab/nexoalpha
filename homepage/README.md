@@ -17,15 +17,13 @@ Homepage em HTML/CSS/JavaScript sem runtime do mockup exportado. A narrativa inc
 - Pesquisa qualitativa, fontes e limites: [pesquisa e arquitetura editorial](../governanca/PESQUISA_DORES_E_MENSAGEM_HOME_2026-11-24.md).
 - Imagens reais do novo trecho: [desktop e mobile](../evidencias/capturas/README.md) após CI.
 
-## Refinamento de copy e imagens — 25/11/2026 (aprovado para implementação)
+## Correção de escopo — 25/11/2026
 
-- **Hero:** “O evento é um só. A informação não deveria estar em tantos lugares.” + uma frase curta e **imagem existente do sistema**.
-- **Primeira rolagem:** “Sua equipe precisa conduzir eventos. Não reconstruir informações.” + **imagem existente do briefing** + painel V1/V2 existente.
-- **Outras seções:** copy de apresentação reduzida; comparativo financeiro e matriz de perfis preservam suas informações necessárias, demonstrações fictícias e ressalvas.
-- **Imagem 01 (pessoa + sistema):** não usada nesta revisão para evitar competição visual.
-- **Identidade:** brandbook 2.1, grafite, laranja, off-white, Inter e componente de comparação mantidos.
-- **Assets:** originals em `../../assets/photography/`; FastAPI os serve por `/visuals/<nome>.png` sem recomprimir. **Publicação estática independente precisa configurar essa rota**.
-- **Capturas reais:** `evidencias/capturas/home-hero-desktop.png`, `home-briefing-desktop.png`, `home-hero-mobile.png`, `home-briefing-mobile.png` (após CI).
+- **Copy implementada:** hero com título A e subtítulo curto; primeira rolagem com título B; textos de cotação, visibilidade e CTA mais diretos.
+- **Código visual restaurado:** composição do HTML e CSS da direção B anterior à experiência das duas imagens de interface. Não há `hero-visual` ou `briefing-visual`; paleta e tipografia idênticas à versão anterior.
+- **Referência visual desejada pelo proprietário:** rascunho **com notebook mostrando o sistema**, criado em conversa (desktop/mobile). Trata-se de **arte conceitual**, não da imagem presente no código; **não afirmar que está implementada**.
+- **Implementação futura do notebook:** extrair/aprovar um asset individual compatível com o rascunho e integrá-lo ao hero sem redesenhar elementos já aprovados. Isso precisa de revisão visual específica.
+- **Capturas:** pipeline volta a fotografar a homepage existente em vez de novos componentes não aprovados.
 
 ## Visualizar
 
