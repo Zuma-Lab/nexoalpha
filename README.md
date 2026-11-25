@@ -10,6 +10,7 @@ Produto independente de gestão de eventos e grupos corporativos. O repositório
 
 - **[Pasta de governança](governanca/README.md)** — regras, decisões, cronologia, riscos, roadmap e processo de revisão, todos com data de alteração.
 - **[Roadmap de ponta a ponta](governanca/ROADMAP.md)** — M0 a M9, início/meio/fim, critérios de saída e dependências.
+- **[Handoff executável para Work e Claude Code](handoff/ROADMAP_WORK_CLAUDE_2026-11-25.md)** — fases F0–F10, prompts, comandos e critérios de aceite em 25/11/2026. Leia também [CLAUDE.md](CLAUDE.md).
 - **[Brandbook v2.1](design/brandbook-v2/BRANDBOOK_V2.md)** — guia completo, tokens canônicos e gerador PDF versionado.
 - **[Galeria de telas reais](evidencias/capturas/README.md)** — capturas da branch em desktop e mobile; conferir manifesto e data.
 
