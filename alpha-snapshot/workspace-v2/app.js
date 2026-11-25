@@ -167,8 +167,15 @@ function rfqPage(){
  const checkList=available.map(s=>check(s.name+" · "+s.category,"supplier_ids[]",false,String(s.id))).join("");
  const creating=canEdit()?surf("Solicitar cotação","O convite fica vinculado à versão mais recente do briefing. Os links são entregues manualmente.",'<form class="form surface-body" data-form="rfq-batch"><div class="check-grid">'+(checkList||'<p class="page-description">Cadastre fornecedores para solicitar cotações.</p>')+'</div>'+field("Prazo de resposta (opcional)","deadline","","date")+'<div class="form-footer"><span class="page-description">A criação não dispara e-mails.</span><button class="btn btn-primary" type="submit" '+(!available.length?"disabled":"")+'>Gerar links de RFQ</button></div></form>'):"";
  const links=state.rfqBatch?'<div class="notice success">Lote #'+state.rfqBatch.batch_id+' criado a partir do briefing V'+state.rfqBatch.briefing_version+'. Copie os links abaixo antes de sair desta tela: os tokens não são exibidos novamente.</div>'+surf("Links para envio manual","Nenhum e-mail foi enviado pelo sistema.",'<div class="surface-body">'+state.rfqBatch.links.map((x,i)=>'<div class="pair"><span>'+esc(suppliers.find(s=>s.id===x.supplier_id)?.name||("Fornecedor "+x.supplier_id))+'</span><div class="actions"><a class="btn btn-small" target="_blank" rel="noopener noreferrer" href="'+esc(x.response_path)+'">Abrir link</a><button class="btn btn-small" type="button" data-action="copy-rfq" data-index="'+i+'">'+icon("copy")+' Copiar</button></div></div>').join("")+'<div class="form-footer"><span class="page-description">Marque como enviado somente após compartilhar o convite fora da plataforma.</span>'+button("Registrar envio manual","mark-rfq-sent",true)+'</div></div>'):"";
- const table=surf("Histórico de RFQs",list.length+" solicitações",list.length?'<div class="table-wrap" tabindex="0" aria-label="Pedidos de cotação"><table class="data-table compact"><thead><tr><th>Fornecedor</th><th>Especialidade</th><th>Estado</th><th>Disponibilidade</th><th>Condições</th></tr></thead><tbody>'+list.map(x=>'<tr><th>'+esc(x.supplier_name)+'</th><td>'+esc(x.category)+'</td><td>'+status(x.status)+'</td><td>'+esc(x.available||"Aguardando")+'</td><td>'+esc(x.cancellation||x.conditions||"—")+'</td></tr>').join("")+'</tbody></table></div>':empty("Nenhuma RFQ criada","Selecione os fornecedores adequados ao serviço e gere os convites.") );
- return '<div class="notice neutral">A aplicação registra os convites e suas respostas; a entrega é feita por link manual. Cada fornecedor enxerga apenas seu próprio pedido.</div>'+links+'<div class="project-grid"><div>'+table+'</div><aside>'+creating+'</aside></div>';
+ const reissued=state.reissuedRfq?.pid===state.pid?state.reissuedRfq:null;
+ const recovery=reissued?surf("Link reemitido",reissued.supplierName,
+   '<div class="surface-body"><div class="actions"><a class="btn btn-small" href="'+esc(reissued.response_path)+'" target="_blank" rel="noopener noreferrer">Abrir link</a>'+
+   button("Copiar link","copy-reissued-rfq")+'</div></div>'):"";
+ const invitationStatus=x=>x.status==="responded"?status(x.status):
+   x.revoked_at?status("Revogado"):!x.expires_at||Date.parse(x.expires_at)<=Date.now()?status("Expirado"):status(x.status);
+ const table=surf("Histórico de RFQs",list.length+" solicitações",list.length?'<div class="table-wrap" tabindex="0" aria-label="Pedidos de cotação"><table class="data-table compact"><thead><tr><th>Fornecedor</th><th>Especialidade</th><th>Estado</th><th>Disponibilidade</th><th>Condições</th><th>Link</th></tr></thead><tbody>'+list.map(x=>'<tr><th>'+esc(x.supplier_name)+'</th><td>'+esc(x.category)+'</td><td>'+invitationStatus(x)+'</td><td>'+esc(x.available||"Aguardando")+'</td><td>'+esc(x.cancellation||x.conditions||"—")+'</td><td>'+
+   (canEdit()&&x.status!=="responded"?'<button class="btn btn-small" data-action="reissue-rfq" data-id="'+Number(x.id)+'">Reemitir link</button>':"—")+'</td></tr>').join("")+'</tbody></table></div>':empty("Nenhuma RFQ criada","Selecione os fornecedores adequados ao serviço e gere os convites.") );
+ return '<div class="notice neutral">A aplicação registra os convites e suas respostas; a entrega é feita por link manual. Cada fornecedor enxerga apenas seu próprio pedido.</div>'+links+recovery+'<div class="project-grid"><div>'+table+'</div><aside>'+creating+'</aside></div>';
 }
 function moneyBreakdown(item){
  const net=Number(item.quantity)*Number(item.unit_net_cents),tax=Math.floor((net*Number(item.tax_bps)+5000)/10000),fee=Math.floor(((net+tax)*Number(item.fee_bps)+5000)/10000);
@@ -293,7 +300,7 @@ async function navigate(route,tab="overview",pid=null){
  state.mobile=false;
  state.route=route;state.tab=tab;
  if(route==="queue")await loadLists();
- if(pid){state.pid=pid;state.rfqBatch=null;state.proposalLink=null;await refreshProject();}
+ if(pid){state.pid=pid;state.rfqBatch=null;state.reissuedRfq=null;state.proposalLink=null;await refreshProject();}
  if(route!=="project"&&route!=="wizard")state.pid=null;
  updateURL();render();window.scrollTo(0,0);
 }
@@ -421,6 +428,23 @@ async function action(button){
  }
  else if(name==="remove-item"){if(confirm("Excluir este item do orçamento? O valor da cotação será recalculado.")){await api("/api/projects/"+state.pid+"/quote-items/"+Number(button.dataset.id),{method:"DELETE"});await refreshProject();render();notify("Item excluído.");}}
  else if(name==="mark-rfq-sent"){const batch=state.rfqBatch;if(!batch)return;await api("/api/rfq-batches/"+batch.batch_id+"/send",{method:"POST"});state.rfqBatch=null;await refreshProject();render();notify("Envio manual registrado. O sistema não despachou e-mails.");}
+ else if(name==="reissue-rfq"){
+   const invitation=state.project?.rfqs?.find(x=>x.id===Number(button.dataset.id));
+   if(!invitation||!confirm("Gerar um novo link para "+invitation.supplier_name+"? O link anterior será invalidado."))return;
+   const pid=state.pid;
+   button.disabled=true;
+   try{
+     const link=await api("/api/rfqs/"+invitation.id+"/reissue-link",{method:"POST",body:{expected_expiry:invitation.expires_at}});
+     if(state.pid!==pid)return;
+     if(state.rfqBatch)state.rfqBatch.links=state.rfqBatch.links.filter(x=>x.rfq_id!==invitation.id);
+     state.reissuedRfq={...link,pid,supplierName:invitation.supplier_name};
+     await refreshProject();render();
+   }finally{button.disabled=false;}
+ }
+ else if(name==="copy-reissued-rfq"){
+   const link=state.reissuedRfq;
+   if(link?.pid===state.pid){await navigator.clipboard.writeText(location.origin+link.response_path);notify("Link copiado.");}
+ }
  else if(name==="copy-rfq"){const item=state.rfqBatch?.links[Number(button.dataset.index)];if(item){await navigator.clipboard.writeText(location.origin+item.response_path);notify("Link copiado. Compartilhe apenas com o fornecedor indicado.");}}
  else if(name==="copy-proposal"){const p=state.proposalLink;if(p){await navigator.clipboard.writeText(location.origin+p.review_path);notify("Link da proposta copiado.");}}
  else if(name==="publish-proposal"){const p=state.proposalLink;if(!p)return;if(confirm("Publicar esta versão? O snapshot não poderá ser alterado.")){await api("/api/proposals/"+p.id+"/publish",{method:"POST"});p.status="published";await refreshProject();render();notify("Proposta publicada. Envie o link manualmente ao cliente.");}}

@@ -350,3 +350,32 @@ def test_consultant_queue_access_roles(client):
             assert result.status_code==(200 if role=='consultant' else 403)
             if role=='consultant':
                 assert result.json()['items'][0]['owner_is_me'] is False
+
+
+def test_rfq_reissue_after_reopening_project(client):
+    headers=login(client)
+    pid=client.get('/api/projects',headers=headers).json()[0]['id']
+    suppliers=client.get('/api/suppliers',headers=headers).json()
+    batch=client.post(f'/api/projects/{pid}/rfq-batches',headers=headers,
+        json={'supplier_ids':[supplier['id'] for supplier in suppliers[:2]]})
+    assert batch.status_code==201
+    original,other=batch.json()['links']
+    detail=client.get(f'/api/projects/{pid}',headers=headers).json()
+    invitation=next(row for row in detail['rfqs'] if row['id']==original['rfq_id'])
+    assert 'token_hash' not in invitation and 'response_path' not in invitation
+    path=f"/api/rfqs/{invitation['id']}/reissue-link"
+    payload={'expected_expiry':invitation['expires_at']}
+    assert client.post(path,json=payload).status_code==403
+    assert client.post(f"/api/rfqs/{invitation['id']}/revoke-link",headers=headers).status_code==200
+    result=client.post(path,headers=headers,json=payload)
+    assert result.status_code==200,result.text
+    assert result.headers['cache-control']=='no-store'
+    new_url='/api/public'+result.json()['response_path']
+    assert client.get('/api/public'+original['response_path']).status_code==404
+    assert client.get('/api/public'+other['response_path']).status_code==200
+    assert client.post(path,headers=headers,json=payload).status_code==409
+    invitation_response=client.get(new_url)
+    assert invitation_response.status_code==200
+    assert invitation_response.json()['supplier_name']==invitation['supplier_name']
+    assert client.post(new_url+'/response',json={'net_cents':100}).status_code==200
+    assert client.post(path,headers=headers,json={'expected_expiry':result.json()['expires_at']}).status_code==409
