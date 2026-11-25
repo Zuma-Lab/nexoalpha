@@ -199,11 +199,10 @@ def test_product_homepage_and_workspace_routes(client):
     assert 'E-mails, planilhas e versões desencontradas' in home.text
     assert 'Menos informação dispersa.' in home.text
     assert 'id="retrabalho"' not in home.text
-    assert home.text.count('src="assets/briefing-')==2
-    for name in ('briefing-etapas.webp','briefing-inteligente.webp'):
-        picture=client.get('/assets/'+name)
-        assert picture.status_code==200
-        assert picture.headers['content-type'].startswith('image/webp')
+    # Ajuste de copy não introduz novas imagens ou novas estruturas.
+    assert 'class="hero-note"' in home.text
+    assert 'class="hero-visual"' not in home.text
+    assert 'class="briefing-visual"' not in home.text
     assert client.get('/styles.css').status_code==200
     assert client.get('/app.js').status_code==200
     assert client.get('/assets/logo-white.svg').status_code==200
