@@ -11,6 +11,15 @@
 ### Hero editorial
 ![Hero editorial — problema de briefing alterado](home-hero-desktop.png)
 
+### Primeira rolagem desktop — nova imagem original do briefing
+![Homepage final — briefing na primeira rolagem](home-briefing-desktop.png)
+
+### Hero mobile — nova copy e foto original do sistema
+![Homepage final — hero mobile](home-hero-mobile.png)
+
+### Primeira rolagem mobile — briefing
+![Homepage final — briefing mobile](home-briefing-mobile.png)
+
 ### Página completa desktop
 ![Homepage editorial completa](home-completa-desktop.png)
 
