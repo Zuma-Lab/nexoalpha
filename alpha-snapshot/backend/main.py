@@ -309,7 +309,7 @@ def get_project(pid:int,user=Depends(me)):
         p['quote_total_cents']=sum(x['sale_total_cents'] for x in p['quote_items'])
         p['tasks']=rows(db.execute('SELECT t.*,u.full_name owner_name FROM plan_tasks t LEFT JOIN users u ON u.id=t.owner_id WHERE t.project_id=? ORDER BY due_date,id',(pid,)))
         p['proposals']=rows(db.execute('SELECT id,version,total_cents,status,published_at,created_at FROM proposals WHERE project_id=? ORDER BY version DESC',(pid,)))
-        p['rfqs']=rows(db.execute('''SELECT r.id,r.batch_id,r.status,r.sent_at,r.responded_at,s.name supplier_name,s.category,s.city,
+        p['rfqs']=rows(db.execute('''SELECT r.id,r.batch_id,r.status,r.sent_at,r.responded_at,r.expires_at,r.revoked_at,s.name supplier_name,s.category,s.city,
              rr.available,rr.net_cents,rr.conditions,rr.cancellation
              FROM rfqs r JOIN rfq_batches b ON b.id=r.batch_id JOIN suppliers s ON s.id=r.supplier_id
              LEFT JOIN rfq_responses rr ON rr.rfq_id=r.id WHERE b.project_id=? ORDER BY r.id DESC''',(pid,))) if user['role']!='client' else []
@@ -416,6 +416,27 @@ def send_rfq_batch(bid:int,user=Depends(me)):
         audit(db,user['company_id'],user['id'],'rfq.batch_marked_sent',batch['project_id'],f'Lote #{bid} (envio manual por link)')
         return {'batch_id':bid,'status':'sent','delivered_via':'manual_link'}
 
+@app.post('/api/rfqs/{rfqid}/reissue-link')
+def reissue_rfq_link(rfqid:int,response:Response,expected_expiry:str|None=Body(embed=True),user=Depends(me)):
+    allow(user,('admin','consultant'))
+    with connect() as db:
+        db.execute('BEGIN IMMEDIATE')
+        invitation=required(db,'''SELECT r.status,r.expires_at,b.project_id FROM rfqs r
+          JOIN rfq_batches b ON b.id=r.batch_id WHERE r.id=? AND r.company_id=?''',
+          (rfqid,user['company_id']))
+        project(db,invitation['project_id'],user)
+        if invitation['status']=='responded':
+            raise HTTPException(409,'O fornecedor já respondeu a este convite')
+        if invitation['expires_at']!=expected_expiry:
+            raise HTTPException(409,'O link mudou. Atualize o projeto antes de tentar novamente.')
+        token=make_token()
+        expires_at=(datetime.now(timezone.utc)+timedelta(days=14)).isoformat()
+        db.execute('UPDATE rfqs SET token_hash=?,expires_at=?,revoked_at=NULL WHERE id=?',
+          (token_hash(token),expires_at,rfqid))
+        audit(db,user['company_id'],user['id'],'rfq.link_reissued',invitation['project_id'],str(rfqid))
+        response.headers['Cache-Control']='no-store'
+        return {'response_path':'/rfq/'+token,'expires_at':expires_at}
+
 @app.get('/api/public/rfq/{token}')
 def public_rfq(token:str):
     with connect() as db:
@@ -429,6 +450,7 @@ def public_rfq(token:str):
 @app.post('/api/public/rfq/{token}/response')
 def public_rfq_response(token:str,body:RFQResponseIn):
     with connect() as db:
+        db.execute('BEGIN IMMEDIATE')
         r=required(db,'SELECT * FROM rfqs WHERE token_hash=? AND revoked_at IS NULL AND expires_at>?',(token_hash(token),now()))
         if r['status']=='responded':raise HTTPException(409,'Resposta já registrada')
         db.execute('''INSERT INTO rfq_responses(company_id,rfq_id,available,net_cents,tax_bps,conditions,cancellation,notes)

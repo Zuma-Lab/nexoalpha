@@ -38,6 +38,7 @@ Data base: **2026-11-23** · Fuso: **America/Sao_Paulo**. Revisar este arquivo a
 | ADR-026 | 2026-11-25 | Consolidar **operação do consultor orientada por ação**: fila derivada de estados registrados, no máximo uma ação principal por projeto; evitar painéis de explicações repetidas como navegação. Implementação inicial apenas em branch de revisão. | Decisão de teste funcional; **sem merge ou homologação** | `alpha-snapshot/backend/consultant_queue.py`, `workspace-v2/app.js` |
 | ADR-027 | 2026-11-25 | Manter o shell/sidebar grafite e a área operacional off-white atuais enquanto a estética escura dos mockups de briefing estiver apenas como referência; nenhum redesign não autorizado. O fluxo ativo de briefing segue em quatro passos. | Preservação decidida; harmonização futura **proposta** | Design system, issue #5 |
 | ADR-028 | 2026-11-25 | Acessos de `viewer`, vínculo de owner, recuperação de links e leitura de NET dependem de matriz de permissões e contrato funcional antes de migração de schema/UI. Não inventar sucesso para ações não suportadas. | P0/P1 em descoberta | Produto, segurança e roadmap |
+| ADR-029 | 2026-11-25 | Rotacionar o hash na RFQ original em transação de escrita, usando a validade observada como precondição. Serializar a rotação com o recebimento de respostas e registrar auditoria sem tokens. | Implementado para revisão | BR-067, issue #8 |
 
 ## Decisões pendentes de aprovação
 

@@ -112,6 +112,7 @@
 | BR-064 | 2026-11-25 | Comparação financeira exige unidade por serviço, fornecedor vinculado, condições e tributos; não selecionar fornecedor automaticamente apenas por preço. | P0 pendente; issue #4 |
 | BR-065 | 2026-11-25 | O workspace deve conservar o brandbook 2.1 e padrão de navegação global/contextual; não converter mockups escuros de briefing em UI funcional sem projeto e aprovação. | Identidade preservada; harmonização proposta |
 | BR-066 | 2026-11-25 | As ações da fila apontam à aba correta, mas não prometem resolver bloqueios que ainda exigem implementação (link expirado, draft não retomável, integração ausente). | Implementado como diagnóstico; homologação UX pendente |
+| BR-067 | 2026-11-25 | Consultor ou administrador autorizado pode reemitir um convite de RFQ sem resposta. O novo link pertence ao mesmo fornecedor e briefing. O link anterior perde validade. | Implementado para revisão |
 
 ## Contratos de implementação (status atual)
 
