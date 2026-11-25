@@ -194,10 +194,16 @@ def test_demo_request_validation_and_persistence(client):
 def test_product_homepage_and_workspace_routes(client):
     home=client.get('/')
     assert home.status_code==200
-    assert 'O briefing mudou.' in home.text
-    assert 'Dezenas de e-mails, planilhas paralelas' in home.text
-    assert 'os mesmos dados preenchidos em sistemas diferentes' in home.text
+    assert 'O evento é um só.' in home.text
+    assert 'Sua equipe precisa conduzir eventos.' in home.text
+    assert 'E-mails, planilhas e versões desencontradas' in home.text
+    assert 'Menos informação dispersa.' in home.text
     assert 'id="retrabalho"' not in home.text
+    assert home.text.count('src="/visuals/')==2
+    for name in ('02-homepage-coordenacao-evento.png','03-briefing-planejamento.png'):
+        picture=client.get('/visuals/'+name)
+        assert picture.status_code==200
+        assert picture.headers['content-type'].startswith('image/png')
     assert client.get('/styles.css').status_code==200
     assert client.get('/app.js').status_code==200
     assert client.get('/assets/logo-white.svg').status_code==200
