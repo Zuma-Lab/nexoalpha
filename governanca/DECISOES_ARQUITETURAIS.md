@@ -35,6 +35,10 @@ Data base: **2026-11-23** · Fuso: **America/Sao_Paulo**. Revisar este arquivo a
 
 | ADR-025 | 2026-11-25 | **Copy A/B confirmada; alteração visual revertida a pedido do proprietário.** O rascunho com notebook é a referência estética valorizada pelo proprietário, não a homepage HTML já implementada. A implementação deve preservar essa composição e alterar somente textos, quando o asset correto estiver disponível. | Copy implementada; mockup com notebook em avaliação; implementação visual pendente | `homepage/dist/index.html`, brandbook 2.1 |
 
+| ADR-026 | 2026-11-25 | Consolidar **operação do consultor orientada por ação**: fila derivada de estados registrados, no máximo uma ação principal por projeto; evitar painéis de explicações repetidas como navegação. Implementação inicial apenas em branch de revisão. | Decisão de teste funcional; **sem merge ou homologação** | `alpha-snapshot/backend/consultant_queue.py`, `workspace-v2/app.js` |
+| ADR-027 | 2026-11-25 | Manter o shell/sidebar grafite e a área operacional off-white atuais enquanto a estética escura dos mockups de briefing estiver apenas como referência; nenhum redesign não autorizado. O fluxo ativo de briefing segue em quatro passos. | Preservação decidida; harmonização futura **proposta** | Design system, issue #5 |
+| ADR-028 | 2026-11-25 | Acessos de `viewer`, vínculo de owner, recuperação de links e leitura de NET dependem de matriz de permissões e contrato funcional antes de migração de schema/UI. Não inventar sucesso para ações não suportadas. | P0/P1 em descoberta | Produto, segurança e roadmap |
+
 ## Decisões pendentes de aprovação
 
 | ID | Assunto | Opções/impacto | Dependência |
