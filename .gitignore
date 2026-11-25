@@ -1,0 +1,10 @@
+# Conteúdo pessoal da conversa: nunca publicar novamente
+historico/MENSAGENS_DO_USUARIO.md
+*.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm
+.env
+.env.*
+!.env.example
+__pycache__/
+.pytest_cache/

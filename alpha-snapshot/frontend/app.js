@@ -43,14 +43,15 @@ const initials=(str)=>String(str||'?').trim().split(/\s+/).slice(0,2).map(x=>x[0
 const services=['Aéreo','Hospedagem','Salas e A&B','Transfers','Audiovisual','Staff','Outros'];
 const statusMap={briefing:['Briefing','blue'],qualifying:['Qualificação','amber'],sourcing:['Fornecedores','purple'],quoting:['Cotação','amber'],proposal:['Proposta','blue'],approved:['Aprovado','green'],closed:['Concluído','green'],prepared:['Preparada','amber'],sent:['Aguardando','blue'],responded:['Respondida','green'],draft:['Rascunho','amber'],published:['Enviada','blue'],changes_requested:['Ajustes solicitados','amber'],rejected:['Rejeitada','red'],pending:['Pendente','amber'],in_progress:['Em andamento','blue'],done:['Concluída','green'],available:['Disponível','green'],partial:['Parcial','amber'],unavailable:['Indisponível','red']};
 const badge=(s)=>{const [label,color]=statusMap[s]||[s||'Não definido',''];return `<span class="status ${color}">${e(label)}</span>`;};
-const state={token:sessionStorage.getItem('nexo_token')||'',user:null,page:'overview',tab:'overview',pid:null,projects:[],clients:[],suppliers:[],users:[],dash:null,project:null,search:'',mobile:false};
+const state={csrf:'',user:null,page:'overview',tab:'overview',pid:null,projects:[],clients:[],suppliers:[],users:[],dash:null,project:null,search:'',mobile:false};
 let noticeTimer;
 function toast(text,error=false){let el=document.getElementById('toast');if(!el){el=document.createElement('div');el.id='toast';document.body.appendChild(el)}el.className='toast'+(error?' error':'');el.textContent=text;clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>{el.className='toast hidden'},4200)}
 async function api(path,opt={}){
-  const headers={...(opt.body?{'Content-Type':'application/json'}:{}),...(state.token?{Authorization:'Bearer '+state.token}:{})};
-  const response=await fetch('/api'+path,{...opt,headers:{...headers,...opt.headers},body:opt.body?JSON.stringify(opt.body):undefined});
+  const method=(opt.method||'GET').toUpperCase();
+  const headers={...(opt.body?{'Content-Type':'application/json'}:{}),...(method!=='GET'&&method!=='HEAD'&&state.csrf?{'X-Nexo-CSRF':state.csrf}:{})};
+  const response=await fetch('/api'+path,{...opt,credentials:'same-origin',headers:{...headers,...opt.headers},body:opt.body?JSON.stringify(opt.body):undefined});
   let result;try{result=await response.json()}catch{result={detail:'Não foi possível ler a resposta'}}
-  if(response.status===401&&state.user){state.token='';state.user=null;sessionStorage.removeItem('nexo_token');renderLogin();throw Error('Sua sessão expirou. Entre novamente.')}
+  if(response.status===401&&state.user){state.csrf='';state.user=null;renderLogin();throw Error('Sua sessão expirou. Entre novamente.')}
   if(!response.ok){let detail=result?.detail;throw Error(typeof detail==='string'?detail:JSON.stringify(detail||'Erro inesperado'))}
   return result;
 }
@@ -114,7 +115,7 @@ async function doAction(el){const action=el.dataset.action;
  if(action==='new-quote'){formQuote();return}
  if(action==='new-task'){formTask();return}
  if(action==='new-user'){formUser();return}
- if(action==='logout'){try{await api('/auth/logout',{method:'POST'})}catch{}state.token='';state.user=null;sessionStorage.removeItem('nexo_token');history.replaceState({},'','/app');renderLogin();return}
+ if(action==='logout'){try{await api('/auth/logout',{method:'POST'})}catch{}state.csrf='';state.user=null;history.replaceState({},'','/app');renderLogin();return}
  if(action==='mark-sent'){const d=await api('/rfq-batches/'+el.dataset.bid+'/send',{method:'POST'});toast(d.status==='already_sent'?'Envio já havia sido registrado.':'Envio manual registrado; nenhum e-mail automático foi enviado.');await refreshProject();return}
  if(action==='delete-quote'){if(!confirm('Excluir esta linha da cotação?'))return;await api('/projects/'+state.pid+'/quote-items/'+el.dataset.id,{method:'DELETE'});toast('Linha excluída');await refreshProject();return}
  if(action==='create-proposal'){const d=await api('/projects/'+state.pid+'/proposals',{method:'POST'});await refreshProject();linkModal('Proposta V'+d.version+' criada',[{name:'Link da proposta (disponível após publicar)',path:d.review_path}],'Copie o link antes de sair. Publique a versão para habilitar o acesso do cliente.');return}
@@ -122,7 +123,7 @@ async function doAction(el){const action=el.dataset.action;
  if(action==='copy-link'){try{await navigator.clipboard.writeText(el.dataset.url);toast('Link copiado para a área de transferência.')}catch{toast('Não foi possível copiar automaticamente. Selecione o link e copie manualmente.',true)}return}
 }
 async function handleForm(form){const kind=form.dataset.form;const fd=new FormData(form);const val=n=>String(fd.get(n)||'').trim();const num=n=>Number(val(n)||0);const cents=n=>Math.round(num(n)*100);const bps=n=>Math.round(num(n)*100);
- if(kind==='login'){const d=await api('/auth/login',{method:'POST',body:{email:val('email'),password:val('password')}});state.token=d.access_token;state.user=d.user;sessionStorage.setItem('nexo_token',d.access_token);history.replaceState({},'','/app');await reload();state.page='overview';render();return}
+ if(kind==='login'){const d=await api('/auth/login',{method:'POST',body:{email:val('email'),password:val('password')}});state.csrf=d.csrf_token;state.user=d.user;history.replaceState({},'','/app');await reload();state.page='overview';render();return}
  if(kind==='project'){const d=await api('/projects',{method:'POST',body:{title:val('title'),client_id:num('client_id'),destination:val('destination'),starts_at:val('starts_at'),ends_at:val('ends_at'),attendees:num('attendees'),budget_cents:cents('budget'),services:fd.getAll('services')}});hideModal();await reload();toast('Projeto '+d.protocol+' criado');await openProject(d.id);return}
  if(kind==='client'){await api('/clients',{method:'POST',body:{name:val('name'),contact_email:val('contact_email')}});hideModal();await reload();render();toast('Empresa cliente cadastrada');return}
  if(kind==='supplier'){await api('/suppliers',{method:'POST',body:{name:val('name'),category:val('category'),city:val('city'),contact_name:val('contact_name'),email:val('email'),phone:val('phone'),preferred:fd.has('preferred')}});hideModal();await reload();render();toast('Fornecedor cadastrado');return}
@@ -144,7 +145,20 @@ async function publicPage(){const parts=location.pathname.split('/');const kind=
  }
  }catch(error){publicLayout(`<h1>Não foi possível abrir o documento</h1><p>${e(error.message)}</p>`);return}publicLayout('<h1>Página não encontrada</h1>');}
 function renderLogin(){app.innerHTML=`<div class="login"><div class="login-visual">${brand()}<div><p class="eyebrow" style="color:#8ca9c7">NEXO · ALPHA 01</p><h2>Todos os detalhes. Uma única operação.</h2><p>Uma nova forma de transformar briefings em cotações consistentes, decisões claras e projetos sob controle.</p></div><small>© ${new Date().getFullYear()} NEXO · Ambiente de desenvolvimento independente</small></div><div class="login-formwrap"><form class="login-form" data-form="login"><p class="eyebrow">Acesse seu workspace</p><h1>Bom ter você aqui.</h1><p>Entre para acompanhar seus projetos e cotações.</p><div class="fieldgroup"><label class="label" for="login-email">E-mail corporativo</label><input class="field" id="login-email" type="email" name="email" autocomplete="username" required placeholder="nome@empresa.com.br"/></div><div class="fieldgroup"><label class="label" for="login-password">Senha</label><input class="field" id="login-password" type="password" name="password" autocomplete="current-password" required placeholder="Sua senha"/></div><button class="btn btn-primary" type="submit">Entrar na plataforma ${I('arrow')}</button><div class="demo"><strong>Ambiente de demonstração local</strong><br/>admin@nexo.local · NexoDemo!2026<br/>Ative somente com <span class="mono">NEXO_DEMO=1</span>.</div></form></div></div>`;}
-async function start(){if(['/rfq/','/proposal/'].some(x=>location.pathname.startsWith(x))){await publicPage();return}if(state.token){try{state.user=await api('/auth/me');await reload();const chunks=location.pathname.split('/').filter(Boolean);if(chunks[0]==='app'&&chunks[1]==='projects'&&chunks[2]){await openProject(chunks[2],chunks[3]||'overview');return}if(chunks[0]==='app'&&chunks[1])state.page=chunks[1];render();return}catch(error){console.warn('Sessão não disponível:',error.message);state.user=null;state.token='';sessionStorage.removeItem('nexo_token')}}renderLogin()}
+async function start(){
+ if(['/rfq/','/proposal/'].some(x=>location.pathname.startsWith(x))){await publicPage();return}
+ try{
+  const me=await api('/auth/me');
+  state.user=me;
+  state.csrf=me.csrf_token;
+  await reload();
+  const chunks=location.pathname.split('/').filter(Boolean);
+  if(chunks[0]==='app'&&chunks[1]==='projects'&&chunks[2]){await openProject(chunks[2],chunks[3]||'overview');return}
+  if(chunks[0]==='app'&&chunks[1])state.page=chunks[1];
+  render();return;
+ }catch(error){state.user=null;state.csrf='';}
+ renderLogin();
+}
 document.addEventListener('click',async ev=>{const el=ev.target.closest('[data-action]');if(!el)return;ev.preventDefault();try{await doAction(el)}catch(error){toast(error.message,true)}});
 document.addEventListener('submit',async ev=>{const form=ev.target.closest('[data-form]');if(!form)return;ev.preventDefault();const btn=form.querySelector('[type="submit"]');if(btn)btn.disabled=true;try{await handleForm(form)}catch(error){toast(error.message,true)}finally{if(btn&&btn.isConnected)btn.disabled=false}});
 document.addEventListener('change',async ev=>{if(ev.target.id==='status-filter'){const status=ev.target.value;document.querySelectorAll('.panel tbody tr').forEach(tr=>{tr.style.display=!status||tr.innerText.includes((statusMap[status]||[])[0])?'':'none'});return}if(ev.target.matches('[data-task]')){try{await api('/projects/'+state.pid+'/tasks/'+ev.target.dataset.task,{method:'PATCH',body:{status:ev.target.value}});await refreshProject();toast('Status atualizado')}catch(error){toast(error.message,true)}}});

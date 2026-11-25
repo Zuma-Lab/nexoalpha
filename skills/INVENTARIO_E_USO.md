@@ -1,6 +1,6 @@
 # Skills instaladas e plano de uso
 
-Inventário do ambiente local em 2026-11-23. Instalações ficam em `C:/Users/perso/.codex/skills`; clonar este repositório não instala skills automaticamente. As cópias antigas em `portateis/` são históricas.
+Inventário do ambiente local em 2026-11-23. Instalações ficam em `[diretório local de skills]`; clonar este repositório não instala skills automaticamente. As cópias antigas em `portateis/` são históricas.
 
 | Pasta instalada | Origem | Aplicação |
 | --- | --- | --- |

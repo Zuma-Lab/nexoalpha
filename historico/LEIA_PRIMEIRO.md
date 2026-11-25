@@ -1,3 +1,7 @@
+> **Privacidade (2026-11-23):** a transcrição `historico/MENSAGENS_DO_USUARIO.md` foi removida da árvore atual proposta. Ela ainda pode ser recuperada em commits anteriores enquanto o repositório permanecer público. A limpeza definitiva do histórico requer decisão específica e avaliação de impacto; não foi feita.
+>
+> **Estado técnico:** os registros a seguir documentam a conversa anterior, não substituem `README.md` nem os READMEs de `homepage/` e `alpha-snapshot/`.
+
 # Histórico e limites de exportação
 
 Este diretório foi preparado a partir das mensagens visíveis da conversa NEXO de 23/11/2026, dos arquivos salvos na Biblioteca `/NEXO/ALPHA`, das imagens de prévias e do pacote de código Alpha.

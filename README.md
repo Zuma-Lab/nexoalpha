@@ -1,41 +1,65 @@
-# Estado atual — homepage e identidade
+# NEXO ALPHA — nome provisório
 
-O código da homepage, brandbook, logos vetoriais e novas explorações fotográficas estão preservados neste repositório. **Ponto de retomada:** [Estado atual e pendências](handoff/ESTADO_ATUAL_2026-11-23.md).
+Produto independente de gestão de eventos e grupos corporativos. O repositório legado **Zuma-Lab/nexo** é apenas referência de regras de negócio; não deve ser editado como parte do Alpha.
 
-- [Homepage implementada](homepage/README.md)
-- [Brandbook PDF v1](design/brandbook-v1/NEXO-Brandbook-v1.pdf) e tokens na mesma pasta
-- [Logos vetoriais e PNGs](assets/brand/nexo-logo-v1/)
-- [Fotografias exploratórias](assets/photography/)
-- [Direção para o refinamento](design/DIRECAO_FOTOGRAFICA_E_REFINAMENTO.md)
-- [Skills instaladas e uso](skills/INVENTARIO_E_USO.md)
+## Ponto único de retomada e identidade
 
-A imagem atual do hero foi considerada artificial pelo usuário. O refinamento visual está pendente; os arquivos salvos registram o estado anterior à próxima remodelagem. A geometria do logo vetorial ainda requer validação e o PDF mantém o logo raster antigo.
+**Atualização de posicionamento em 24/11/2026:** homepage reconhece o retrabalho de e-mails, planilhas e cadastros internos já no hero. A primeira rolagem mantém a composição do caso V1/V2 já aprovada, sem nova seção ilustrativa ou mudanças de cores; o conceito de quatro fontes permanece apenas como estudo editorial. Pesquisa e limites estão em [governanca/PESQUISA_DORES_E_MENSAGEM_HOME_2026-11-24.md](governanca/PESQUISA_DORES_E_MENSAGEM_HOME_2026-11-24.md). Integrações externas **ainda não estão implementadas**.
 
----
+**Nome provisório:** NEXO Alpha; marca e domínio definitivos não foram escolhidos. `nexo.com.br` não será assumido. Alternativas de naming citadas: Benexo, Nexobe e Bnexo, ainda sem validação.
 
-## Registro inicial preservado (estado anterior)
-# NEXO ALPHA
+- **[Pasta de governança](governanca/README.md)** — regras, decisões, cronologia, riscos, roadmap e processo de revisão, todos com data de alteração.
+- **[Roadmap de ponta a ponta](governanca/ROADMAP.md)** — M0 a M9, início/meio/fim, critérios de saída e dependências.
+- **[Handoff executável para Work e Claude Code](handoff/ROADMAP_WORK_CLAUDE_2026-11-25.md)** — fases F0–F10, prompts, comandos e critérios de aceite em 25/11/2026. Leia também [CLAUDE.md](CLAUDE.md).
+- **[Brandbook v2.1](design/brandbook-v2/BRANDBOOK_V2.md)** — guia completo, tokens canônicos e gerador PDF versionado.
+- **[Galeria de telas reais](evidencias/capturas/README.md)** — capturas da branch em desktop e mobile; conferir manifesto e data.
 
-Reconstrução independente da plataforma NEXO para cotações e gestão de eventos corporativos.
+## Retomar em outro computador
 
-> **Importante:** este repositório é separado de `Zuma-Lab/nexo`. O sistema original não deve ser alterado. A homepage aprovada foi criada como **conceito visual**, e não deve ser descrita como interface implementada até ser programada e testada.
+```bash
+git clone https://github.com/Zuma-Lab/nexoalpha.git
+cd nexoalpha
+git fetch origin
+git switch feat/homepage-produto-revisao-claude-20261123
+cd alpha-snapshot
+python -m pip install -r requirements.txt pytest httpx
+NEXO_DEMO=1 uvicorn backend.main:app --host 127.0.0.1 --port 8000
+```
 
-## Mapa de conteúdo
+O comando `NEXO_DEMO=1` é exemplo para shell Unix; em PowerShell use `$env:NEXO_DEMO='1'`. Abra `http://127.0.0.1:8000/`. Não publicar a configuração demo.
 
-- `produto/`: escopo, requisitos, fluxos, acesso, dados, regras financeiras e roadmap.
-- `design/`: decisões da homepage, identidade visual, design system, especificações e referências.
-- `assets/`: imagens conceituais originais PNG e versões WebP, incluindo o logo e mockups de briefing; arquivos verificados por hash Git.
-- `historico/`: registro cronológico reconstruído do material acessível e limitações da exportação.
-- `skills/`: referências de metodologias de design; **não significa instalação global**.
-- `alpha-snapshot/`: instantâneo recuperado da implementação Alpha (backend, frontend, testes, documentação e capturas).
-- `handoff/`: instruções para continuar no ChatGPT Work.
+**Situação:** arquivos de trabalho e imagens/PDF ficam na branch do PR #1 até serem revisados e mesclados; a `main` ainda preserva a versão anterior.
 
-## Estado e limites
+## Estado de implementação
 
-A primeira proposta visual da homepage, com executivo diante da cidade, dashboard flutuante, grafite, laranja e off-white foi aprovada como direção. O pedido atual é preservar **toda a documentação, imagens, requisitos e histórico recuperável**, não modificar o projeto anterior nem fingir que as prévias são código pronto.
+- [Homepage editorial B](homepage/README.md) — recontada pelo caso concreto de briefing alterado, impacto operacional ilustrativo, room nights, comparação de fornecedores e acessos; login e formulário conectados à API.
+- [API e workspace V2 ativo](alpha-snapshot/README.md) — interface nova em `alpha-snapshot/workspace-v2/`, servida por `/app`. Fila por operação, projeto, wizard de briefing, RFQ manual, custos e propostas ligados à API. `alpha-snapshot/frontend/` permanece histórico. **O novo workspace ainda não está homologado em produção.**
+- [Design tokens canônicos](design/brandbook-v2/nexo-tokens.json) — grafite, laranja `#FF850D`, off-white e Inter.
+- [Produto e regras](produto/FUNCIONALIDADES_E_REGRAS.md) — escopo, fluxos e requisitos.
+- [Histórico](historico/LEIA_PRIMEIRO.md) e [handoff anterior](handoff/ESTADO_ATUAL_2026-11-23.md) — registros de decisões passadas, não estado atual do código.
 
-**Histórico:** o ChatGPT não dispõe aqui de uma função nativa de exportar a transcrição completa e imutável da conversa. A pasta `historico/` documentará o que foi efetivamente recuperado; não apresentar resumos como transcrição literal integral.
+## Executar em conjunto
 
-**Identidade:** logo angular laranja + palavra “nexo” branca/minúscula, aprovado conceitualmente; imagem em alta resolução criada, mas ainda não foi vetorizada como marca final.
+```bash
+cd alpha-snapshot
+python -m pip install -r requirements.txt
+NEXO_DEMO=1 uvicorn backend.main:app --reload
+```
 
-Criado em 2026-11-23.
+Abrir `http://127.0.0.1:8000/` para a homepage e `http://127.0.0.1:8000/app` para o workspace. Os formulários usam a mesma origem que a API e não funcionam sem backend.
+
+**Segurança de produção:** configurar TLS e `NEXO_SECURE_COOKIES=1`, além de `NEXO_RATE_LIMIT_SECRET` fixo e secreto; desativar `NEXO_DEMO`, trocar credenciais e configurar banco, backup, observabilidade, domínio, políticas de privacidade e envio de leads. API e frontend exigem revisão e testes antes de publicar.
+
+## Decisões de identidade e apresentação
+
+A homepage atual em revisão é a **direção editorial B**, centrada em consequências de mudanças do briefing, sem fotografia artificial ou template SaaS simétrico. Imagens de briefings e fotografias de explorações anteriores continuam preservadas como referências, mas não são apresentadas como telas reais. A fonte Inter é servida pelo Google Fonts nesta etapa; hospedagem local e otimizações de privacidade permanecem pendentes.
+
+**Domínio:** `og:url`/canonical devem ser adicionados com a URL pública definitiva na implantação. A imagem `og:image` aponta provisoriamente para um PNG público do próprio repositório. Não usar o endereço privado da prévia ChatGPT.
+
+## Verificação
+
+A automação em `.github/workflows/alpha-ci.yml` verifica sintaxe e roda os testes Python em pull requests. Não presumir que um teste não executado passou.
+
+Para consultar leads da homepage por API, configurar `NEXO_LEADS_ADMIN_EMAIL` com o e-mail exato do operador autorizado; administradores de workspaces de clientes não recebem acesso aos leads globais por padrão.
+
+**Regras de briefing por serviço:** [validação Python](alpha-snapshot/backend/briefing_rules.py) implementa casos essenciais das regras recuperadas, sem importar frontend legado. O wizard visual V2 já existe; anexos, editor avançado de cláusulas da proposta e paridade completa de regras ainda estão planejados na issue #2.

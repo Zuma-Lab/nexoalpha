@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS users (
 );
 CREATE TABLE IF NOT EXISTS sessions (
   id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL REFERENCES users(id),
-  token_hash TEXT NOT NULL UNIQUE, expires_at TEXT NOT NULL
+  token_hash TEXT NOT NULL UNIQUE, csrf_token TEXT NOT NULL DEFAULT '', expires_at TEXT NOT NULL
 );
 CREATE TABLE IF NOT EXISTS projects (
   id INTEGER PRIMARY KEY, company_id INTEGER NOT NULL REFERENCES companies(id),
@@ -42,6 +42,13 @@ CREATE TABLE IF NOT EXISTS briefing_versions (
   payload TEXT NOT NULL, created_by INTEGER NOT NULL REFERENCES users(id),
   created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, UNIQUE(project_id,version)
 );
+CREATE TABLE IF NOT EXISTS briefing_drafts (
+  id INTEGER PRIMARY KEY, company_id INTEGER NOT NULL REFERENCES companies(id),
+  project_id INTEGER NOT NULL REFERENCES projects(id), user_id INTEGER NOT NULL REFERENCES users(id),
+  payload TEXT NOT NULL, updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(company_id,project_id,user_id)
+);
+CREATE INDEX IF NOT EXISTS ix_briefing_drafts_owner ON briefing_drafts(company_id,project_id,user_id);
 CREATE TABLE IF NOT EXISTS suppliers (
   id INTEGER PRIMARY KEY, company_id INTEGER NOT NULL REFERENCES companies(id),
   name TEXT NOT NULL, category TEXT NOT NULL, city TEXT NOT NULL DEFAULT '',
@@ -58,7 +65,7 @@ CREATE TABLE IF NOT EXISTS rfqs (
   id INTEGER PRIMARY KEY, company_id INTEGER NOT NULL REFERENCES companies(id),
   batch_id INTEGER NOT NULL REFERENCES rfq_batches(id), supplier_id INTEGER NOT NULL REFERENCES suppliers(id),
   token_hash TEXT NOT NULL UNIQUE, status TEXT NOT NULL DEFAULT 'prepared',
-  sent_at TEXT, responded_at TEXT,
+  sent_at TEXT, responded_at TEXT, expires_at TEXT, revoked_at TEXT,
   UNIQUE(batch_id,supplier_id)
 );
 CREATE TABLE IF NOT EXISTS rfq_responses (
@@ -83,6 +90,7 @@ CREATE TABLE IF NOT EXISTS proposals (
   snapshot TEXT NOT NULL, total_cents INTEGER NOT NULL, token_hash TEXT NOT NULL UNIQUE,
   status TEXT NOT NULL DEFAULT 'draft' CHECK(status IN ('draft','published','approved','changes_requested','rejected')),
   created_by INTEGER NOT NULL REFERENCES users(id), published_at TEXT,
+  expires_at TEXT, revoked_at TEXT,
   created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, UNIQUE(project_id,version)
 );
 CREATE TABLE IF NOT EXISTS approval_decisions (
@@ -103,6 +111,16 @@ CREATE TABLE IF NOT EXISTS audit_logs (
   project_id INTEGER REFERENCES projects(id), actor_id INTEGER REFERENCES users(id),
   action TEXT NOT NULL, detail TEXT NOT NULL DEFAULT '', created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+CREATE TABLE IF NOT EXISTS login_attempts (
+  id INTEGER PRIMARY KEY, key TEXT NOT NULL, occurred_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS ix_login_attempts_key ON login_attempts(key,occurred_at);
+CREATE TABLE IF NOT EXISTS demo_requests (
+  id INTEGER PRIMARY KEY, name TEXT NOT NULL, email TEXT NOT NULL,
+  company TEXT NOT NULL, event_type TEXT NOT NULL DEFAULT '',
+  source_ip_hash TEXT NOT NULL, created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS ix_demo_requests_ip ON demo_requests(source_ip_hash,created_at);
 CREATE INDEX IF NOT EXISTS ix_projects_company ON projects(company_id,created_at);
 CREATE INDEX IF NOT EXISTS ix_projects_client ON projects(company_id,client_id);
 CREATE INDEX IF NOT EXISTS ix_suppliers_company ON suppliers(company_id,category);
@@ -123,6 +141,19 @@ def connect():
 def init_db():
     with connect() as db:
         db.executescript(DDL)
+        # Migração aditiva, preservando todos os registros comerciais existentes.
+        for table, columns in {
+            'sessions': {'csrf_token': "TEXT NOT NULL DEFAULT ''"},
+            'rfqs': {'expires_at':'TEXT', 'revoked_at':'TEXT'},
+            'proposals': {'expires_at':'TEXT', 'revoked_at':'TEXT'},
+        }.items():
+            existing = {row['name'] for row in db.execute(f'PRAGMA table_info({table})')}
+            for column, decl in columns.items():
+                if column not in existing:
+                    db.execute(f'ALTER TABLE {table} ADD COLUMN {column} {decl}')
+        # Tokens legados sem data de expiração deixam de valer após migração.
+        db.execute("UPDATE rfqs SET expires_at='1970-01-01T00:00:00+00:00' WHERE expires_at IS NULL")
+        db.execute("UPDATE proposals SET expires_at='1970-01-01T00:00:00+00:00' WHERE expires_at IS NULL")
 
 def rows(cur):
     return [dict(x) for x in cur.fetchall()]

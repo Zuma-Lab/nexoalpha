@@ -4,18 +4,26 @@ Run: uvicorn backend.main:app --reload
 from __future__ import annotations
 import json
 import os
+import hmac
+import hashlib
+import secrets
+import re
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Literal
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Depends, HTTPException, Header, Body
+from fastapi import FastAPI, Depends, HTTPException, Header, Body, Request, Response
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 from .db import init_db, connect, rows
 from .security import hash_password, verify_password, make_token, token_hash
+from .briefing_rules import collect_issues, prepare_submission
 
-FRONTEND = Path(__file__).resolve().parents[1]/'frontend'
+FRONTEND = Path(__file__).resolve().parents[1]/'workspace-v2'
+HOMEPAGE = Path(__file__).resolve().parents[2]/'homepage'/'dist'
+COOKIE_NAME = 'nexo_session'
+RATE_KEY = os.environ.get('NEXO_RATE_LIMIT_SECRET','').encode() or secrets.token_bytes(32)
 
 def jload(x):
     try: return json.loads(x or 'null')
@@ -68,6 +76,20 @@ app=FastAPI(title='NEXO Alpha API',version='0.1.0',lifespan=lifespan)
 class Login(BaseModel):
     email:str
     password:str
+
+class DemoRequestIn(BaseModel):
+    name:str=Field(min_length=2,max_length=100)
+    email:str=Field(min_length=5,max_length=160)
+    company:str=Field(min_length=2,max_length=160)
+    event_type:str=Field(default='',max_length=100)
+    website:str=Field(default='',max_length=200)
+
+def fingerprint(kind:str,value:str)->str:
+    return hmac.new(RATE_KEY,(kind+':'+value).encode(),hashlib.sha256).hexdigest()
+
+def attempt_count(db,key,minutes):
+    cutoff=(datetime.now(timezone.utc)-timedelta(minutes=minutes)).isoformat()
+    return db.execute('SELECT COUNT(*) FROM login_attempts WHERE key=? AND occurred_at>?',(key,cutoff)).fetchone()[0]
 class ProjectIn(BaseModel):
     title:str=Field(min_length=3,max_length=160)
     client_id:int
@@ -97,6 +119,10 @@ class RFQResponseIn(BaseModel):
     conditions:str=''
     cancellation:str=''
     notes:str=''
+class ProposalContentIn(BaseModel):
+    introduction:str=Field(default='',max_length=2000)
+    terms:str=Field(default='',max_length=4000)
+
 class QuoteItemIn(BaseModel):
     category:str
     description:str=Field(min_length=1)
@@ -125,13 +151,18 @@ class UserIn(BaseModel):
     role:Literal['admin','consultant','client','viewer']
     client_id:int|None=None
 
-def me(authorization:str|None=Header(default=None)):
-    if not authorization or not authorization.startswith('Bearer '): raise HTTPException(401,'Acesso não autenticado')
-    t=authorization[7:]
+def me(request:Request):
+    token=request.cookies.get(COOKIE_NAME)
+    if not token:raise HTTPException(401,'Acesso não autenticado')
     with connect() as db:
-        user=db.execute('''SELECT u.id,u.company_id,u.client_id,u.full_name,u.email,u.role,u.active FROM sessions s
-        JOIN users u ON u.id=s.user_id WHERE s.token_hash=? AND s.expires_at>?''',(token_hash(t),now())).fetchone()
-    if not user or not user['active']: raise HTTPException(401,'Sessão inválida ou expirada')
+        user=db.execute('''SELECT u.id,u.company_id,u.client_id,u.full_name,u.email,u.role,u.active,s.csrf_token
+          FROM sessions s JOIN users u ON u.id=s.user_id
+          WHERE s.token_hash=? AND s.expires_at>?''',(token_hash(token),now())).fetchone()
+    if not user or not user['active']:raise HTTPException(401,'Sessão inválida ou expirada')
+    if request.method not in ('GET','HEAD','OPTIONS'):
+        given=request.headers.get('X-Nexo-CSRF','')
+        if not given or not hmac.compare_digest(given,user['csrf_token']):
+            raise HTTPException(403,'CSRF inválido')
     return dict(user)
 
 def allow(user,roles):
@@ -147,23 +178,62 @@ def normalize_project(p):
     return p
 
 @app.post('/api/auth/login')
-def login(body:Login):
+def login(body:Login,request:Request,response:Response):
+    ip=request.client.host if request.client else 'unknown'
+    ipkey=fingerprint('ip',ip)
+    userkey=fingerprint('email',body.email.strip().lower())
     with connect() as db:
-        u=db.execute('SELECT * FROM users WHERE email=? COLLATE NOCASE AND active=1',(body.email,)).fetchall()
-        match=next((dict(x) for x in u if verify_password(body.password,x['password_hash'])),None)
-        if not match: raise HTTPException(401,'E-mail ou senha inválidos')
+        db.execute('DELETE FROM login_attempts WHERE occurred_at<?',((datetime.now(timezone.utc)-timedelta(days=2)).isoformat(),))
+        if attempt_count(db,userkey,15)>=5 or attempt_count(db,ipkey,15)>=30:
+            raise HTTPException(429,'Muitas tentativas. Tente mais tarde.')
+        users=db.execute('SELECT * FROM users WHERE email=? COLLATE NOCASE AND active=1',(body.email.strip(),)).fetchall()
+        match=next((dict(x) for x in users if verify_password(body.password,x['password_hash'])),None)
+        if not match:
+            db.executemany('INSERT INTO login_attempts(key,occurred_at) VALUES (?,?)',[(userkey,now()),(ipkey,now())])
+            db.commit()
+            raise HTTPException(401,'E-mail ou senha inválidos')
+        db.execute('DELETE FROM login_attempts WHERE key=?',(userkey,))
         token=make_token()
+        csrf=make_token()
         expires=(datetime.now(timezone.utc)+timedelta(hours=12)).isoformat()
-        db.execute('INSERT INTO sessions(user_id,token_hash,expires_at) VALUES (?,?,?)',(match['id'],token_hash(token),expires))
-        return {'access_token':token,'user':{k:match[k] for k in ('id','company_id','client_id','full_name','email','role')}}
+        db.execute('INSERT INTO sessions(user_id,token_hash,csrf_token,expires_at) VALUES (?,?,?,?)',(match['id'],token_hash(token),csrf,expires))
+    response.set_cookie(COOKIE_NAME,token,max_age=43200,httponly=True,
+        secure=(os.environ.get('NEXO_SECURE_COOKIES')=='1' or request.url.scheme=='https'),
+        samesite='strict',path='/')
+    response.headers['Cache-Control']='no-store'
+    return {'user':{k:match[k] for k in ('id','company_id','client_id','full_name','email','role')},'csrf_token':csrf}
 
 @app.get('/api/auth/me')
-def auth_me(user=Depends(me)): return user
+def auth_me(user=Depends(me)):return user
 
 @app.post('/api/auth/logout')
-def logout(authorization:str|None=Header(default=None),user=Depends(me)):
-    with connect() as db: db.execute('DELETE FROM sessions WHERE token_hash=?',(token_hash(authorization[7:]),))
+def logout(request:Request,response:Response,user=Depends(me)):
+    with connect() as db:
+        db.execute('DELETE FROM sessions WHERE token_hash=?',(token_hash(request.cookies[COOKIE_NAME]),))
+    response.delete_cookie(COOKIE_NAME,path='/',samesite='strict')
     return {'ok':True}
+
+@app.post('/api/public/demo-requests',status_code=201)
+def request_demo(body:DemoRequestIn,request:Request):
+    if body.website:return {'ok':True}
+    if not re.fullmatch(r'[^@\s]+@[^@\s]+\.[^@\s]+',body.email.strip()):
+        raise HTTPException(422,'E-mail inválido')
+    ip=request.client.host if request.client else 'unknown'
+    iphash=fingerprint('demo',ip)
+    with connect() as db:
+        count=db.execute("SELECT COUNT(*) FROM demo_requests WHERE source_ip_hash=? AND created_at>datetime('now','-1 day')",(iphash,)).fetchone()[0]
+        if count>=5:raise HTTPException(429,'Limite de solicitações atingido.')
+        db.execute('INSERT INTO demo_requests(name,email,company,event_type,source_ip_hash) VALUES (?,?,?,?,?)',
+            (body.name.strip(),body.email.strip().lower(),body.company.strip(),body.event_type.strip(),iphash))
+    return {'ok':True}
+
+@app.get('/api/demo-requests')
+def get_demo_requests(user=Depends(me)):
+    allow(user,('admin',))
+    owner=os.environ.get('NEXO_LEADS_ADMIN_EMAIL','').strip().lower()
+    if not owner or user['email'].lower()!=owner:raise HTTPException(403,'Acesso restrito ao operador da plataforma')
+    with connect() as db:
+        return rows(db.execute('SELECT id,name,email,company,event_type,created_at FROM demo_requests ORDER BY id DESC LIMIT 200'))
 
 @app.get('/api/dashboard')
 def dashboard(user=Depends(me)):
@@ -239,16 +309,56 @@ def get_project(pid:int,user=Depends(me)):
           WHERE a.project_id=? ORDER BY a.id DESC LIMIT 75''',(pid,))) if user['role']!='client' else []
         return p
 
+@app.get('/api/projects/{pid}/briefing-draft')
+def get_briefing_draft(pid:int,user=Depends(me)):
+    allow(user,('admin','consultant','client'))
+    with connect() as db:
+        project(db,pid,user)
+        r=db.execute('SELECT payload,updated_at FROM briefing_drafts WHERE company_id=? AND project_id=? AND user_id=?',
+            (user['company_id'],pid,user['id'])).fetchone()
+        return {'payload':jload(r['payload']) if r else None,'updated_at':r['updated_at'] if r else None}
+
+@app.put('/api/projects/{pid}/briefing-draft')
+def put_briefing_draft(pid:int,body:BriefingIn,user=Depends(me)):
+    allow(user,('admin','consultant','client'))
+    raw=json.dumps(body.payload,ensure_ascii=False)
+    if len(raw.encode('utf-8'))>65536:
+        raise HTTPException(422,'Rascunho excede o tamanho permitido')
+    with connect() as db:
+        project(db,pid,user)
+        db.execute('''INSERT INTO briefing_drafts(company_id,project_id,user_id,payload,updated_at)
+          VALUES (?,?,?,?,CURRENT_TIMESTAMP)
+          ON CONFLICT(company_id,project_id,user_id)
+          DO UPDATE SET payload=excluded.payload,updated_at=CURRENT_TIMESTAMP''',
+          (user['company_id'],pid,user['id'],raw))
+        audit(db,user['company_id'],user['id'],'briefing.draft_saved',pid,'Rascunho privado atualizado')
+        return {'ok':True,'saved':True}
+
 @app.post('/api/projects/{pid}/briefings',status_code=201)
 def new_briefing(pid:int,body:BriefingIn,user=Depends(me)):
     allow(user,('admin','consultant','client'))
     with connect() as db:
         p=project(db,pid,user)
+        payload=body.payload
+        # O formato detalhado por serviço passa pela validação da lógica de negócio.
+        service_format=('eventName' in payload or any(k in payload for k in ('svcAereo','svcHospedagem','svcEspacoAlimentacao','svcTransfers')))
+        if service_format:
+            issues=collect_issues(payload)
+            if issues:raise HTTPException(422,{'issues':issues})
+            payload=prepare_submission(payload)
         version=db.execute('SELECT COALESCE(MAX(version),0)+1 FROM briefing_versions WHERE project_id=?',(pid,)).fetchone()[0]
-        db.execute('INSERT INTO briefing_versions(company_id,project_id,version,payload,created_by) VALUES (?,?,?,?,?)',(user['company_id'],pid,version,json.dumps(body.payload,ensure_ascii=False),user['id']))
+        db.execute('INSERT INTO briefing_versions(company_id,project_id,version,payload,created_by) VALUES (?,?,?,?,?)',(user['company_id'],pid,version,json.dumps(payload,ensure_ascii=False),user['id']))
+        canonical=payload if not service_format else {
+            'destination':payload['destination'],
+            'start_date':payload['departureDate'],
+            'end_date':payload['returnDate'],
+            'attendees':int(payload['totalPassengers']) if payload['totalPassengers'] else 0,
+        }
         for key,col in [('destination','destination'),('start_date','starts_at'),('end_date','ends_at'),('attendees','attendees')]:
-            if key in body.payload and isinstance(body.payload[key],(str,int)):
-                db.execute(f'UPDATE projects SET {col}=?,updated_at=CURRENT_TIMESTAMP WHERE id=?',(body.payload[key],pid))
+            if key in canonical and type(canonical[key]) in (str,int):
+                db.execute(f'UPDATE projects SET {col}=?,updated_at=CURRENT_TIMESTAMP WHERE id=?',(canonical[key],pid))
+        db.execute('DELETE FROM briefing_drafts WHERE company_id=? AND project_id=? AND user_id=?',
+          (user['company_id'],pid,user['id']))
         audit(db,user['company_id'],user['id'],'briefing.versioned',pid,f'V{version}')
         return {'version':version,'project_id':pid}
 
@@ -277,10 +387,11 @@ def create_rfq_batch(pid:int,body:RFQBatchIn,user=Depends(me)):
         for sid in body.supplier_ids:required(db,'SELECT id FROM suppliers WHERE id=? AND company_id=?',(sid,user['company_id']))
         bid=db.execute('INSERT INTO rfq_batches(company_id,project_id,briefing_version_id,deadline,created_by) VALUES (?,?,?,?,?)',(user['company_id'],pid,version['id'],body.deadline,user['id'])).lastrowid
         links=[]
+        expires_at=(datetime.now(timezone.utc)+timedelta(days=14)).isoformat()
         for sid in body.supplier_ids:
             token=make_token()
-            rid=db.execute('INSERT INTO rfqs(company_id,batch_id,supplier_id,token_hash) VALUES (?,?,?,?)',(user['company_id'],bid,sid,token_hash(token))).lastrowid
-            links.append({'rfq_id':rid,'supplier_id':sid,'response_path':'/rfq/'+token})
+            rid=db.execute('INSERT INTO rfqs(company_id,batch_id,supplier_id,token_hash,expires_at) VALUES (?,?,?,?,?)',(user['company_id'],bid,sid,token_hash(token),expires_at)).lastrowid
+            links.append({'rfq_id':rid,'supplier_id':sid,'response_path':'/rfq/'+token,'expires_at':expires_at})
         db.execute('UPDATE projects SET status=?,updated_at=CURRENT_TIMESTAMP WHERE id=?',('sourcing',pid))
         audit(db,user['company_id'],user['id'],'rfq.batch_created',pid,f'Lote #{bid}; briefing V{version["version"]}')
         return {'batch_id':bid,'briefing_version':version['version'],'links':links,'sent':False}
@@ -291,8 +402,8 @@ def send_rfq_batch(bid:int,user=Depends(me)):
     with connect() as db:
         batch=required(db,'SELECT * FROM rfq_batches WHERE id=? AND company_id=?',(bid,user['company_id']))
         # Represents a recorded dispatch; actual email gateway not configured in Alpha.
-        if batch['sent_at']:return {'batch_id':bid,'status':'already_sent','delivered_via':'manual_link'}
-        db.execute('UPDATE rfq_batches SET sent_at=? WHERE id=?',(now(),bid))
+        changed=db.execute('UPDATE rfq_batches SET sent_at=? WHERE id=? AND sent_at IS NULL',(now(),bid)).rowcount
+        if not changed:return {'batch_id':bid,'status':'already_sent','delivered_via':'manual_link'}
         db.execute("UPDATE rfqs SET status='sent',sent_at=? WHERE batch_id=? AND status='prepared'",(now(),bid))
         audit(db,user['company_id'],user['id'],'rfq.batch_marked_sent',batch['project_id'],f'Lote #{bid} (envio manual por link)')
         return {'batch_id':bid,'status':'sent','delivered_via':'manual_link'}
@@ -303,14 +414,14 @@ def public_rfq(token:str):
         r=required(db,'''SELECT r.id,r.status,s.name supplier_name,p.protocol,p.title,p.destination,p.starts_at,p.ends_at,p.attendees,
           b.deadline,v.version briefing_version,v.payload briefing
           FROM rfqs r JOIN suppliers s ON s.id=r.supplier_id JOIN rfq_batches b ON b.id=r.batch_id
-          JOIN projects p ON p.id=b.project_id JOIN briefing_versions v ON v.id=b.briefing_version_id WHERE r.token_hash=?''',(token_hash(token),))
+          JOIN projects p ON p.id=b.project_id JOIN briefing_versions v ON v.id=b.briefing_version_id WHERE r.token_hash=? AND r.revoked_at IS NULL AND r.expires_at>?''',(token_hash(token),now()))
         r['briefing']=jload(r['briefing'])
         return r
 
 @app.post('/api/public/rfq/{token}/response')
 def public_rfq_response(token:str,body:RFQResponseIn):
     with connect() as db:
-        r=required(db,'SELECT * FROM rfqs WHERE token_hash=?',(token_hash(token),))
+        r=required(db,'SELECT * FROM rfqs WHERE token_hash=? AND revoked_at IS NULL AND expires_at>?',(token_hash(token),now()))
         if r['status']=='responded':raise HTTPException(409,'Resposta já registrada')
         db.execute('''INSERT INTO rfq_responses(company_id,rfq_id,available,net_cents,tax_bps,conditions,cancellation,notes)
           VALUES (?,?,?,?,?,?,?,?)''',(r['company_id'],r['id'],body.available,body.net_cents,body.tax_bps,body.conditions,body.cancellation,body.notes))
@@ -342,7 +453,7 @@ def delete_quote_item(pid:int,item_id:int,user=Depends(me)):
         return {'ok':True}
 
 @app.post('/api/projects/{pid}/proposals',status_code=201)
-def create_proposal(pid:int,user=Depends(me)):
+def create_proposal(pid:int,body:ProposalContentIn|None=Body(default=None),user=Depends(me)):
     allow(user,('admin','consultant'))
     with connect() as db:
         p=project(db,pid,user)
@@ -350,11 +461,12 @@ def create_proposal(pid:int,user=Depends(me)):
         if not items:raise HTTPException(422,'Adicione itens à cotação antes da proposta')
         v=db.execute('SELECT COALESCE(MAX(version),0)+1 FROM proposals WHERE project_id=?',(pid,)).fetchone()[0]
         total=sum(i['sale_total_cents'] for i in items)
-        snapshot=json.dumps({'project':{k:p[k] for k in ('title','protocol','destination','starts_at','ends_at','attendees')},'items':items,'total_cents':total},ensure_ascii=False)
+        snapshot=json.dumps({'project':{k:p[k] for k in ('title','protocol','destination','starts_at','ends_at','attendees')},'items':items,'total_cents':total,'introduction':(body.introduction.strip() if body else ''),'terms':(body.terms.strip() if body else '')},ensure_ascii=False)
         token=make_token()
-        propid=db.execute('INSERT INTO proposals(company_id,project_id,version,snapshot,total_cents,token_hash,created_by) VALUES (?,?,?,?,?,?,?)',(user['company_id'],pid,v,snapshot,total,token_hash(token),user['id'])).lastrowid
+        expires_at=(datetime.now(timezone.utc)+timedelta(days=30)).isoformat()
+        propid=db.execute('INSERT INTO proposals(company_id,project_id,version,snapshot,total_cents,token_hash,created_by,expires_at) VALUES (?,?,?,?,?,?,?,?)',(user['company_id'],pid,v,snapshot,total,token_hash(token),user['id'],expires_at)).lastrowid
         audit(db,user['company_id'],user['id'],'proposal.created',pid,f'Versão {v}')
-        return {'id':propid,'version':v,'total_cents':total,'status':'draft','review_path':'/proposal/'+token}
+        return {'id':propid,'version':v,'total_cents':total,'status':'draft','review_path':'/proposal/'+token,'expires_at':expires_at}
 
 @app.post('/api/proposals/{propid}/publish')
 def publish_proposal(propid:int,user=Depends(me)):
@@ -370,21 +482,44 @@ def publish_proposal(propid:int,user=Depends(me)):
 @app.get('/api/public/proposal/{token}')
 def public_proposal(token:str):
     with connect() as db:
-        p=required(db,'SELECT id,project_id,company_id,version,status,snapshot,total_cents,published_at FROM proposals WHERE token_hash=?',(token_hash(token),))
+        p=required(db,'SELECT id,project_id,company_id,version,status,snapshot,total_cents,published_at FROM proposals WHERE token_hash=? AND expires_at>? AND revoked_at IS NULL',(token_hash(token),now()))
         if p['status']=='draft':raise HTTPException(404,'Proposta ainda não publicada')
-        p['snapshot']=jload(p['snapshot'])
-        return p
+        private=jload(p['snapshot']) or {}
+        # Cliente jamais recebe custos NET, tributos, fees, margens ou IDs internos.
+        public_items=[{key:item.get(key) for key in ('category','description','quantity','sale_total_cents')}
+          for item in private.get('items',[])]
+        snapshot={'project':private.get('project',{}),'items':public_items,'total_cents':p['total_cents'],'introduction':str(private.get('introduction') or ''),'terms':str(private.get('terms') or '')}
+        return {'version':p['version'],'status':p['status'],
+          'snapshot':snapshot,'total_cents':p['total_cents'],'published_at':p['published_at']}
 
 @app.post('/api/public/proposal/{token}/decision')
 def public_decide(token:str,body:DecisionIn):
     with connect() as db:
-        p=required(db,'SELECT * FROM proposals WHERE token_hash=?',(token_hash(token),))
+        p=required(db,'SELECT * FROM proposals WHERE token_hash=? AND expires_at>? AND revoked_at IS NULL',(token_hash(token),now()))
         if p['status']!='published':raise HTTPException(409,'Proposta não está pendente de aprovação')
         db.execute('UPDATE proposals SET status=? WHERE id=?',(body.decision,p['id']))
         db.execute('INSERT INTO approval_decisions(company_id,proposal_id,actor,decision,comment) VALUES (?,?,?,?,?)',(p['company_id'],p['id'],body.actor[:100],body.decision,body.comment))
         if body.decision=='approved':db.execute("UPDATE projects SET status='approved',updated_at=CURRENT_TIMESTAMP WHERE id=?",(p['project_id'],))
         audit(db,p['company_id'],None,'proposal.'+body.decision,p['project_id'],f'V{p["version"]}: {body.comment[:200]}')
         return {'ok':True,'status':body.decision}
+
+@app.post('/api/rfqs/{rfqid}/revoke-link')
+def revoke_rfq(rfqid:int,user=Depends(me)):
+    allow(user,('admin','consultant'))
+    with connect() as db:
+        r=required(db,'SELECT r.id,b.project_id FROM rfqs r JOIN rfq_batches b ON b.id=r.batch_id WHERE r.id=? AND r.company_id=?',(rfqid,user['company_id']))
+        db.execute('UPDATE rfqs SET revoked_at=? WHERE id=? AND revoked_at IS NULL',(now(),rfqid))
+        audit(db,user['company_id'],user['id'],'rfq.link_revoked',r['project_id'],str(rfqid))
+    return {'ok':True}
+
+@app.post('/api/proposals/{propid}/revoke-link')
+def revoke_proposal_link(propid:int,user=Depends(me)):
+    allow(user,('admin','consultant'))
+    with connect() as db:
+        p=required(db,'SELECT project_id FROM proposals WHERE id=? AND company_id=?',(propid,user['company_id']))
+        db.execute('UPDATE proposals SET revoked_at=? WHERE id=? AND revoked_at IS NULL',(now(),propid))
+        audit(db,user['company_id'],user['id'],'proposal.link_revoked',p['project_id'],str(propid))
+    return {'ok':True}
 
 @app.post('/api/projects/{pid}/tasks',status_code=201)
 def create_task(pid:int,body:PlanTaskIn,user=Depends(me)):
@@ -426,9 +561,21 @@ def create_user(body:UserIn,user=Depends(me)):
 @app.get('/api/health')
 def health():return {'status':'ok','app':'nexo-alpha'}
 
-app.mount('/assets',StaticFiles(directory=str(FRONTEND)),name='assets')
+app.mount('/assets',StaticFiles(directory=str(HOMEPAGE/'assets')),name='homepage-assets')
+app.mount('/app-assets',StaticFiles(directory=str(FRONTEND)),name='app-assets')
+
+@app.get('/',include_in_schema=False)
+def homepage():
+    return FileResponse(str(HOMEPAGE/'index.html'))
+
+@app.get('/styles.css',include_in_schema=False)
+def homepage_css():
+    return FileResponse(str(HOMEPAGE/'styles.css'),media_type='text/css')
+
+@app.get('/app.js',include_in_schema=False)
+def homepage_js():
+    return FileResponse(str(HOMEPAGE/'app.js'),media_type='application/javascript')
 
 @app.get('/{path:path}',include_in_schema=False)
 def frontend(path:str):
-    # Client-side routes and the public RFQ / proposal paths resolve to the app shell.
     return FileResponse(str(FRONTEND/'index.html'))
