@@ -32,14 +32,12 @@ O laranja identifica uma ação, campo alterado ou algo que exige atenção; nã
 
 **Importante:** a nova homepage ainda é material do Alpha, não a confirmação de que todas as automações de impacto/cotação estão implementadas. O workspace V2 tem backend funcional parcial, mas demanda homologação.
 
-## 02B. Refinamento editorial autorizado em 25/11/2026 — sem alterar identidade
+## 02B. Ajuste editorial em 25/11/2026 — aprovação de conteúdo, não de redesenho
 
-- **Título do hero:** “O evento é um só. A informação não deveria estar em tantos lugares.” com texto curto sobre e-mails, planilhas e versões desencontradas.
-- **Primeira rolagem:** “Sua equipe precisa conduzir eventos. Não reconstruir informações.” e imagem existente de briefing, mantendo a prova V1/V2 logo abaixo.
-- **Visual de sistema** entra no hero. **Fotografia 01 da pessoa** fica como material opcional, não forçar terceiro bloco visual.
-- **Preservados:** grafite `#111315`, laranja `#FF850D`, creme `#F3EFE9`, fonte Inter, botões existentes, cenário fictício e ressalvas comerciais.
-- **Redução de densidade:** títulos A/B fazem papéis distintos, os parágrafos de apoio são curtos e as seções de cotações e permissões mantêm dados de negócio essenciais.
-- Não é aprovação de brandbook final/naming; screenshots reais devem ser gerados e revisados antes de merge.
+- **Aprovado em conteúdo:** hero “O evento é um só. A informação não deveria estar em tantos lugares.” e primeira rolagem “Sua equipe precisa conduzir eventos. Não reconstruir informações.”; subtítulos curtos e redução de repetição.
+- **Visual de referência com notebook:** o proprietário prefere explicitamente o rascunho anterior com laptop em primeiro plano, grafite, laranja e off-white. **Não substituir essa referência** por fotografia de evento, pessoa recortada ou screenshot plana de briefing.
+- **Atenção:** o rascunho com notebook é uma arte ilustrativa produzida na conversa; ele **não foi implementado no HTML original do Alpha**. Sem arquivo individual homologado, não afirmar que houve restauração visual do notebook no site.
+- **Resultado da correção:** reverter experimentos de HTML/CSS e preservar apenas os textos. Manter brandbook 2.1 e o código original até integrar a composição com o notebook de forma fiel e autorizada.
 
 ## 03. Cores — tokens de referência
 
