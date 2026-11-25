@@ -30,6 +30,9 @@ Data base: **2026-11-23** · Fuso: **America/Sao_Paulo**. Revisar este arquivo a
 | ADR-021 | 2026-11-24 | **Mensagem de dor no início da homepage**: fragmentação entre e-mails, planilhas, sistemas internos e versões contraditórias. A resposta do produto deve ser contextual e verificável, sem prometer sincronização automática de sistemas externos. | Decidido para teste editorial; implementado na branch | `homepage/dist/`, pesquisa de dores |
 | ADR-022 | 2026-11-24 | **Proposta não aprovada:** criar seção na primeira rolagem com quatro registros contraditórios. O proprietário reafirmou que pediu mudança de mensagem, não de layout ou paleta. | Revertido no mesmo dia; hipótese somente na pesquisa | Homepage e comunicação |
 
+| ADR-023 | 2026-11-24 | **Regra de autorização por dimensão:** copy, layout, tipografia, cor, imagem e funcionalidade são escopos separados. A alteração de copy não autoriza modificar os demais. Guardar estado de aprovação no PR e registrar rollback. | **Confirmado** pelo proprietário após erro de escopo; referência obrigatória | [Guia editorial](GUIA_EDITORIAL_E_APROVACAO_HOMEPAGE.md) |
+| ADR-024 | 2026-11-24 | **Reduzir densidade nas primeiras dobras preservando a identidade aprovada.** Direção sugerida: título A no hero, título B na primeira rolagem, menos copy redundante, imagens 02/03 em destaque e 01 opcional. | **Proposta em análise**, não autorização de alterar o runtime | Homepage e prévias |
+
 ## Decisões pendentes de aprovação
 
 | ID | Assunto | Opções/impacto | Dependência |
