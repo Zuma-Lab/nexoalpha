@@ -562,8 +562,6 @@ def create_user(body:UserIn,user=Depends(me)):
 def health():return {'status':'ok','app':'nexo-alpha'}
 
 app.mount('/assets',StaticFiles(directory=str(HOMEPAGE/'assets')),name='homepage-assets')
-# Existing source photography; reuse originals without re-encoding or replacing their artwork.
-app.mount('/visuals',StaticFiles(directory=str(HOMEPAGE.parents[1]/'assets'/'photography')),name='homepage-original-visuals')
 app.mount('/app-assets',StaticFiles(directory=str(FRONTEND)),name='app-assets')
 
 @app.get('/',include_in_schema=False)
