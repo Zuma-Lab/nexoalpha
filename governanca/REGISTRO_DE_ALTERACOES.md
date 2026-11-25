@@ -4,6 +4,12 @@
 **Fuso:** America/Sao_Paulo. Commits automáticos podem aparecer em 2026-11-24 UTC embora os registros abaixo sejam de 2026-11-23 no fuso local.  
 **Primeira revisão estruturada:** 2026-11-23. **Última revisão técnica:** 2026-11-24. Não apagar entradas; substituir por nova entrada vinculada.
 
+## Correção editorial sem redesenho — 2026-11-25
+
+| ID | Data | Mudança e justificativa | Arquivos / referência | Estado e evidência |
+|---|---|---|---|---|
+| CHG-039 | 2026-11-25 | Proprietário reafirmou preferência pelo **rascunho anterior com notebook**, criticando a troca das imagens e disposição. Restaurados HTML estrutural e CSS da homepage anteriores à última intervenção, preservando apenas a copy A/B mais concisa. O notebook aparece no **rascunho visual**, mas não existia como asset de notebook individual no HTML anterior; não alegar que foi incorporado ao site. | `homepage/dist/index.html`, `styles.css`, `tests/test_workflow.py`, `scripts/capture_screens.py` | Copy-only implementado; composição de notebook permanece conceito à espera de integração fiel |
+
 ## Implementação editorial e imagens originais — 2026-11-25
 
 | ID | Data | Mudança e justificativa | Arquivos / referência | Estado e evidência |
