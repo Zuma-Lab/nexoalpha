@@ -1,6 +1,6 @@
 # Brandbook v2.1 — NEXO Alpha (nome provisório)
 
-**Versão:** 2.1 · **Data de edição:** 2026-11-24 (America/Sao_Paulo)  
+**Versão:** 2.1 · **Data de edição:** 2026-11-25 (America/Sao_Paulo)  
 **Fonte técnica canônica:** [nexo-tokens.json](nexo-tokens.json)  
 **PDF gerado:** [NEXO-Alpha-Brandbook-v2.pdf](NEXO-Alpha-Brandbook-v2.pdf)  
 **Governança:** [regras BR](../../governanca/PADROES_E_REGRAS.md) · [ADRs](../../governanca/DECISOES_ARQUITETURAIS.md) · [roadmap](../../governanca/ROADMAP.md)
@@ -31,6 +31,15 @@ A direção A, com painel V1/V2 isolado à direita de um grande título, tornou-
 O laranja identifica uma ação, campo alterado ou algo que exige atenção; não deve colorir palavras aleatórias dos títulos. Ilustrações sem resultado real devem ser explicitamente rotuladas.
 
 **Importante:** a nova homepage ainda é material do Alpha, não a confirmação de que todas as automações de impacto/cotação estão implementadas. O workspace V2 tem backend funcional parcial, mas demanda homologação.
+
+## 02B. Refinamento editorial autorizado em 25/11/2026 — sem alterar identidade
+
+- **Título do hero:** “O evento é um só. A informação não deveria estar em tantos lugares.” com texto curto sobre e-mails, planilhas e versões desencontradas.
+- **Primeira rolagem:** “Sua equipe precisa conduzir eventos. Não reconstruir informações.” e foto 03 do briefing, mantendo a prova V1/V2 logo abaixo.
+- **Foto 02 do sistema** entra no hero. **Foto 01 da pessoa** fica como material opcional, não forçar terceiro bloco visual.
+- **Preservados:** grafite `#111315`, laranja `#FF850D`, creme `#F3EFE9`, fonte Inter, botões existentes, cenário fictício e ressalvas comerciais.
+- **Redução de densidade:** títulos A/B fazem papéis distintos, os parágrafos de apoio são curtos e as seções de cotações e permissões mantêm dados de negócio essenciais.
+- Não é aprovação de brandbook final/naming; screenshots reais devem ser gerados e revisados antes de merge.
 
 ## 03. Cores — tokens de referência
 
