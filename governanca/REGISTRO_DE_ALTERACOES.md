@@ -8,8 +8,8 @@
 
 | ID | Data | Mudança e justificativa | Arquivos / referência | Estado e evidência |
 |---|---|---|---|---|
-| CHG-037 | 2026-11-25 | Usuário autorizou refinar copy e distribuição de imagens. Hero passou a título institucional A e texto enxuto; primeira rolagem recebe título B e imagem 03 do briefing. Imagem 02 do sistema no hero; fotografia 01 omitida para evitar excesso. Sem novos tokens ou paleta. | `homepage/dist/index.html`, `styles.css`, `backend/main.py` | Implementado na PR #1; QA visual pendente |
-| CHG-038 | 2026-11-25 | Testes e screenshots atualizados: arquivos originais `/visuals` acessíveis, copy A/B e recortes do hero/briefing desktop e mobile. | `tests/test_workflow.py`, `scripts/capture_screens.py` | CI em execução |
+| CHG-037 | 2026-11-25 | Usuário autorizou refinar copy e distribuição de imagens. Hero passou a título institucional A e texto enxuto; primeira rolagem recebe título B e imagem 03 do briefing. Imagem do sistema no hero; fotografia 01 omitida para evitar excesso. Sem novos tokens ou paleta. | `homepage/dist/index.html`, `styles.css`, `backend/main.py` | Implementado na PR #1; QA visual pendente |
+| CHG-038 | 2026-11-25 | Testes e screenshots atualizados: arquivos existentes `/assets/briefing-*.webp` acessíveis, copy A/B e recortes do hero/briefing desktop e mobile. | `tests/test_workflow.py`, `scripts/capture_screens.py` | CI em execução |
 
 ## Guia editorial e prevenção de regressão de escopo — 2026-11-24
 
