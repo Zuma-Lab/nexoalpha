@@ -95,6 +95,10 @@
 | BR-055 | 2026-11-24 | **Uso de imagens originais:** verificar e preservar ativos existentes; sistema (02), briefing (03), pessoa+sistema (01) são hipótese de distribuição, com a terceira imagem opcional. Não substituir por síntese de IA nem incluir tudo por obrigação. | Proposta visual; **aguardando aceite** |
 | BR-056 | 2026-11-24 | Em revisões de homepage, confrontar estado anterior/novo em 1440px e 390px, esclarecer conceito × tela real, registrar excesso de texto, repetição, hierarquia, CTA e precisão funcional. | Checklist documental registrado; QA futuro |
 
+| BR-057 | 2026-11-25 | **Refinamento editorial autorizado:** título A no hero, título B na primeira rolagem, 2 fotos existentes (sistema/briefing) e copy reduzida nas seções seguintes. A foto de pessoa não é obrigatória; preservar cores, família tipográfica e componentes aprovados. | Implementado na branch; QA e aprovação final pendentes |
+| BR-058 | 2026-11-25 | As imagens existentes são servidas em `/visuals` do diretório `assets/photography`, sem manipular o conteúdo original; capturas reais devem verificar `naturalWidth>0` em desktop e mobile. | Implementado em branch; pipeline de navegador em validação |
+| BR-059 | 2026-11-25 | O texto comercial simplificado não remove ressalvas sobre automação incompleta, dados fictícios, limites de integração, permissões, impostos, LGPD nem omite termos essenciais de orçamento. | Revisado para a homepage; QA editorial pendente |
+
 ## Contratos de implementação (status atual)
 
 - Frontend homepage: `homepage/dist/index.html`, `styles.css`, `app.js`.
