@@ -82,11 +82,13 @@ def main():
                     page.goto(URL + "/",wait_until="domcontentloaded",timeout=30000)
                     page.locator(".case-board").wait_for()
                     page.wait_for_function(
-                        "() => [...document.querySelectorAll('img[src^=\\\"/visuals/\\\"]')].length===2 && [...document.querySelectorAll('img[src^=\\\"/visuals/\\\"]')].every(img => img.complete && img.naturalWidth>0)",
+                        "() => [...document.querySelectorAll('img[src^=\\\"assets/briefing-\\\"]')].length===2 && [...document.querySelectorAll('img[src^=\\\"assets/briefing-\\\"]')].every(img => img.complete && img.naturalWidth>0)",
                         timeout=20000)
                     metadata["desktop"] = assert_no_overflow(page,"desktop")
                     snap(page,"home-hero-desktop.png")
-                    snap(page,"home-briefing-desktop.png",selector="#caso")
+                    page.locator("#caso").scroll_into_view_if_needed()
+                    page.evaluate("document.activeElement?.blur()")
+                    snap(page,"home-briefing-desktop.png")
                     snap(page,"home-completa-desktop.png",full=True)
                     snap(page,"home-comparativo.png",selector="#decisao")
                     snap(page,"home-demonstracao.png",selector="#demonstracao")
@@ -105,7 +107,9 @@ def main():
                     mob.locator(".case-board").wait_for()
                     metadata["mobile"] = assert_no_overflow(mob,"mobile")
                     snap(mob,"home-hero-mobile.png",selector="#inicio")
-                    snap(mob,"home-briefing-mobile.png",selector="#caso")
+                    mob.locator("#caso").scroll_into_view_if_needed()
+                    mob.evaluate("document.activeElement?.blur()")
+                    snap(mob,"home-briefing-mobile.png")
                     snap(mob,"home-mobile.png",full=True)
                     mob.locator(".menu-toggle").click()
                     assert mob.locator(".menu-toggle").get_attribute("aria-expanded") == "true"
