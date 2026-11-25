@@ -24,7 +24,7 @@ Por padrão, `/` serve a homepage baseada no produto e `/app` serve o workspace.
 
 Na branch `feat/consultor-fluxo-prioritario-20261125` foi adicionada uma fila operacional de prova de conceito:
 - `GET /api/consultant/queue`: só `admin` e `consultant`; agrega decisões por empresa, sem tokens ou custos NET.
-- `workspace-v2/app.js`: a fila apresenta um próximo passo por projeto (briefing, RFQ, orçamento, proposta ou planejamento) e abre a aba correspondente.
+- `workspace-v2/app.js`: a fila apresenta um próximo passo por projeto (briefing, RFQ, orçamento, proposta ou planejamento) e abre a aba correspondente; a visão geral do projeto utiliza a mesma fonte para sua ação principal.
 - O algoritmo é determinístico baseado em dados persistidos, **não é previsão de IA**. O campo `owner_is_me` só ajuda a ordenar, não restringe acesso.
 - Limitações P0 registradas: links de convite/proposta não retomáveis, diff incompleto de serviços, unidade financeira genérica, e-mail manual; o MVP sinaliza problemas, não os corrige.
 - Nenhuma modificação em homepage, tokens, tabelas ou endpoints públicos. **Somente para revisão; não pronto para produção.**
