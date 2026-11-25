@@ -82,6 +82,19 @@
 | BR-049 | 2026-11-24 | Posicionamento pela dor é permitido **como texto no hero existente** e conectado à prova V1/V2 já aprovada. O exemplo “quatro cadastros” é hipótese qualitativa, não percentual de mercado, e não exige criar seção visual. | Copy implementada; demais aplicações dependem de aprovação |
 | BR-050 | 2026-11-24 | Antes de publicar prova social/ROI, entrevistar operadores e verificar métricas reais de retrabalho, tempo e erro; dados externos devem conservar amostra, período e geografia. | Pesquisa pendente |
 
+## Controle de densidade editorial e aprovação — 2026-11-24
+
+> Referência operacional: [Guia Editorial e Controle de Mudanças](GUIA_EDITORIAL_E_APROVACAO_HOMEPAGE.md). Diferenciar invariantes confirmadas das propostas ainda sujeitas a aceite.
+
+| ID | Data | Regra | Estado |
+|---|---|---|---|
+| BR-051 | 2026-11-24 | **Pedido de copy não autoriza alteração visual:** preservar layout, cores, fontes, imagens, ordem de seções e componentes até aprovação explícita. Uma prévia visual não é aprovação de implementação. | Confirmado pelo proprietário; guia registrado |
+| BR-052 | 2026-11-24 | Registrar o pedido original e limitar o diff aos arquivos/elementos autorizados. Para copy-only, não modificar `styles.css` nem tokens; para imagem/layout, apresentar proposta fiel antes de editar o runtime. | Confirmado como protocolo de escopo; checklist incluído |
+| BR-053 | 2026-11-24 | **Proposta editorial:** uma tarefa de comunicação por seção (dor → consequência → prova → CTA); evitar três blocos competindo com títulos e parágrafos de igual peso. | Recomendação para avaliação; **não aprovada como redesign** |
+| BR-054 | 2026-11-24 | **Proposta de densidade:** reduzir copy de apoio redundante, priorizar escaneabilidade, respiro e leitura mobile. A redução de 30–50% é hipótese de teste, não meta rígida ou autorização para excluir conteúdo necessário. | Recomendada; validação pendente |
+| BR-055 | 2026-11-24 | **Uso de imagens originais:** verificar e preservar ativos existentes; sistema (02), briefing (03), pessoa+sistema (01) são hipótese de distribuição, com a terceira imagem opcional. Não substituir por síntese de IA nem incluir tudo por obrigação. | Proposta visual; **aguardando aceite** |
+| BR-056 | 2026-11-24 | Em revisões de homepage, confrontar estado anterior/novo em 1440px e 390px, esclarecer conceito × tela real, registrar excesso de texto, repetição, hierarquia, CTA e precisão funcional. | Checklist documental registrado; QA futuro |
+
 ## Contratos de implementação (status atual)
 
 - Frontend homepage: `homepage/dist/index.html`, `styles.css`, `app.js`.
