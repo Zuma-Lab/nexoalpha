@@ -4,6 +4,19 @@
 **Princípio:** trabalho em marcos com **gates de aceite**, sem prometer prazos de calendário antes de dimensionamento técnico.  
 **Definição de terminado:** design, backend, frontend, testes, privacidade, documentação e validação do usuário coerentes.
 
+## Frente de consolidação operacional do consultor — 2026-11-25
+
+**Diagnóstico:** criar mais telas sem concluir a continuidade entre briefing, RFQ, cotação e proposta aumentaria o retrabalho. A visão do consultor deve começar por tarefas com motivo verificável, não por cards genéricos. Referência: [auditoria de fluxos e design](../design/CONSULTOR_WORKSPACE_ESPECIFICACAO_2026-11-25.md).
+
+1. **Agora — experimento (branch de revisão):** fila interna baseada em dados de briefing/RFQ/quote/proposta/tarefas, com acesso por tenant. Sem alterar paleta, brandbook ou schema. **Gate:** testes + captura real + aceite do proprietário.
+2. **P0.1 — recuperação operacional:** tokens de RFQ/proposta, envio manual confirmado, retomada segura de drafts e prazo de validade; sem afirmar integração de e-mail.
+3. **P0.2 — escopo:** diff semântico completo de briefing e identificação dos convites associados a versões antigas.
+4. **P0.3 — financeiro:** items por fornecedor, unidade real de serviço, room nights, política fiscal/fee e comparação de escopo equivalente (issue #4).
+5. **P1 — atribuição:** owner de projeto/tarefa, filtros meus/equipe, navegação consistente, modularização, a11y e estados de erro (issue #5).
+6. **Posterior — integrações:** descoberta e testes da primeira conexão corporativa antes de prometer eliminação de redigitação (issue #6).
+
+**Não é lançamento:** proposta funcional experimental em PR draft, sem homologação de dados reais, segurança/LGPD ou publicação.
+
 ## Visão geral
 
 ```text
