@@ -99,6 +99,20 @@
 | BR-058 | 2026-11-25 | Imagens existentes não devem ser escolhidas apenas pelo nome: inspecionar o conteúdo real e obter aprovação específica antes de incorporá-las. Não afirmar que fotografias são telas de produto. | Seleção visual equivocada revertida; aprovação de asset pendente |
 | BR-059 | 2026-11-25 | O texto comercial simplificado não remove ressalvas sobre automação incompleta, dados fictícios, limites de integração, permissões, impostos, LGPD nem omite termos essenciais de orçamento. | Revisado para a homepage; QA editorial pendente |
 
+## Prioridades operacionais do consultor — 2026-11-25
+
+> Auditoria detalhada: [Especificação do workspace do consultor](../design/CONSULTOR_WORKSPACE_ESPECIFICACAO_2026-11-25.md). Interface existente preservada; requisitos P0 pendentes não equivalem a funcionalidade implementada.
+
+| ID | Data | Regra | Estado |
+|---|---|---|---|
+| BR-060 | 2026-11-25 | Consultor deve receber **uma próxima ação verificável por projeto**, baseada em registros existentes de briefing, RFQs, orçamento, proposta e tarefas; nunca tratar status genérico ou texto promocional como prova operacional. | Inbox experimental implementada em branch isolada; UAT pendente |
+| BR-061 | 2026-11-25 | Toda fila e agregação de projeto deve ser isolada por `company_id`; `client` e `viewer` não acessam endpoint interno do consultor; `owner_id` não substitui controle de acesso. | Endpoint e testes adicionados; revisão de segurança pendente |
+| BR-062 | 2026-11-25 | RFQ preparada **não significa enviada**. Entrega manual, expiração/revogação e recuperação segura de links devem aparecer de modo honesto; nunca persistir token bruto em API de listagem. | Regra confirmada; fluxo de recuperação ainda P0 |
+| BR-063 | 2026-11-25 | Diferença de briefing não pode afirmar ausência de alterações se campos de serviços mudaram; a associação RFQ→versão deve continuar explícita. | P0 pendente; `changes()` atual é incompleto |
+| BR-064 | 2026-11-25 | Comparação financeira exige unidade por serviço, fornecedor vinculado, condições e tributos; não selecionar fornecedor automaticamente apenas por preço. | P0 pendente; issue #4 |
+| BR-065 | 2026-11-25 | O workspace deve conservar o brandbook 2.1 e padrão de navegação global/contextual; não converter mockups escuros de briefing em UI funcional sem projeto e aprovação. | Identidade preservada; harmonização proposta |
+| BR-066 | 2026-11-25 | As ações da fila apontam à aba correta, mas não prometem resolver bloqueios que ainda exigem implementação (link expirado, draft não retomável, integração ausente). | Implementado como diagnóstico; homologação UX pendente |
+
 ## Contratos de implementação (status atual)
 
 - Frontend homepage: `homepage/dist/index.html`, `styles.css`, `app.js`.
