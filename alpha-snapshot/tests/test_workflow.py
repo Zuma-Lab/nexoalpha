@@ -278,3 +278,75 @@ def test_proposal_editor_snapshots_terms_and_hides_internal_costs(client):
     assert next_r.json()['version']==saved['version']+1
     still=client.get('/api/public/proposal/'+token).json()
     assert still['snapshot']['terms']==payload['terms']
+
+
+def test_consultant_queue_uses_factual_stage_without_leaking_finances(client):
+    assert client.get('/api/consultant/queue').status_code == 401
+    h = login(client)
+    endpoint='/api/consultant/queue'
+    base=client.get(endpoint,headers=h)
+    assert base.status_code == 200,base.text
+    data=base.json()
+    assert data['scope']=='company'
+    assert len(data['items'])==1
+    assert data['items'][0]['action_type']=='validate_briefing'
+    assert data['items'][0]['tab']=='briefing'
+    assert 'net_cents' not in str(data)
+    assert 'token_hash' not in str(data)
+
+    pid=data['items'][0]['project_id']
+    suppliers=client.get('/api/suppliers',headers=h).json()
+    batch=client.post(f'/api/projects/{pid}/rfq-batches',headers=h,
+       json={'supplier_ids':[suppliers[0]['id']], 'deadline':'2027-01-30'})
+    assert batch.status_code==201,batch.text
+    prepared=client.get(endpoint,headers=h).json()['items'][0]
+    assert prepared['action_type']=='verify_manual_invites'
+    assert prepared['tab']=='rfq'
+    assert prepared['prepared_rfqs']==1
+
+    # A new briefing may invalidate the exact scope of an existing invitation.
+    r=client.post(f'/api/projects/{pid}/briefings',headers=h,json={'payload':{
+        'objective':'Revisão 2','attendees':132,'destination':'São Paulo',
+        'services':['Hospedagem']}})
+    assert r.status_code==201,r.text
+    changed=client.get(endpoint,headers=h).json()['items'][0]
+    assert changed['action_type']=='review_scope_change'
+    assert changed['briefing_version']==2
+    assert 'reenvio automático' in changed['detail']
+
+    # Queue cannot be used to access any other company's projects.
+    from backend.db import connect
+    from backend.security import hash_password
+    with connect() as db:
+        cid=db.execute("INSERT INTO companies(name) VALUES('Outra agência')").lastrowid
+        clientid=db.execute("INSERT INTO clients(company_id,name) VALUES(?,?)",(cid,'Cliente externo')).lastrowid
+        db.execute("""INSERT INTO projects(company_id,client_id,protocol,title,status)
+           VALUES (?,?,?,?,?)""",(cid,clientid,'NX-OTHER-001','Evento de outro tenant','briefing'))
+    after=client.get(endpoint,headers=h).json()
+    assert len(after['items'])==1
+    assert 'Outro tenant' not in str(after)
+    assert 'Outra agência' not in str(after)
+
+
+def test_consultant_queue_access_roles(client):
+    h=login(client)
+    co=client.get('/api/clients',headers=h).json()[0]['id']
+    for role,email,client_id in [
+        ('client','operadora.cliente@example.com',co),
+        ('viewer','auditor.workspace@example.com',None),
+        ('consultant','consultor.workspace@example.com',None)
+    ]:
+        user=client.post('/api/users',headers=h,json={
+            'full_name':'Pessoa de Teste','email':email,
+            'password':'AValidPassword_2026','role':role,'client_id':client_id})
+        assert user.status_code==201,user.text
+        from fastapi.testclient import TestClient
+        from backend.main import app
+        with TestClient(app) as c:
+            session=c.post('/api/auth/login',json={
+                'email':email,'password':'AValidPassword_2026'})
+            assert session.status_code==200
+            result=c.get('/api/consultant/queue')
+            assert result.status_code==(200 if role=='consultant' else 403)
+            if role=='consultant':
+                assert result.json()['items'][0]['owner_is_me'] is False
