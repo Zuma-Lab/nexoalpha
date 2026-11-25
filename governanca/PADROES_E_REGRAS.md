@@ -96,7 +96,7 @@
 | BR-056 | 2026-11-24 | Em revisões de homepage, confrontar estado anterior/novo em 1440px e 390px, esclarecer conceito × tela real, registrar excesso de texto, repetição, hierarquia, CTA e precisão funcional. | Checklist documental registrado; QA futuro |
 
 | BR-057 | 2026-11-25 | **Refinamento editorial autorizado:** título A no hero, título B na primeira rolagem e copy reduzida, **sem alterar a composição do código**. A prévia com notebook pertence à direção visual aprovada como rascunho, mas ainda não é asset implementado na homepage atual. | Somente copy implementada; protótipo visual com notebook pendente de implementação fiel |
-| BR-058 | 2026-11-25 | As duas telas conceituais existentes são servidas a partir de `homepage/dist/assets/briefing-*.webp`, sem manipular os originais; capturas reais devem verificar `naturalWidth>0` em desktop e mobile. | Implementado em branch; pipeline de navegador em validação |
+| BR-058 | 2026-11-25 | Imagens existentes não devem ser escolhidas apenas pelo nome: inspecionar o conteúdo real e obter aprovação específica antes de incorporá-las. Não afirmar que fotografias são telas de produto. | Seleção visual equivocada revertida; aprovação de asset pendente |
 | BR-059 | 2026-11-25 | O texto comercial simplificado não remove ressalvas sobre automação incompleta, dados fictícios, limites de integração, permissões, impostos, LGPD nem omite termos essenciais de orçamento. | Revisado para a homepage; QA editorial pendente |
 
 ## Contratos de implementação (status atual)
