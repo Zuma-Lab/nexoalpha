@@ -33,6 +33,8 @@ Data base: **2026-11-23** · Fuso: **America/Sao_Paulo**. Revisar este arquivo a
 | ADR-023 | 2026-11-24 | **Regra de autorização por dimensão:** copy, layout, tipografia, cor, imagem e funcionalidade são escopos separados. A alteração de copy não autoriza modificar os demais. Guardar estado de aprovação no PR e registrar rollback. | **Confirmado** pelo proprietário após erro de escopo; referência obrigatória | [Guia editorial](GUIA_EDITORIAL_E_APROVACAO_HOMEPAGE.md) |
 | ADR-024 | 2026-11-24 | **Reduzir densidade nas primeiras dobras preservando a identidade aprovada.** Direção sugerida: título A no hero, título B na primeira rolagem, menos copy redundante, imagens 02/03 em destaque e 01 opcional. | **Proposta em análise**, não autorização de alterar o runtime | Homepage e prévias |
 
+| ADR-025 | 2026-11-25 | **Homologada a implementação editorial da homepage com textos A/B e duas imagens originais**: hero com dor ampla (imagem 02 do sistema), primeira rolagem com dor do consultor (imagem 03 do briefing), demais seções com copy concisa; imagem 01 de pessoa opcional foi omitida para preservar respiro. Paleta, tipografia e identidade do brandbook 2.1 intactas. | **Implementado em branch; aguardando QA e validação final visual** | `homepage/dist/index.html`, `styles.css`, `/visuals/` |
+
 ## Decisões pendentes de aprovação
 
 | ID | Assunto | Opções/impacto | Dependência |
