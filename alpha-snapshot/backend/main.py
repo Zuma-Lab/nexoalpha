@@ -19,6 +19,7 @@ from pydantic import BaseModel, Field
 from .db import init_db, connect, rows
 from .security import hash_password, verify_password, make_token, token_hash
 from .briefing_rules import collect_issues, prepare_submission
+from .consultant_queue import build_consultant_queue
 
 FRONTEND = Path(__file__).resolve().parents[1]/'workspace-v2'
 HOMEPAGE = Path(__file__).resolve().parents[2]/'homepage'/'dist'
@@ -248,6 +249,13 @@ def dashboard(user=Depends(me)):
         else:task_count=db.execute('SELECT COUNT(*) FROM plan_tasks WHERE company_id=? AND status!=?',(user['company_id'],'done')).fetchone()[0]
         for p in ps:normalize_project(p)
         return {'projects':ps,'counts':counts,'active':sum(v for k,v in counts.items() if k!='closed'), 'tasks_pending':task_count,'suppliers':db.execute('SELECT COUNT(*) FROM suppliers WHERE company_id=?',(user['company_id'],)).fetchone()[0] if user['role']!='client' else 0}
+
+@app.get('/api/consultant/queue')
+def consultant_queue(user=Depends(me)):
+    """Priority inbox for internal consultants. Never public or cross-tenant."""
+    allow(user,('admin','consultant'))
+    with connect() as db:
+        return build_consultant_queue(db,user['company_id'],user['id'])
 
 @app.get('/api/clients')
 def clients(user=Depends(me)):
