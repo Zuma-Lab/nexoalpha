@@ -4,6 +4,12 @@
 **Fuso:** America/Sao_Paulo. Commits automáticos podem aparecer em 2026-11-24 UTC embora os registros abaixo sejam de 2026-11-23 no fuso local.  
 **Primeira revisão estruturada:** 2026-11-23. **Última revisão técnica:** 2026-11-24. Não apagar entradas; substituir por nova entrada vinculada.
 
+## Handoff de implementação para Work e Claude — 2026-11-25
+
+| ID | Data | Mudança e justificativa | Arquivos / referência | Estado e evidência |
+|---|---|---|---|---|
+| CHG-040 | 2026-11-25 | Preparado handoff técnico executável com roadmap F0–F10, contrato automático para Claude Code, comandos de teste e separação de branches Work/Claude. Distinção registrada: copy A/B está codificada; **notebook aprovado é referência conceitual e não asset implementado**. Nenhum merge, deploy ou edição de layout realizado nesta tarefa. | `CLAUDE.md`, `handoff/ROADMAP_WORK_CLAUDE_2026-11-25.md`, `README.md`, `governanca/README.md` | **Documentação implementada** na PR #1; tarefas funcionais continuam pendentes |
+
 ## Correção editorial sem redesenho — 2026-11-25
 
 | ID | Data | Mudança e justificativa | Arquivos / referência | Estado e evidência |
@@ -87,7 +93,7 @@
 ## Como registrar a próxima alteração
 
 ```text
-ID: CHG-039 (sequencial)
+ID: CHG-040 (sequencial)
 Data local: AAAA-MM-DD (America/Sao_Paulo)
 Autor/PR:
 Motivo/decisão:
