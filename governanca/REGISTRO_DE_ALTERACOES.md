@@ -4,6 +4,13 @@
 **Fuso:** America/Sao_Paulo. Commits automáticos podem aparecer em 2026-11-24 UTC embora os registros abaixo sejam de 2026-11-23 no fuso local.  
 **Primeira revisão estruturada:** 2026-11-23. **Última revisão técnica:** 2026-11-24. Não apagar entradas; substituir por nova entrada vinculada.
 
+## Implementação editorial e imagens originais — 2026-11-25
+
+| ID | Data | Mudança e justificativa | Arquivos / referência | Estado e evidência |
+|---|---|---|---|---|
+| CHG-037 | 2026-11-25 | Usuário autorizou refinar copy e distribuição de imagens. Hero passou a título institucional A e texto enxuto; primeira rolagem recebe título B e imagem 03 do briefing. Imagem 02 do sistema no hero; fotografia 01 omitida para evitar excesso. Sem novos tokens ou paleta. | `homepage/dist/index.html`, `styles.css`, `backend/main.py` | Implementado na PR #1; QA visual pendente |
+| CHG-038 | 2026-11-25 | Testes e screenshots atualizados: arquivos originais `/visuals` acessíveis, copy A/B e recortes do hero/briefing desktop e mobile. | `tests/test_workflow.py`, `scripts/capture_screens.py` | CI em execução |
+
 ## Guia editorial e prevenção de regressão de escopo — 2026-11-24
 
 | ID | Data | Mudança e justificativa | Arquivos / referência | Estado e evidência |
@@ -74,7 +81,7 @@
 ## Como registrar a próxima alteração
 
 ```text
-ID: CHG-037 (sequencial)
+ID: CHG-039 (sequencial)
 Data local: AAAA-MM-DD (America/Sao_Paulo)
 Autor/PR:
 Motivo/decisão:
