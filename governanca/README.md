@@ -20,6 +20,8 @@
 
 **Proposta de próximas telas:** [mapa visual e funcional de projeto, versões, RFQs, cotações, propostas e planejamento](../design/PROPOSTA_PROXIMAS_TELAS_2026-11-25.md) — referência exploratória, não implementação aprovada.
 
+**Auditoria e modelo operacional do consultor:** [Especificação e decisões da fila, briefing, RFQs, comparação e proposta](../design/CONSULTOR_WORKSPACE_ESPECIFICACAO_2026-11-25.md). O experimento está em branch/PR isolados, sem redefinir a identidade visual.
+
 **Hierarquia:** decisões expressas pelo proprietário > ADR vigente > regras do produto > brandbook/tokens vigentes > código validado > documentos históricos. Nenhum resumo equivale a uma transcrição integral. Sempre confrontar regras com o código e a CI.
 
 ## Interpretação de status

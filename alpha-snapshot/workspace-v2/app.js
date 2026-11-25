@@ -32,7 +32,7 @@ const icon=(name)=>{const data={
 };return '<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" aria-hidden="true">'+(data[name]||data.folder)+'</svg>';};
 const statusMap={briefing:"Briefing",qualifying:"Qualificação",sourcing:"Fornecedores",quoting:"Em cotação",proposal:"Em proposta",approved:"Aprovado",closed:"Concluído",draft:"Rascunho",published:"Publicada",responded:"Respondida",sent:"Enviada",prepared:"Preparada",available:"Disponível",partial:"Parcial",unavailable:"Indisponível",changes_requested:"Ajustes solicitados",pending:"Pendente",in_progress:"Em andamento",done:"Concluída",rejected:"Rejeitada"};
 function status(value){const cls=["approved","responded","available","done"].includes(value)?"success":["sourcing","quoting","partial","in_progress"].includes(value)?"warn":["rejected","unavailable"].includes(value)?"danger":["draft","briefing"].includes(value)?"changed":"neutral";return '<span class="tag '+cls+'">'+esc(statusMap[value]||value||"Não definido")+'</span>';}
-const state={user:null,csrf:"",route:"queue",tab:"overview",pid:null,project:null,projects:[],clients:[],suppliers:[],dashboard:null,rfqBatch:null,proposalLink:null,wizardStep:0,draft:null,notice:"",mobile:false};
+const state={user:null,csrf:"",route:"queue",tab:"overview",pid:null,project:null,projects:[],clients:[],suppliers:[],dashboard:null,consultantInbox:null,rfqBatch:null,proposalLink:null,wizardStep:0,draft:null,notice:"",mobile:false};
 const canEdit=()=>["admin","consultant"].includes(state.user?.role);
 const canCreate=()=>["admin","consultant","client"].includes(state.user?.role);
 const canSeeMoney=()=>state.user?.role!=="client";
@@ -73,15 +73,30 @@ function nextAction(p){const status=p.status;const action=({briefing:"Conferir b
 function projectRow(p){
  return '<button class="project-row" type="button" data-action="open-project" data-id="'+Number(p.id)+'"><span><span class="row-title">'+esc(p.title)+'</span><span class="row-meta"><span>'+esc(p.protocol)+'</span><span>'+esc(p.client_name||"Cliente")+'</span><span>'+esc(p.destination||"Destino a definir")+'</span></span></span><span class="row-aside">'+status(p.status)+'<span class="row-action">'+esc(nextAction(p))+' '+icon("arrow")+'</span></span></button>';
 }
+function consultantActionRow(a){
+ const name=esc(a.project_title||"Projeto");
+ const important=a.priority===1?"Ação necessária":a.priority===2?"Acompanhar":"Revisar";
+ const owner=a.owner_is_me?" · Sob sua responsabilidade":"";
+ return '<button class="project-row" type="button" data-action="open-queue-action" data-id="'+Number(a.project_id)+'" data-tab="'+esc(a.tab)+'" aria-label="'+esc(a.title+' — '+a.project_title)+'"><span><span class="row-title">'+esc(a.title)+'</span><span class="row-meta"><span>'+name+' · '+esc(a.protocol||"")+'</span><span>'+esc(a.client_name||"")+' '+owner+'</span></span><span class="row-meta">'+esc(a.detail||"")+'</span></span><span class="row-aside"><span class="tag '+(a.priority===1?"changed":"neutral")+'">'+important+'</span><span class="row-action">Abrir etapa '+icon("arrow")+'</span></span></button>';
+}
 function queue(){
- const d=state.dashboard||{projects:[],counts:{},active:0,tasks_pending:0,suppliers:0};
- const ps=state.projects||[];const open=ps.filter(p=>p.status!=="closed");
- const action=canCreate()?button(icon("plus")+" Novo projeto","new-project",true):"";
- const intro=header("Central de operação","O que precisa avançar agora","Acompanhe briefings, respostas e decisões. Cada linha abre a operação e seu histórico.",action);
- const rows=open.length?open.map(projectRow).join(""):empty("Nenhuma operação em andamento","Crie uma solicitação para iniciar o briefing e organizar fornecedores.",canCreate()?button("Criar projeto","new-project",true):"");
- const info=surf("Ponto de atenção","A fila indica a próxima etapa provável de cada projeto.",'<div class="work-note"><strong>Briefing e versões</strong><p>Alterações não substituem o histórico. O próximo lote de RFQs usa a versão mais recente.</p></div><div class="work-note"><strong>Fornecedor e decisão</strong><p>As respostas não alteram automaticamente a proposta publicada. Revise valores antes de publicar uma nova versão.</p></div><div class="work-note"><strong>Entrega por link</strong><p>O envio de RFQs e propostas ainda é manual. Não há disparo de e-mail integrado.</p></div>');
- const counters=surf("Panorama operacional","Valores do ambiente conectado, não números promocionais.",'<div class="surface-body">'+[['Operações abertas',open.length],['Aguardando cotação',ps.filter(p=>["sourcing","quoting"].includes(p.status)).length],['Tarefas pendentes',d.tasks_pending||0],['Fornecedores cadastrados',d.suppliers||0]].map(([k,v])=>'<div class="count-row"><span class="count-label">'+esc(k)+'</span><strong class="count-value">'+quantity(v)+'</strong></div>').join("")+'</div>');
- return intro+'<div class="notice neutral">Ambiente Alpha de desenvolvimento. A interface apresenta dados registrados na API; exemplos de demonstração devem ser tratados como fictícios.</div><div class="overview-layout"><div>'+surf("Sua fila de operações",open.length+" projetos por acompanhar",'<div class="surface-flush">'+rows+'</div>',button("Ver todos","all-projects"))+'</div><div>'+info+counters+'</div></div>';
+ if(!canEdit()){
+  const open=(state.projects||[]).filter(p=>p.status!=="closed");
+  return header("Operação","Seus projetos","Consulte o briefing e o estado das solicitações.",canCreate()?button(icon("plus")+" Novo projeto","new-project",true):"")
+   +surf("Projetos",open.length+" projetos em aberto",'<div class="surface-flush">'+(open.length?open.map(projectRow).join(""):empty("Nenhum projeto em andamento","Registre sua solicitação para começar."))+'</div>');
+ }
+ const data=state.consultantInbox||{items:[],summary:{open_projects:0,needs_attention:0,awaiting_followup:0}};
+ const actions=data.items||[],summary=data.summary||{};
+ const act=button(icon("plus")+" Novo projeto","new-project",true);
+ const intro=header("Central do consultor","O que precisa de uma decisão agora","Ações calculadas a partir de briefings, convites, cotações e propostas registrados.",act);
+ const rows=actions.length?actions.map(consultantActionRow).join(""):empty("Sem projetos em aberto","Crie um projeto ou consulte a carteira para retomar uma operação.",button("Ver projetos","all-projects"));
+ const summaryBox=surf("Panorama da operação","Contagens de projetos acessíveis à sua empresa.",'<div class="surface-body">'+[
+ ["Projetos em aberto",summary.open_projects||0],
+ ["Precisam de atenção",summary.needs_attention||0],
+ ["Em acompanhamento",summary.awaiting_followup||0],
+ ["Tarefas em aberto",state.dashboard?.tasks_pending||0]
+ ].map(([label,value])=>'<div class="count-row"><span class="count-label">'+esc(label)+'</span><strong class="count-value">'+quantity(value)+'</strong></div>').join("")+'</div>');
+ return intro+'<div class="overview-layout"><div>'+surf("Prioridades por projeto",actions.length+" operação(ões), uma ação principal por projeto",'<div class="surface-flush">'+rows+'</div>',button("Ver todos os projetos","all-projects"))+'</div><aside>'+summaryBox+'<div class="notice neutral">Os convites e as propostas ainda são compartilhados manualmente. A fila não envia mensagens nem modifica propostas.</div></aside></div>';
 }
 function projectsPage(){
  const actions=canCreate()?button(icon("plus")+" Novo projeto","new-project",true):"";
@@ -126,7 +141,11 @@ function projectOverview(){
  if((p.rfqs||[]).some(x=>x.status==="prepared"))alerts.push("Existem RFQs preparadas: os links devem ser enviados manualmente.");
  if((p.proposals||[]).some(x=>x.status==="published"))alerts.push("Há proposta publicada aguardando decisão.");
  if(!alerts.length)alerts.push("Confirme as informações do briefing antes de solicitar valores aos fornecedores.");
- const left=surf("Próxima ação","Orientação contextual, calculada a partir dos estados registrados.",'<div class="surface-body"><p class="kicker accent">Situação atual</p><h2 style="font-size:23px;letter-spacing:-.03em;margin:7px 0 8px">'+esc(nextAction(p))+'</h2><p class="page-description">'+esc(alerts[0])+'</p><div class="actions" style="margin-top:19px">'+button("Abrir briefing","go-briefing",true)+(canEdit()?button("Ver comparativo","go-quotes"):"")+'</div></div>')+surf("O que mudou","Comparação entre as últimas duas versões do briefing.",changes())+surf("Histórico recente","Ações registradas pela API.",'<div class="surface-body">'+((p.audit||[]).length?p.audit.slice(0,7).map(x=>'<div class="activity-entry"><time>'+esc(date(x.created_at))+'</time><div><strong>'+esc(x.action?.replaceAll("."," · ")||"Registro")+'</strong><p>'+esc(x.actor_name||"Sistema")+(x.detail?' · '+esc(x.detail):"")+'</p></div></div>').join(""):'<p class="page-description">Ainda não há registros exibidos para este perfil.</p>')+'</div>');
+ const pendingAction=canEdit()?state.consultantInbox?.items?.find(x=>Number(x.project_id)===Number(p.id)):null;
+ const actionTitle=pendingAction?.title||nextAction(p);
+ const actionDescription=pendingAction?.detail||alerts[0];
+ const actionButton=pendingAction?button("Abrir etapa necessária","go-current-action",true):button("Abrir briefing","go-briefing",true);
+ const left=surf("Próxima ação","Orientação baseada nos registros do projeto.",'<div class="surface-body"><p class="kicker accent">Situação atual</p><h2 style="font-size:23px;letter-spacing:-.03em;margin:7px 0 8px">'+esc(actionTitle)+'</h2><p class="page-description">'+esc(actionDescription)+'</p><div class="actions" style="margin-top:19px">'+actionButton+'</div></div>')+surf("O que mudou","Comparação entre as últimas duas versões do briefing.",changes())+surf("Histórico recente","Ações registradas pela API.",'<div class="surface-body">'+((p.audit||[]).length?p.audit.slice(0,7).map(x=>'<div class="activity-entry"><time>'+esc(date(x.created_at))+'</time><div><strong>'+esc(x.action?.replaceAll("."," · ")||"Registro")+'</strong><p>'+esc(x.actor_name||"Sistema")+(x.detail?' · '+esc(x.detail):"")+'</p></div></div>').join(""):'<p class="page-description">Ainda não há registros exibidos para este perfil.</p>')+'</div>');
  const right=surf("Etapas da operação","A ordem representa o ciclo comercial; não é um conjunto de aplicativos isolados.",timeline())+surf("Pendências do projeto",pending.length+" tarefa(s) em aberto",'<div class="surface-body">'+(pending.length?'<ul class="list-plain">'+pending.slice(0,6).map(x=>'<li><span><strong>'+esc(x.title)+'</strong><small>'+esc(date(x.due_date))+'</small></span>'+status(x.status)+'</li>').join("")+'</ul>':empty("Sem tarefas abertas","As tarefas de execução aparecem aqui quando cadastradas."))+'</div>');
  return '<div class="project-grid"><div>'+left+'</div><aside>'+right+'</aside></div>';
 }
@@ -253,10 +272,15 @@ function render(){
 function renderLogin(message=""){
  root.innerHTML='<div class="auth-layout"><div class="auth-panel"><div class="brand-row"><span class="brand-symbol">↗</span><span class="brand-word">nexo</span><span class="brand-note">Alpha</span></div><div><div class="kicker" style="color:#FF850D">AMBIENTE DE OPERAÇÃO</div><h1>Da solicitação à decisão, sem perder o histórico.</h1><p>Briefings versionados, fornecedores no contexto do projeto e cotações auditáveis. Sem painéis decorativos ou métricas fictícias.</p></div><p>Nome e marca de trabalho. Produto em desenvolvimento.</p></div><div class="auth-form-area"><form class="auth-card form" data-form="login"><h2>Entrar no ambiente</h2><p>Utilize suas credenciais de acesso.</p>'+field("E-mail","email","","email",'autocomplete="username" required')+field("Senha","password","","password",'autocomplete="current-password" required')+'<button class="btn btn-primary" type="submit">Acessar workspace</button><div class="status-message" aria-live="polite">'+esc(message)+'</div></form></div></div>';
 }
-async function refreshProject(){if(!state.pid)return;state.project=await api("/api/projects/"+state.pid);}
+async function refreshProject(){
+ if(!state.pid)return;
+ const [project,inbox]=await Promise.all([api("/api/projects/"+state.pid),canEdit()?api("/api/consultant/queue"):Promise.resolve(null)]);
+ state.project=project;
+ if(canEdit())state.consultantInbox=inbox;
+}
 async function loadLists(){
- const [ps,cs,d,s]=await Promise.all([api("/api/projects"),api("/api/clients"),api("/api/dashboard"),canSeeMoney()?api("/api/suppliers"):Promise.resolve([])]);
- state.projects=ps;state.clients=cs;state.dashboard=d;state.suppliers=s;
+ const [ps,cs,d,s,inbox]=await Promise.all([api("/api/projects"),api("/api/clients"),api("/api/dashboard"),canSeeMoney()?api("/api/suppliers"):Promise.resolve([]),canEdit()?api("/api/consultant/queue"):Promise.resolve(null)]);
+ state.projects=ps;state.clients=cs;state.dashboard=d;state.suppliers=s;state.consultantInbox=inbox;
 }
 function pathState(){const q=new URLSearchParams(location.search);const id=Number(q.get("project"));if(id>0){state.pid=id;state.route="project";state.tab=q.get("tab")||"overview";}else state.route=q.get("page")||"queue";}
 function updateURL(){
@@ -268,6 +292,7 @@ function updateURL(){
 async function navigate(route,tab="overview",pid=null){
  state.mobile=false;
  state.route=route;state.tab=tab;
+ if(route==="queue")await loadLists();
  if(pid){state.pid=pid;state.rfqBatch=null;state.proposalLink=null;await refreshProject();}
  if(route!=="project"&&route!=="wizard")state.pid=null;
  updateURL();render();window.scrollTo(0,0);
@@ -368,8 +393,10 @@ async function action(button){
  else if(name==="new-client"){await navigate("new_client");}
  else if(name==="new-supplier"){await navigate("new_supplier");}
  else if(name==="open-project"){await openProject(Number(button.dataset.id));}
+ else if(name==="open-queue-action"){await navigate("project",button.dataset.tab||"overview",Number(button.dataset.id));}
  else if(name==="project-tab"){state.tab=button.dataset.tab;state.route="project";updateURL();render();}
  else if(name==="go-briefing"){state.tab="briefing";state.route="project";updateURL();render();}
+ else if(name==="go-current-action"){const entry=state.consultantInbox?.items?.find(x=>Number(x.project_id)===Number(state.pid));if(entry){state.tab=entry.tab;state.route="project";updateURL();render();}else await navigate("project","overview",state.pid);}
  else if(name==="go-quotes"){state.tab="quotes";state.route="project";updateURL();render();}
  else if(name==="start-briefing"){await startWizard();}
  else if(name==="save-draft"){
