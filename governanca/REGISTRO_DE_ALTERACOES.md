@@ -4,6 +4,13 @@
 **Fuso:** America/Sao_Paulo. Commits automáticos podem aparecer em 2026-11-24 UTC embora os registros abaixo sejam de 2026-11-23 no fuso local.  
 **Primeira revisão estruturada:** 2026-11-23. **Última revisão técnica:** 2026-11-24. Não apagar entradas; substituir por nova entrada vinculada.
 
+## Consolidação operacional do consultor — 2026-11-25
+
+| ID | Data | Mudança e justificativa | Arquivos / referência | Estado e evidência |
+|---|---|---|---|---|
+| CHG-042 | 2026-11-25 | Auditoria profunda de `queue`, permissões, RFQ, proposta, financeiro e versionamento identificou 12 lacunas operacionais. Criada especificação com jobs-to-be-done, IA das telas, gates e riscos, sem alterar identidade visual. | `design/CONSULTOR_WORKSPACE_ESPECIFICACAO_2026-11-25.md` | Design documentado na branch isolada; aprovação pendente |
+| CHG-043 | 2026-11-25 | Implementado MVP de fila orientada a ações factuais por `company_id`, novo endpoint interno e navegação para etapa correta, com testes de perfis, alterações V1/V2 e isolamento de tenant. Sem alterar homepage, tokens, cálculos ou schema. | `backend/consultant_queue.py`, `backend/main.py`, `workspace-v2/app.js`, `tests/test_workflow.py` | Implementado em branch isolada; CI e avaliação manual necessárias |
+
 ## Concepção das telas seguintes — 2026-11-25
 
 | ID | Data | Mudança e justificativa | Arquivos / referência | Estado e evidência |
@@ -99,7 +106,7 @@
 ## Como registrar a próxima alteração
 
 ```text
-ID: CHG-041 (sequencial)
+ID: CHG-044 (sequencial)
 Data local: AAAA-MM-DD (America/Sao_Paulo)
 Autor/PR:
 Motivo/decisão:
