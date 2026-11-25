@@ -76,7 +76,7 @@ function projectRow(p){
 function consultantActionRow(a){
  const name=esc(a.project_title||"Projeto");
  const important=a.priority===1?"Ação necessária":a.priority===2?"Acompanhar":"Revisar";
- const owner=a.owner_is_me?" · Criado por você":"";
+ const owner=a.owner_is_me?" · Sob sua responsabilidade":"";
  return '<button class="project-row" type="button" data-action="open-queue-action" data-id="'+Number(a.project_id)+'" data-tab="'+esc(a.tab)+'" aria-label="'+esc(a.title+' — '+a.project_title)+'"><span><span class="row-title">'+esc(a.title)+'</span><span class="row-meta"><span>'+name+' · '+esc(a.protocol||"")+'</span><span>'+esc(a.client_name||"")+' '+owner+'</span></span><span class="row-meta">'+esc(a.detail||"")+'</span></span><span class="row-aside"><span class="tag '+(a.priority===1?"changed":"neutral")+'">'+important+'</span><span class="row-action">Abrir etapa '+icon("arrow")+'</span></span></button>';
 }
 function queue(){
