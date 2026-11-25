@@ -9,7 +9,7 @@
 | ID | Data | Mudança e justificativa | Arquivos / referência | Estado e evidência |
 |---|---|---|---|---|
 | CHG-042 | 2026-11-25 | Auditoria profunda de `queue`, permissões, RFQ, proposta, financeiro e versionamento identificou 12 lacunas operacionais. Criada especificação com jobs-to-be-done, IA das telas, gates e riscos, sem alterar identidade visual. | `design/CONSULTOR_WORKSPACE_ESPECIFICACAO_2026-11-25.md` | Design documentado na branch isolada; aprovação pendente |
-| CHG-043 | 2026-11-25 | Implementado MVP de fila orientada a ações factuais por `company_id`, novo endpoint interno e navegação para etapa correta, com testes de perfis, alterações V1/V2 e isolamento de tenant. Sem alterar homepage, tokens, cálculos ou schema. | `backend/consultant_queue.py`, `backend/main.py`, `workspace-v2/app.js`, `tests/test_workflow.py` | Implementado em branch isolada; CI e avaliação manual necessárias |
+| CHG-043 | 2026-11-25 | Implementado MVP de fila orientada a ações factuais por `company_id`, novo endpoint interno, navegação para etapa correta e **CTA contextual também na visão do projeto**, com testes de perfis, alterações V1/V2 e isolamento de tenant. Sem alterar homepage, tokens, cálculos ou schema. | `backend/consultant_queue.py`, `backend/main.py`, `workspace-v2/app.js`, `tests/test_workflow.py` | Implementado em branch isolada; CI e avaliação manual necessárias |
 
 ## Concepção das telas seguintes — 2026-11-25
 
