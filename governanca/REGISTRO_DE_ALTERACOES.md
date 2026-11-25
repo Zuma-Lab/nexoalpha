@@ -4,6 +4,12 @@
 **Fuso:** America/Sao_Paulo. Commits automáticos podem aparecer em 2026-11-24 UTC embora os registros abaixo sejam de 2026-11-23 no fuso local.  
 **Primeira revisão estruturada:** 2026-11-23. **Última revisão técnica:** 2026-11-24. Não apagar entradas; substituir por nova entrada vinculada.
 
+## Guia editorial e prevenção de regressão de escopo — 2026-11-24
+
+| ID | Data | Mudança e justificativa | Arquivos / referência | Estado e evidência |
+|---|---|---|---|---|
+| CHG-036 | 2026-11-24 | Após avaliação crítica dos rascunhos, registrado **excesso de informação, títulos concorrentes e densidade mobile**. Criado guia de editoria e processo de aprovação: preservar identidade atual; copy-only não autoriza CSS/layout; recomendações de redução e imagens ficam como proposta, não implementação. | `governanca/GUIA_EDITORIAL_E_APROVACAO_HOMEPAGE.md`, BR-051..056, ADR-023/024, checklist de PR | Documento registrado na PR #1; **homepage visualmente inalterada** |
+
 ## Correção de escopo — 2026-11-24
 
 | ID | Data | Mudança e justificativa | Arquivos / referência | Estado e evidência |
@@ -68,7 +74,7 @@
 ## Como registrar a próxima alteração
 
 ```text
-ID: CHG-036 (sequencial)
+ID: CHG-037 (sequencial)
 Data local: AAAA-MM-DD (America/Sao_Paulo)
 Autor/PR:
 Motivo/decisão:
