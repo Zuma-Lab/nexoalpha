@@ -141,7 +141,11 @@ function projectOverview(){
  if((p.rfqs||[]).some(x=>x.status==="prepared"))alerts.push("Existem RFQs preparadas: os links devem ser enviados manualmente.");
  if((p.proposals||[]).some(x=>x.status==="published"))alerts.push("Há proposta publicada aguardando decisão.");
  if(!alerts.length)alerts.push("Confirme as informações do briefing antes de solicitar valores aos fornecedores.");
- const left=surf("Próxima ação","Orientação contextual, calculada a partir dos estados registrados.",'<div class="surface-body"><p class="kicker accent">Situação atual</p><h2 style="font-size:23px;letter-spacing:-.03em;margin:7px 0 8px">'+esc(nextAction(p))+'</h2><p class="page-description">'+esc(alerts[0])+'</p><div class="actions" style="margin-top:19px">'+button("Abrir briefing","go-briefing",true)+(canEdit()?button("Ver comparativo","go-quotes"):"")+'</div></div>')+surf("O que mudou","Comparação entre as últimas duas versões do briefing.",changes())+surf("Histórico recente","Ações registradas pela API.",'<div class="surface-body">'+((p.audit||[]).length?p.audit.slice(0,7).map(x=>'<div class="activity-entry"><time>'+esc(date(x.created_at))+'</time><div><strong>'+esc(x.action?.replaceAll("."," · ")||"Registro")+'</strong><p>'+esc(x.actor_name||"Sistema")+(x.detail?' · '+esc(x.detail):"")+'</p></div></div>').join(""):'<p class="page-description">Ainda não há registros exibidos para este perfil.</p>')+'</div>');
+ const pendingAction=canEdit()?state.consultantInbox?.items?.find(x=>Number(x.project_id)===Number(p.id)):null;
+ const actionTitle=pendingAction?.title||nextAction(p);
+ const actionDescription=pendingAction?.detail||alerts[0];
+ const actionButton=pendingAction?button("Abrir etapa necessária","go-current-action",true):button("Abrir briefing","go-briefing",true);
+ const left=surf("Próxima ação","Orientação baseada nos registros do projeto.",'<div class="surface-body"><p class="kicker accent">Situação atual</p><h2 style="font-size:23px;letter-spacing:-.03em;margin:7px 0 8px">'+esc(actionTitle)+'</h2><p class="page-description">'+esc(actionDescription)+'</p><div class="actions" style="margin-top:19px">'+actionButton+'</div></div>')+surf("O que mudou","Comparação entre as últimas duas versões do briefing.",changes())+surf("Histórico recente","Ações registradas pela API.",'<div class="surface-body">'+((p.audit||[]).length?p.audit.slice(0,7).map(x=>'<div class="activity-entry"><time>'+esc(date(x.created_at))+'</time><div><strong>'+esc(x.action?.replaceAll("."," · ")||"Registro")+'</strong><p>'+esc(x.actor_name||"Sistema")+(x.detail?' · '+esc(x.detail):"")+'</p></div></div>').join(""):'<p class="page-description">Ainda não há registros exibidos para este perfil.</p>')+'</div>');
  const right=surf("Etapas da operação","A ordem representa o ciclo comercial; não é um conjunto de aplicativos isolados.",timeline())+surf("Pendências do projeto",pending.length+" tarefa(s) em aberto",'<div class="surface-body">'+(pending.length?'<ul class="list-plain">'+pending.slice(0,6).map(x=>'<li><span><strong>'+esc(x.title)+'</strong><small>'+esc(date(x.due_date))+'</small></span>'+status(x.status)+'</li>').join("")+'</ul>':empty("Sem tarefas abertas","As tarefas de execução aparecem aqui quando cadastradas."))+'</div>');
  return '<div class="project-grid"><div>'+left+'</div><aside>'+right+'</aside></div>';
 }
@@ -268,7 +272,12 @@ function render(){
 function renderLogin(message=""){
  root.innerHTML='<div class="auth-layout"><div class="auth-panel"><div class="brand-row"><span class="brand-symbol">↗</span><span class="brand-word">nexo</span><span class="brand-note">Alpha</span></div><div><div class="kicker" style="color:#FF850D">AMBIENTE DE OPERAÇÃO</div><h1>Da solicitação à decisão, sem perder o histórico.</h1><p>Briefings versionados, fornecedores no contexto do projeto e cotações auditáveis. Sem painéis decorativos ou métricas fictícias.</p></div><p>Nome e marca de trabalho. Produto em desenvolvimento.</p></div><div class="auth-form-area"><form class="auth-card form" data-form="login"><h2>Entrar no ambiente</h2><p>Utilize suas credenciais de acesso.</p>'+field("E-mail","email","","email",'autocomplete="username" required')+field("Senha","password","","password",'autocomplete="current-password" required')+'<button class="btn btn-primary" type="submit">Acessar workspace</button><div class="status-message" aria-live="polite">'+esc(message)+'</div></form></div></div>';
 }
-async function refreshProject(){if(!state.pid)return;state.project=await api("/api/projects/"+state.pid);}
+async function refreshProject(){
+ if(!state.pid)return;
+ const [project,inbox]=await Promise.all([api("/api/projects/"+state.pid),canEdit()?api("/api/consultant/queue"):Promise.resolve(null)]);
+ state.project=project;
+ if(canEdit())state.consultantInbox=inbox;
+}
 async function loadLists(){
  const [ps,cs,d,s,inbox]=await Promise.all([api("/api/projects"),api("/api/clients"),api("/api/dashboard"),canSeeMoney()?api("/api/suppliers"):Promise.resolve([]),canEdit()?api("/api/consultant/queue"):Promise.resolve(null)]);
  state.projects=ps;state.clients=cs;state.dashboard=d;state.suppliers=s;state.consultantInbox=inbox;
@@ -387,6 +396,7 @@ async function action(button){
  else if(name==="open-queue-action"){await navigate("project",button.dataset.tab||"overview",Number(button.dataset.id));}
  else if(name==="project-tab"){state.tab=button.dataset.tab;state.route="project";updateURL();render();}
  else if(name==="go-briefing"){state.tab="briefing";state.route="project";updateURL();render();}
+ else if(name==="go-current-action"){const entry=state.consultantInbox?.items?.find(x=>Number(x.project_id)===Number(state.pid));if(entry){state.tab=entry.tab;state.route="project";updateURL();render();}else await navigate("project","overview",state.pid);}
  else if(name==="go-quotes"){state.tab="quotes";state.route="project";updateURL();render();}
  else if(name==="start-briefing"){await startWizard();}
  else if(name==="save-draft"){
