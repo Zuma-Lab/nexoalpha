@@ -20,7 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "evidencias" / "capturas"
 OUTPUT.mkdir(parents=True, exist_ok=True)
 URL = "http://127.0.0.1:8765"
-DATE_LOCAL = "2026-11-24"  # Marco de edição; horário real da execução em generated_at_utc.
+DATE_LOCAL = "2026-11-25"  # Marco de edição; horário real da execução em generated_at_utc.
 
 def wait_for_server():
     for _ in range(90):
