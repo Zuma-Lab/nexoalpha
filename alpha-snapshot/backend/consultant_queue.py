@@ -32,7 +32,7 @@ def build_consultant_queue(db, company_id: int, user_id: int) -> dict:
                SUM(CASE WHEN r.status='sent' THEN 1 ELSE 0 END) AS awaiting,
                SUM(CASE WHEN r.status='responded' THEN 1 ELSE 0 END) AS responded,
                MIN(CASE WHEN r.status IN ('prepared','sent','responded') THEN v.version END) AS oldest_rfq_version
-        FROM rfq_batches b JOIN rfqs r ON r.batch_id=b.id AND r.company_id=b.company_id
+        FROM rfq_batches b JOIN rfqs r ON r.batch_id=b.id AND r.company_id=b.company_id AND r.revoked_at IS NULL
         JOIN briefing_versions v ON v.id=b.briefing_version_id AND v.company_id=b.company_id
         WHERE b.company_id=? GROUP BY b.project_id
     """, company_id)
