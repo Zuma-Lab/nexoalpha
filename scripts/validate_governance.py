@@ -50,6 +50,14 @@ def main():
         assert re.fullmatch(r"#[0-9A-Fa-f]{6}",tokens["colors"][col])
     assert (ROOT/"design/brandbook-v2/BRANDBOOK_V2.md").exists()
     assert (GOV/"README.md").exists()
+    # Impede perda silenciosa dos padrões de controle de escopo aprovados.
+    editorial=read(GOV/"GUIA_EDITORIAL_E_APROVACAO_HOMEPAGE.md")
+    assert "NÃO autoriza" in editorial or "não autoriza" in editorial.lower()
+    assert "propostas ainda sujeitas a aceite" in editorial or "aguardando aprovação" in editorial
+    for rule in ("BR-051","BR-052","BR-053","BR-054","BR-055","BR-056"):
+        assert rule in read(REGISTRY["BR"]),f"Regra editorial ausente: {rule}"
+    for decision in ("ADR-023","ADR-024"):
+        assert decision in read(REGISTRY["ADR"]),f"Decisão de escopo ausente: {decision}"
     print("Roadmap M0-M9 e tokens v2: OK")
 
 if __name__=="__main__":
