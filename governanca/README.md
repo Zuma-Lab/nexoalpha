@@ -18,6 +18,8 @@
 10. [Auditoria crítica pós-reformulação (24/11/2026)](AUDITORIA_CRITICA_POS_REFORMULACAO_2026-11-24.md) — notas comparativas, evidências reais, limitações e pendências.
 11. [Handoff executável para ChatGPT Work e Claude Code (25/11/2026)](../handoff/ROADMAP_WORK_CLAUDE_2026-11-25.md) — fases, critérios e fronteiras de execução. Complementa o [CLAUDE.md](../CLAUDE.md).
 
+**Proposta de próximas telas:** [mapa visual e funcional de projeto, versões, RFQs, cotações, propostas e planejamento](../design/PROPOSTA_PROXIMAS_TELAS_2026-11-25.md) — referência exploratória, não implementação aprovada.
+
 **Hierarquia:** decisões expressas pelo proprietário > ADR vigente > regras do produto > brandbook/tokens vigentes > código validado > documentos históricos. Nenhum resumo equivale a uma transcrição integral. Sempre confrontar regras com o código e a CI.
 
 ## Interpretação de status
