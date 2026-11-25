@@ -4,6 +4,12 @@
 **Fuso:** America/Sao_Paulo. Commits automáticos podem aparecer em 2026-11-24 UTC embora os registros abaixo sejam de 2026-11-23 no fuso local.  
 **Primeira revisão estruturada:** 2026-11-23. **Última revisão técnica:** 2026-11-24. Não apagar entradas; substituir por nova entrada vinculada.
 
+## Concepção das telas seguintes — 2026-11-25
+
+| ID | Data | Mudança e justificativa | Arquivos / referência | Estado e evidência |
+|---|---|---|---|---|
+| CHG-041 | 2026-11-25 | Inspecionadas referências exploratórias de briefing (3/5 passos, UI escura) e capturas do workspace real (4 passos, superfícies claras). Criado mapa de seis telas, composição e gates sem mexer na implementação. | `design/PROPOSTA_PROXIMAS_TELAS_2026-11-25.md` | **Proposta, aguardando validação visual**; nenhum HTML/CSS alterado |
+
 ## Handoff de implementação para Work e Claude — 2026-11-25
 
 | ID | Data | Mudança e justificativa | Arquivos / referência | Estado e evidência |
@@ -93,7 +99,7 @@
 ## Como registrar a próxima alteração
 
 ```text
-ID: CHG-040 (sequencial)
+ID: CHG-041 (sequencial)
 Data local: AAAA-MM-DD (America/Sao_Paulo)
 Autor/PR:
 Motivo/decisão:
