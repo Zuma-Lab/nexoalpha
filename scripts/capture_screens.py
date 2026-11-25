@@ -81,15 +81,8 @@ def main():
                     page=desktop.new_page()
                     page.goto(URL + "/",wait_until="domcontentloaded",timeout=30000)
                     page.locator(".case-board").wait_for()
-                    page.wait_for_function(
-                        "() => [...document.querySelectorAll('img[src^=\\\"assets/briefing-\\\"]')].length===2 && [...document.querySelectorAll('img[src^=\\\"assets/briefing-\\\"]')].every(img => img.complete && img.naturalWidth>0)",
-                        timeout=20000)
                     metadata["desktop"] = assert_no_overflow(page,"desktop")
                     snap(page,"home-hero-desktop.png")
-                    page.evaluate("() => window.scrollTo({top: document.querySelector('#caso').offsetTop - 76, behavior: 'instant'})")
-                    page.wait_for_timeout(150)
-                    page.evaluate("document.activeElement?.blur()")
-                    snap(page,"home-briefing-desktop.png")
                     snap(page,"home-completa-desktop.png",full=True)
                     snap(page,"home-comparativo.png",selector="#decisao")
                     snap(page,"home-demonstracao.png",selector="#demonstracao")
@@ -97,7 +90,7 @@ def main():
                     page.locator("#login-dialog[open]").wait_for()
                     snap(page,"home-login.png")
                     page.locator(".close-dialog").click()
-                    names.extend(["home-hero-desktop.png","home-briefing-desktop.png","home-completa-desktop.png",
+                    names.extend(["home-hero-desktop.png","home-completa-desktop.png",
                         "home-comparativo.png","home-demonstracao.png","home-login.png"])
                     mobile=browser.new_context(
                         viewport={"width":390,"height":844},device_scale_factor=1,
@@ -107,16 +100,11 @@ def main():
                     mob.goto(URL + "/",wait_until="domcontentloaded",timeout=30000)
                     mob.locator(".case-board").wait_for()
                     metadata["mobile"] = assert_no_overflow(mob,"mobile")
-                    snap(mob,"home-hero-mobile.png",selector="#inicio")
-                    mob.evaluate("() => window.scrollTo({top: document.querySelector('#caso').offsetTop - 65, behavior: 'instant'})")
-                    mob.wait_for_timeout(150)
-                    mob.evaluate("document.activeElement?.blur()")
-                    snap(mob,"home-briefing-mobile.png")
                     snap(mob,"home-mobile.png",full=True)
                     mob.locator(".menu-toggle").click()
                     assert mob.locator(".menu-toggle").get_attribute("aria-expanded") == "true"
                     snap(mob,"home-menu-mobile.png")
-                    names.extend(["home-hero-mobile.png","home-briefing-mobile.png","home-mobile.png","home-menu-mobile.png"])
+                    names.extend(["home-mobile.png","home-menu-mobile.png"])
                     # Workspace V2: navegação real autenticada e um ciclo completo
                     # de briefing em banco efêmero, sem credenciais/cliente de produção.
                     work=browser.new_context(
