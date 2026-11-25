@@ -74,6 +74,14 @@ M0 contexto/ADR -> M1 identidade -> M2 segurança -> M3 briefing -> M4 sourcing 
 - **Discovery P1 antes de escalar a promessa de centralização:** registro canônico do evento, mapa de campos duplicados e escolha das primeiras integrações/API/exportação, com critérios mensuráveis. [Issue #6](https://github.com/Zuma-Lab/nexoalpha/issues/6). Não antecipar go-live sem testes e LGPD.
 - **Critério de aceite M1:** clareza e compreensão da dor, leitura mobile, ausência de métricas fabricadas e ligação visível com o produto demonstrado.
 
+## Revisão editorial opcional da homepage — proposta de 2026-11-24
+
+- **Diagnóstico de rascunhos:** excesso de copy e de títulos com a mesma hierarquia nas três primeiras seções; densidade mais prejudicial no mobile que no desktop. É avaliação de conceito, não bug confirmado do código em produção.
+- **Direção sugerida, NÃO aprovada para editar layout:** Hero com mensagem A, próxima rolagem com título B, CTA principal claro, textos de apoio mais curtos e sem repetição; imagens existentes do sistema e briefing como demonstração, fotografia de pessoa opcional.
+- **Preservar integralmente identidade atual** até decisão expressa. Não reintroduzir `#retrabalho` nem alterar tokens como parte de uma mudança apenas de texto.
+- **Critério de aceite de qualquer revisão visual futura:** comparar composição real desktop/mobile antes/depois; explicar o que foi removido e por quê; confirmar autorização de imagem/estrutura; evitar prometer automações inexistentes.
+- **Fonte de aprovação:** [Guia Editorial e Controle de Mudanças](GUIA_EDITORIAL_E_APROVACAO_HOMEPAGE.md).
+
 ## Critério de maturidade após direção B (2026-11-24)
 
 - **Implantado no código não significa pronto em produção**: validação manual, teste multitenant, dados reais com autorização, serviço de e-mail e política LGPD continuam como gates.
