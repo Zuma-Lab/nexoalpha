@@ -17,6 +17,16 @@ Homepage em HTML/CSS/JavaScript sem runtime do mockup exportado. A narrativa inc
 - Pesquisa qualitativa, fontes e limites: [pesquisa e arquitetura editorial](../governanca/PESQUISA_DORES_E_MENSAGEM_HOME_2026-11-24.md).
 - Imagens reais do novo trecho: [desktop e mobile](../evidencias/capturas/README.md) após CI.
 
+## Refinamento de copy e imagens — 25/11/2026 (aprovado para implementação)
+
+- **Hero:** “O evento é um só. A informação não deveria estar em tantos lugares.” + uma frase curta e **imagem original 02 do sistema**.
+- **Primeira rolagem:** “Sua equipe precisa conduzir eventos. Não reconstruir informações.” + **imagem original 03 do briefing** + painel V1/V2 existente.
+- **Outras seções:** copy de apresentação reduzida; comparativo financeiro e matriz de perfis preservam suas informações necessárias, demonstrações fictícias e ressalvas.
+- **Imagem 01 (pessoa + sistema):** não usada nesta revisão para evitar competição visual.
+- **Identidade:** brandbook 2.1, grafite, laranja, off-white, Inter e componente de comparação mantidos.
+- **Assets:** originals em `../../assets/photography/`; FastAPI os serve por `/visuals/<nome>.png` sem recomprimir. **Publicação estática independente precisa configurar essa rota**.
+- **Capturas reais:** `evidencias/capturas/home-hero-desktop.png`, `home-briefing-desktop.png`, `home-hero-mobile.png`, `home-briefing-mobile.png` (após CI).
+
 ## Visualizar
 
 ```bash
