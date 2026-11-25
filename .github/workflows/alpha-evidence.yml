@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - feat/homepage-produto-revisao-claude-20261123
+      - feat/consultor-fluxo-prioritario-20261125
     paths:
       - 'homepage/**'
       - 'alpha-snapshot/**'
