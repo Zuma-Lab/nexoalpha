@@ -35,8 +35,8 @@ O laranja identifica uma ação, campo alterado ou algo que exige atenção; nã
 ## 02B. Refinamento editorial autorizado em 25/11/2026 — sem alterar identidade
 
 - **Título do hero:** “O evento é um só. A informação não deveria estar em tantos lugares.” com texto curto sobre e-mails, planilhas e versões desencontradas.
-- **Primeira rolagem:** “Sua equipe precisa conduzir eventos. Não reconstruir informações.” e foto 03 do briefing, mantendo a prova V1/V2 logo abaixo.
-- **Foto 02 do sistema** entra no hero. **Foto 01 da pessoa** fica como material opcional, não forçar terceiro bloco visual.
+- **Primeira rolagem:** “Sua equipe precisa conduzir eventos. Não reconstruir informações.” e imagem existente de briefing, mantendo a prova V1/V2 logo abaixo.
+- **Visual de sistema** entra no hero. **Fotografia 01 da pessoa** fica como material opcional, não forçar terceiro bloco visual.
 - **Preservados:** grafite `#111315`, laranja `#FF850D`, creme `#F3EFE9`, fonte Inter, botões existentes, cenário fictício e ressalvas comerciais.
 - **Redução de densidade:** títulos A/B fazem papéis distintos, os parágrafos de apoio são curtos e as seções de cotações e permissões mantêm dados de negócio essenciais.
 - Não é aprovação de brandbook final/naming; screenshots reais devem ser gerados e revisados antes de merge.
