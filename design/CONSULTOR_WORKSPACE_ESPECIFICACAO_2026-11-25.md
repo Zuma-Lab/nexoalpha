@@ -91,7 +91,7 @@ Não criar um menu “Cotações” global duplicado com a aba do projeto sem um
 
 - `alpha-snapshot/backend/consultant_queue.py`: cálculo das prioridades em consultas agregadas por `company_id`, uma ação factual por projeto aberto. Não contém tokens nem NET.
 - `GET /api/consultant/queue`: exige papel `admin` ou `consultant`; `client`/`viewer` recebem 403; não altera nenhuma entidade.
-- `workspace-v2/app.js`: usa endpoint na fila interna e navega até `briefing`, `rfq`, `quotes`, `proposal` ou `planning`, preservando grid, cores e tipografia atuais. Perfis não internos mantêm fila simples existente.
+- `workspace-v2/app.js`: usa endpoint na fila interna **e na ação principal do projeto**, navegando até `briefing`, `rfq`, `quotes`, `proposal` ou `planning`, preservando grid, cores e tipografia atuais. Perfis não internos mantêm fila simples existente.
 - Segurança: toda leitura é escopada por empresa; `owner_is_me` é **marcador de ordenação**, não substituto de ACL; nenhum dado financeiro confidencial vai ao endpoint.
 - Limitação: ações informam problemas, mas **não** fingem resolver token perdido, entrega de e-mail, comparativo tipado ou renovação de proposta. Priorização é heurística determinística, não IA e não substitui revisão humana.
 
