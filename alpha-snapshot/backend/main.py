@@ -125,6 +125,9 @@ class ProposalContentIn(BaseModel):
     terms:str=Field(default='',max_length=4000)
 
 class QuoteItemIn(BaseModel):
+    rooms:int|None=Field(default=None,ge=1,le=100000)
+    nights:int|None=Field(default=None,ge=1,le=3660)
+    source_rfq_id:int|None=Field(default=None,ge=1)
     category:str
     description:str=Field(min_length=1)
     quantity:int=Field(ge=1)
@@ -488,8 +491,19 @@ def create_quote_item(pid:int,body:QuoteItemIn,user=Depends(me)):
     with connect() as db:
         project(db,pid,user)
         if body.supplier_id:required(db,'SELECT id FROM suppliers WHERE id=? AND company_id=?',(body.supplier_id,user['company_id']))
-        item_id=db.execute('''INSERT INTO quote_items(company_id,project_id,supplier_id,category,description,quantity,unit_net_cents,tax_bps,fee_bps)
-         VALUES (?,?,?,?,?,?,?,?,?)''',(user['company_id'],pid,body.supplier_id,body.category,body.description,body.quantity,body.unit_net_cents,body.tax_bps,body.fee_bps)).lastrowid
+        supplier_id=body.supplier_id
+        if body.rooms is not None or body.nights is not None:
+            if body.category != 'Hospedagem' or not body.rooms or not body.nights or body.quantity != body.rooms*body.nights:
+                raise HTTPException(422, 'Confira os apartamentos, as diárias e a quantidade de hospedagem.')
+        if body.source_rfq_id is not None:
+            source=required(db,'''SELECT r.supplier_id FROM rfqs r JOIN rfq_batches b ON b.id=r.batch_id
+                JOIN rfq_responses rr ON rr.rfq_id=r.id WHERE r.id=? AND b.project_id=? AND r.company_id=?
+                AND r.status='responded' ''',(body.source_rfq_id,pid,user['company_id']))
+            if supplier_id is not None and supplier_id != source['supplier_id']:
+                raise HTTPException(422, 'O fornecedor diverge da resposta selecionada.')
+            supplier_id=source['supplier_id']
+        item_id=db.execute('''INSERT INTO quote_items(company_id,project_id,supplier_id,category,description,quantity,unit_net_cents,tax_bps,fee_bps,rooms,nights,source_rfq_id)
+         VALUES (?,?,?,?,?,?,?,?,?,?,?,?)''',(user['company_id'],pid,supplier_id,body.category,body.description,body.quantity,body.unit_net_cents,body.tax_bps,body.fee_bps,body.rooms,body.nights,body.source_rfq_id)).lastrowid
         db.execute("UPDATE projects SET status='quoting',updated_at=CURRENT_TIMESTAMP WHERE id=?",(pid,))
         audit(db,user['company_id'],user['id'],'quote.item_added',pid,body.description)
         return money_item(required(db,'SELECT * FROM quote_items WHERE id=?',(item_id,)))
