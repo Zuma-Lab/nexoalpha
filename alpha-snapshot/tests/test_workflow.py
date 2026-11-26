@@ -415,3 +415,30 @@ def test_saved_proposal_review_and_reshare(client):
     assert client.get('/api/public'+created['review_path']).status_code==404
     assert client.get('/api/public'+rotated.json()['review_path']).json()['snapshot']==preview['snapshot']
     assert client.post(path+'/reissue-link',headers=headers,json=payload).status_code==409
+
+
+def test_decision_receipt_matches_saved_version(client):
+    headers=login(client)
+    pid=client.get('/api/projects').json()[0]['id']
+    for outcome in ('approved','changes_requested','rejected'):
+        saved=client.post(f'/api/projects/{pid}/proposals',headers=headers).json()
+        base=f"/api/proposals/{saved['id']}"
+        assert client.get(base+'/preview').json()['receipt'] is None
+        assert client.post(base+'/publish',headers=headers).status_code==200
+        public='/api/public'+saved['review_path']
+        assert client.post(public+'/decision',json={'actor':'Diretoria de teste','decision':outcome,'comment':'Avaliação de teste'}).status_code==200
+        external=client.get(public).json()
+        internal=client.get(base+'/preview').json()
+        receipt=external['receipt']
+        assert internal['receipt']==receipt
+        assert external['version']==saved['version']
+        assert external['total_cents']==saved['total_cents']
+        assert receipt['actor']=='Diretoria de teste' and receipt['decision']==outcome
+        assert receipt['comment']=='Avaliação de teste'
+        assert receipt['identification']=='self_declared'
+        assert receipt['created_at'].endswith('+00:00')
+        assert client.post(public+'/decision',json={'decision':'approved'}).status_code==409
+        assert client.get(public).json()['receipt']==receipt
+        assert client.post(base+'/revoke-link',headers=headers).status_code==200
+        assert client.get(public).status_code==404
+        assert client.get(base+'/preview').json()['receipt']==receipt

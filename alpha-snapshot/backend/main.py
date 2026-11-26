@@ -536,16 +536,23 @@ def public_proposal(token:str):
     with connect() as db:
         p=required(db,'SELECT id,project_id,company_id,version,status,snapshot,total_cents,published_at FROM proposals WHERE token_hash=? AND expires_at>? AND revoked_at IS NULL',(token_hash(token),now()))
         if p['status']=='draft':raise HTTPException(404,'Proposta ainda não publicada')
-        return commercial_preview(p)
+        return commercial_preview(db,p)
 
-def commercial_preview(p):
+def commercial_preview(db,p):
     private=jload(p['snapshot']) or {}
     # Cliente jamais recebe custos NET, tributos, fees, margens ou IDs internos.
     public_items=[{key:item.get(key) for key in ('category','description','quantity','sale_total_cents')}
       for item in private.get('items',[])]
     snapshot={'project':private.get('project',{}),'items':public_items,'total_cents':p['total_cents'],'introduction':str(private.get('introduction') or ''),'terms':str(private.get('terms') or '')}
+    decision=db.execute("""SELECT actor,decision,comment,created_at FROM approval_decisions
+      WHERE proposal_id=? AND company_id=? ORDER BY id DESC LIMIT 1""",(p['id'],p['company_id'])).fetchone()
+    receipt=None
+    if decision:
+        receipt=dict(decision)
+        receipt['created_at']=datetime.fromisoformat(receipt['created_at']).replace(tzinfo=timezone.utc).isoformat()
+        receipt['identification']='self_declared'
     return {'version':p['version'],'status':p['status'],
-      'snapshot':snapshot,'total_cents':p['total_cents'],'published_at':p['published_at']}
+      'snapshot':snapshot,'total_cents':p['total_cents'],'published_at':p['published_at'],'receipt':receipt}
 
 
 @app.get('/api/proposals/{propid}/preview')
@@ -554,7 +561,7 @@ def preview_proposal(propid:int,user=Depends(me)):
     with connect() as db:
         p=required(db,'SELECT * FROM proposals WHERE id=? AND company_id=?',(propid,user['company_id']))
         project(db,p['project_id'],user)
-        return {**commercial_preview(p),'id':propid,'expires_at':p['expires_at']}
+        return {**commercial_preview(db,p),'id':propid,'expires_at':p['expires_at']}
 
 @app.post('/api/proposals/{propid}/reissue-link')
 def reissue_proposal(propid:int,response:Response,expected_expiry:str|None=Body(embed=True),user=Depends(me)):
