@@ -379,3 +379,21 @@ def test_rfq_reissue_after_reopening_project(client):
     assert invitation_response.json()['supplier_name']==invitation['supplier_name']
     assert client.post(new_url+'/response',json={'net_cents':100}).status_code==200
     assert client.post(path,headers=headers,json={'expected_expiry':result.json()['expires_at']}).status_code==409
+
+
+def test_manual_delivery_of_one_invitation_after_reload(client):
+    headers=login(client)
+    project=client.get('/api/projects').json()[0]
+    url=f"/api/projects/{project['id']}"
+    suppliers=client.get('/api/suppliers').json()[:2]
+    batch=client.post(url+'/rfq-batches',headers=headers,json={'supplier_ids':[s['id'] for s in suppliers]}).json()
+    first,second=batch['links']
+    path=f"/api/rfqs/{first['rfq_id']}"
+    rotated=client.post(path+'/reissue-link',headers=headers,json={'expected_expiry':first['expires_at']}).json()
+    for _ in range(2):
+        assert client.post(path+'/manual-delivery',headers=headers,json={'expected_expiry':rotated['expires_at']}).status_code==200
+    rows={row['id']:row for row in client.get(url).json()['rfqs']}
+    assert rows[first['rfq_id']]['sent_at']
+    assert rows[second['rfq_id']]['status']=='prepared'
+    assert rows[second['rfq_id']]['sent_at'] is None
+    assert rows[first['rfq_id']]['batch_id']==rows[second['rfq_id']]['batch_id']

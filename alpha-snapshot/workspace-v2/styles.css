@@ -241,3 +241,4 @@ button:disabled{opacity:.5;cursor:not-allowed}
   align-items:flex-start;
  }
 }
+@media(max-width:970px){.rfq-grid{grid-template-columns:minmax(0,1fr)}.rfq-grid>*{min-width:0}}
