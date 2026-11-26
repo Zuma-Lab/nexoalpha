@@ -195,6 +195,17 @@ function quotePage(){
  const adding=canEdit()?surf("Adicionar item ao orçamento","Impostos e fee parametrizados por item. Não assumir taxas universais.",'<form class="form surface-body" data-form="quote-item">'+select("Categoria","category",["Hospedagem","Salas e A&B","Transfers","Aéreo","Audiovisual","Staff","Outros"].map(option),"Hospedagem")+field("Descrição do serviço *","description","","text",'required minlength="2"')+'<div class="form-row">'+field("Quantidade *","quantity","1","number",'required min="1" step="1"')+field("Custo NET unitário (R$) *","unit_net","0,00","text",'required inputmode="decimal"')+'</div><div class="form-row">'+field("Impostos (%)","tax_pct","0","number",'min="0" max="100" step=".01"')+field("Fee (%)","fee_pct","0","number",'min="0" max="100" step=".01"')+'</div><div class="review-box" id="quote-preview" aria-live="polite">Informe os valores para conferir o cálculo antes de gravar.</div><div class="form-footer"><span class="page-description">Arredondamento realizado por item em centavos.</span><button class="btn btn-primary" type="submit">Adicionar item</button></div></form>'):"";
  return '<div class="notice neutral">O comparativo só pode refletir serviços e quantidades equivalentes. Hotel com café à parte não deve ser selecionado automaticamente apenas pela menor tarifa.</div>'+matrix+'<div style="height:18px"></div>'+quote+'<div style="height:18px"></div>'+adding;
 }
+function decisionReceipt(proposal){
+ const receipt=proposal?.receipt;
+ if(!receipt)return "";
+ const project=proposal.snapshot.project;
+ const timestamp=new Intl.DateTimeFormat("pt-BR",{dateStyle:"short",timeStyle:"medium",timeZone:"America/Sao_Paulo"}).format(new Date(receipt.created_at));
+ return surf("Comprovante de decisão",project.title,'<div class="surface-body">'+
+   row("Protocolo",project.protocol)+row("Proposta","V"+proposal.version)+row("Valor da versão",money(proposal.total_cents))+
+   row("Decisão",statusMap[receipt.decision]||receipt.decision)+row("Registro (São Paulo)",timestamp)+
+   row("Nome informado no link",receipt.actor)+row("Identificação","Autodeclarada pelo destinatário")+
+   row("Comentário",receipt.comment||"Sem comentário")+'</div>');
+}
 function proposalPage(){
  const p=state.project||{},list=p.proposals||[],items=p.quote_items||[];
  const current=state.proposalLink;
@@ -204,7 +215,7 @@ function proposalPage(){
  const link=current?surf("Proposta V"+current.version,"Versão salva",'<div class="surface-body">'+preview+row("Total de venda",money(current.total_cents))+status(current.status)+'<div class="actions">'+share+(current.status==="draft"?button("Publicar versão","publish-proposal",true):"")+'</div></div>'):"";
  const entries=list.length?'<div class="surface-flush">'+list.map(x=>'<div class="pair" style="padding:17px 20px"><span><strong>Proposta V'+esc(x.version)+'</strong><small style="display:block;color:var(--muted)">'+esc(date(x.created_at))+'</small></span><span>'+money(x.total_cents)+' · '+status(x.status)+'</span>'+(canEdit()?'<button class="btn btn-small" data-action="review-proposal" data-id="'+Number(x.id)+'">Revisar versão</button>':"")+'</div>').join("")+'</div>':empty("Nenhuma proposta publicada","A proposta depende de ao menos um item de orçamento. Toda publicação preserva o valor e os itens daquela versão.");
  const form=canEdit()?surf("Montar nova versão","Texto e condições fazem parte do snapshot publicado. Não inclua informações internas de NET, impostos ou fee.",'<form class="form surface-body" data-form="proposal-content">'+row("Itens do orçamento",String(items.length))+row("Valor de venda",money(p.quote_total_cents))+'<div class="form-group"><h3>Apresentação da proposta</h3>'+textarea("Escopo e apresentação","introduction","","Texto que o cliente poderá ler na proposta pública.")+'</div>'+textarea("Condições comerciais e cancelamento","terms","","Inclua validade, o que está incluso e condições de cancelamento. O conteúdo fica congelado na versão.")+'<div class="form-footer"><span class="page-description">Uma nova versão não substitui versões anteriores.</span><button class="btn btn-primary" type="submit" '+(!items.length?"disabled":"")+'>Criar versão para revisão</button></div></form>'):"";
- return '<div class="notice neutral">A versão pública omite custos NET, taxas e fee internos. A entrega ainda é manual por link, com prazo de validade.</div>'+link+'<div class="project-grid"><div>'+surf("Histórico de propostas","Aprovações e snapshots versionados por projeto.",entries)+'</div><aside>'+form+'</aside></div>';
+ return '<div class="notice neutral">A versão pública omite custos NET, taxas e fee internos. A entrega ainda é manual por link, com prazo de validade.</div>'+link+decisionReceipt(current)+'<div class="project-grid"><div>'+surf("Histórico de propostas","Aprovações e snapshots versionados por projeto.",entries)+'</div><aside>'+form+'</aside></div>';
 }
 function planningPage(){
  const tasks=state.project?.tasks||[];
@@ -391,7 +402,7 @@ async function submitForm(form){
    root.innerHTML=publicPage("Resposta registrada","Obrigado. Sua resposta foi vinculada ao pedido. Não é necessário reenviar.",'<span class="tag success">Recebida</span>');notify("Resposta enviada.");
   }else if(kind==="public-decision"){
    await api("/api/public/proposal/"+encodeURIComponent(state.publicToken)+"/decision",{method:"POST",body:{decision:data.decision,actor:data.actor||"Cliente",comment:data.comment||""}});
-   root.innerHTML=publicPage("Decisão registrada","Sua decisão foi vinculada à versão publicada da proposta.",'<span class="tag success">Registrada</span>');
+   await openPublic();
   }
  }catch(err){const msg=errorMessage(err);notify(msg,"error");if(kind==="login"){const node=form.querySelector(".status-message");if(node)node.textContent=msg;}if(err.status===401&&kind!=="login")renderLogin(msg);}
 }
@@ -490,7 +501,7 @@ async function openPublic(){
    const intro=snap.introduction?surf("Apresentação","Conteúdo integrante da versão publicada.",'<div class="surface-body" style="white-space:pre-wrap;font-size:13px;line-height:1.7">'+esc(snap.introduction)+'</div>'):"";
    const terms=snap.terms?surf("Condições comerciais","Registradas no snapshot desta versão.",'<div class="surface-body" style="white-space:pre-wrap;font-size:13px;line-height:1.7">'+esc(snap.terms)+'</div>'):"";
    const decision=r.status==="published"?surf("Registrar decisão","Esta decisão ficará registrada junto à versão publicada.",'<form class="form surface-body" data-form="public-decision">'+field("Seu nome *","actor","","text","required")+select("Decisão","decision",[["approved","Aprovar"],["changes_requested","Solicitar ajustes"],["rejected","Rejeitar"]],"approved")+textarea("Comentário","comment")+ '<button class="btn btn-primary" type="submit">Confirmar decisão</button></form>'):'<div class="notice neutral">Esta versão está no estado: '+esc(statusMap[r.status]||r.status)+'.</div>';
-   root.innerHTML=publicPage(snap.project?.title||"Proposta comercial","Versão "+r.version+" · "+(snap.project?.protocol||"Projeto")+" · "+date(snap.project?.starts_at),intro+(intro?'<div style="height:18px"></div>':'')+table+(terms?'<div style="height:18px"></div>'+terms:'')+'<div style="height:18px"></div>'+decision);
+   root.innerHTML=publicPage(snap.project?.title||"Proposta comercial","Versão "+r.version+" · "+(snap.project?.protocol||"Projeto")+" · "+date(snap.project?.starts_at),intro+(intro?'<div style="height:18px"></div>':'')+table+(terms?'<div style="height:18px"></div>'+terms:'')+'<div style="height:18px"></div>'+(decisionReceipt(r)||decision));
   }else root.innerHTML=publicPage("Página não encontrada","Este endereço não corresponde a um link público reconhecido.","");
  }catch(err){root.innerHTML=publicPage("Link indisponível","O link pode ter vencido, sido revogado ou não existir. Peça um novo convite ao responsável.",'<div class="notice error">'+esc(errorMessage(err))+'</div>');}
 }
