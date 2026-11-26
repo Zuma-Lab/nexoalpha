@@ -143,6 +143,7 @@ def init_db():
         db.executescript(DDL)
         # Migração aditiva, preservando todos os registros comerciais existentes.
         for table, columns in {
+            'quote_items': {'rooms':'INTEGER', 'nights':'INTEGER', 'source_rfq_id':'INTEGER REFERENCES rfqs(id)'},
             'sessions': {'csrf_token': "TEXT NOT NULL DEFAULT ''"},
             'rfqs': {'expires_at':'TEXT', 'revoked_at':'TEXT'},
             'proposals': {'expires_at':'TEXT', 'revoked_at':'TEXT'},
