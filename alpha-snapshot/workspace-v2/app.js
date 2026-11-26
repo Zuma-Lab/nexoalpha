@@ -185,14 +185,23 @@ function moneyBreakdown(item){
  const net=Number(item.quantity)*Number(item.unit_net_cents),tax=Math.floor((net*Number(item.tax_bps)+5000)/10000),fee=Math.floor(((net+tax)*Number(item.fee_bps)+5000)/10000);
  return {net,tax,fee,total:net+tax+fee};
 }
+function quoteItemMemory(item){
+ const base=item.net_total_cents+item.tax_cents;
+ return '<details class="quote-memory"><summary>Ver cálculo</summary>'+
+   (item.rooms && item.nights ? row("Apartamentos × diárias × tarifa",quantity(item.rooms)+" × "+quantity(item.nights)+" × "+money(item.unit_net_cents)) : row("Quantidade × NET unitário",quantity(item.quantity)+" × "+money(item.unit_net_cents)))+
+   (item.source_rfq_id ? row("Resposta de origem","RFQ #"+Number(item.source_rfq_id)) : "")+
+   row("Subtotal NET",money(item.net_total_cents))+row("Tributos",money(item.tax_cents))+
+   row("Base do fee",money(base))+row("Fee",money(item.fee_cents))+
+   row("Total de venda",money(item.sale_total_cents))+'</details>';
+}
 function quotePage(){
  const p=state.project||{},items=p.quote_items||[],rfqs=p.rfqs||[],total=items.reduce((a,x)=>a+(Number(x.sale_total_cents)||0),0);
  const net=items.reduce((a,x)=>a+(Number(x.net_total_cents)||0),0),tax=items.reduce((a,x)=>a+(Number(x.tax_cents)||0),0),fee=items.reduce((a,x)=>a+(Number(x.fee_cents)||0),0);
  const totals='<div class="inline-totals">'+[['Custo NET',net],['Tributos parametrizados',tax],['Fee',fee],['Venda total',total]].map(([k,v])=>'<div><small>'+esc(k)+'</small><strong>'+money(v)+'</strong></div>').join("")+'</div>';
- const quote=surf("Orçamento por item","Cálculo em centavos na API. NET, impostos e fee são informações internas.",items.length?'<div class="table-wrap" tabindex="0" aria-label="Itens financeiros da cotação"><table class="data-table wide"><thead><tr><th>Serviço</th><th>Descrição</th><th>Qtd.</th><th class="money">NET unit.</th><th class="money">Impostos</th><th class="money">Fee</th><th class="money">Venda</th><th></th></tr></thead><tbody>'+items.map(x=>'<tr><td>'+esc(x.category)+'</td><th>'+esc(x.description)+'</th><td>'+quantity(x.quantity)+'</td><td class="money">'+money(x.unit_net_cents)+'</td><td class="money">'+money(x.tax_cents)+'</td><td class="money">'+money(x.fee_cents)+'</td><td class="money"><strong>'+money(x.sale_total_cents)+'</strong></td><td>'+(canEdit()?'<button class="btn btn-small" data-action="remove-item" data-id="'+Number(x.id)+'" aria-label="Excluir item '+esc(x.description)+'">Excluir</button>':"")+'</td></tr>').join("")+'</tbody></table></div>'+totals:empty("Orçamento ainda sem itens","Adicione os serviços contratáveis, suas quantidades e custos para gerar uma proposta rastreável."));
+ const quote=surf("Orçamento por item","Cálculo em centavos na API. NET, impostos e fee são informações internas.",items.length?'<div class="table-wrap" tabindex="0" aria-label="Itens financeiros da cotação"><table class="data-table wide"><thead><tr><th>Serviço</th><th>Descrição</th><th>Qtd.</th><th class="money">NET unit.</th><th class="money">Impostos</th><th class="money">Fee</th><th class="money">Venda</th><th></th></tr></thead><tbody>'+items.map(x=>'<tr><td>'+esc(x.category)+'</td><th>'+esc(x.description)+quoteItemMemory(x)+'</th><td>'+quantity(x.quantity)+'</td><td class="money">'+money(x.unit_net_cents)+'</td><td class="money">'+money(x.tax_cents)+'</td><td class="money">'+money(x.fee_cents)+'</td><td class="money"><strong>'+money(x.sale_total_cents)+'</strong></td><td>'+(canEdit()?'<button class="btn btn-small" data-action="remove-item" data-id="'+Number(x.id)+'" aria-label="Excluir item '+esc(x.description)+'">Excluir</button>':"")+'</td></tr>').join("")+'</tbody></table></div>'+totals:empty("Orçamento ainda sem itens","Adicione os serviços contratáveis, suas quantidades e custos para gerar uma proposta rastreável."));
  const responseRows=rfqs.filter(x=>x.status==="responded");
  const matrix=surf("Respostas dos fornecedores","Comparação preliminar; disponibilidade e condições importam além do preço.",responseRows.length?'<div class="table-wrap" tabindex="0" aria-label="Matriz de respostas recebidas"><table class="data-table compact"><thead><tr><th>Fornecedor</th><th>Disponibilidade</th><th class="money">NET informado</th><th>Cancelamento</th></tr></thead><tbody>'+responseRows.map(x=>'<tr><th>'+esc(x.supplier_name)+'</th><td>'+status(x.available)+'</td><td class="money">'+money(x.net_cents)+'</td><td>'+esc(x.cancellation||"Não informado")+'</td></tr>').join("")+'</tbody></table></div><div class="table-hint">Valor informado na resposta do fornecedor. Não combinar automaticamente com a grade financeira sem validar escopo, unidade e tributos.</div>':empty("Nenhuma resposta recebida","A matriz será preenchida com as respostas dos fornecedores enviados ao projeto."));
- const adding=canEdit()?surf("Adicionar item ao orçamento","Impostos e fee parametrizados por item. Não assumir taxas universais.",'<form class="form surface-body" data-form="quote-item">'+select("Categoria","category",["Hospedagem","Salas e A&B","Transfers","Aéreo","Audiovisual","Staff","Outros"].map(option),"Hospedagem")+field("Descrição do serviço *","description","","text",'required minlength="2"')+'<div class="form-row">'+field("Quantidade *","quantity","1","number",'required min="1" step="1"')+field("Custo NET unitário (R$) *","unit_net","0,00","text",'required inputmode="decimal"')+'</div><div class="form-row">'+field("Impostos (%)","tax_pct","0","number",'min="0" max="100" step=".01"')+field("Fee (%)","fee_pct","0","number",'min="0" max="100" step=".01"')+'</div><div class="review-box" id="quote-preview" aria-live="polite">Informe os valores para conferir o cálculo antes de gravar.</div><div class="form-footer"><span class="page-description">Arredondamento realizado por item em centavos.</span><button class="btn btn-primary" type="submit">Adicionar item</button></div></form>'):"";
+ const adding=canEdit()?surf("Adicionar item ao orçamento","Impostos e fee parametrizados por item. Não assumir taxas universais.",'<form class="form surface-body" data-form="quote-item">'+select("Categoria","category",["Hospedagem","Salas e A&B","Transfers","Aéreo","Audiovisual","Staff","Outros"].map(option),"Hospedagem")+field("Descrição do serviço *","description","","text",'required minlength="2"')+'<div class="form-row">'+field("Apartamentos","rooms","1","number",'required min="1" max="100000"')+field("Diárias por apartamento","nights","1","number",'required min="1" max="3660"')+field("Quantidade *","quantity","1","number",'required min="1" step="1"')+field("Custo NET unitário (R$) *","unit_net","0,00","text",'required inputmode="decimal"')+'</div><div class="form-row">'+select("Origem da tarifa","source_rfq_id",[["","Lançamento manual"],...responseRows.map(r=>[r.id,r.supplier_name+" · RFQ #"+r.id])])+field("Impostos (%)","tax_pct","0","number",'min="0" max="100" step=".01"')+field("Fee (%)","fee_pct","0","number",'min="0" max="100" step=".01"')+'</div><div class="review-box" id="quote-preview" aria-live="polite">Informe os valores para conferir o cálculo antes de gravar.</div><div class="form-footer"><span class="page-description">Arredondamento realizado por item em centavos.</span><button class="btn btn-primary" type="submit">Adicionar item</button></div></form>'):"";
  return '<div class="notice neutral">O comparativo só pode refletir serviços e quantidades equivalentes. Hotel com café à parte não deve ser selecionado automaticamente apenas pela menor tarifa.</div>'+matrix+'<div style="height:18px"></div>'+quote+'<div style="height:18px"></div>'+adding;
 }
 function decisionReceipt(proposal){
@@ -346,7 +355,18 @@ function calcPreviewFromForm(f){
  const amounts=moneyBreakdown({quantity:q,unit_net_cents:unit,tax_bps:Math.round(tax*100),fee_bps:Math.round(fee*100)});
  return "NET total: "+money(amounts.net)+" · Tributos: "+money(amounts.tax)+" · Fee: "+money(amounts.fee)+" · Venda: "+money(amounts.total);
 }
-function updateQuotePreview(){const f=document.querySelector('form[data-form="quote-item"]');const out=document.getElementById("quote-preview");if(f&&out)out.textContent=calcPreviewFromForm(f);}
+function updateQuotePreview(){const f=document.querySelector('form[data-form="quote-item"]');const out=document.getElementById("quote-preview");if(!f||!out)return;
+ const {category,rooms,nights,quantity}=f.elements;
+ const lodging=category.value==="Hospedagem";
+ for(const input of [rooms,nights]){
+   input.disabled=!lodging;
+   input.closest("label").style.display=lodging?"":"none";
+ }
+ if(lodging)quantity.value=Number(rooms.value)*Number(nights.value);
+ else if(quantity.readOnly)quantity.value="1";
+ quantity.readOnly=lodging;
+ quantity.closest("label").style.display=lodging?"none":"";
+ out.textContent=calcPreviewFromForm(f);}
 function toCents(value){
  const s=String(value??"").trim().replace(/\s/g,"").replace(/^R\$/i,"");
  const norm=s.includes(",")?s.replace(/\./g,"").replace(",","."):s;
@@ -386,6 +406,8 @@ async function submitForm(form){
    await refreshProject();render();notify("Links privados gerados. Ainda não enviados.");
   }else if(kind==="quote-item"){
    const body={category:data.category,description:data.description,quantity:Number(data.quantity),unit_net_cents:toCents(data.unit_net),tax_bps:toBps(data.tax_pct),fee_bps:toBps(data.fee_pct)};
+   if(data.category==="Hospedagem"){body.rooms=Number(data.rooms);body.nights=Number(data.nights);body.quantity=body.rooms*body.nights;}
+   if(data.source_rfq_id)body.source_rfq_id=Number(data.source_rfq_id);
    await api("/api/projects/"+state.pid+"/quote-items",{method:"POST",body});
    await refreshProject();render();notify("Item gravado e recalculado pela API.");
   }else if(kind==="proposal-content"){
