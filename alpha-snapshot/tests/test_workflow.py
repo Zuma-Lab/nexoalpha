@@ -397,3 +397,20 @@ def test_manual_delivery_of_one_invitation_after_reload(client):
     assert rows[second['rfq_id']]['status']=='prepared'
     assert rows[second['rfq_id']]['sent_at'] is None
     assert rows[first['rfq_id']]['batch_id']==rows[second['rfq_id']]['batch_id']
+
+
+def test_saved_proposal_review_and_reshare(client):
+    headers=login(client)
+    pid=client.get('/api/projects').json()[0]['id']
+    created=client.post(f'/api/projects/{pid}/proposals',headers=headers,json={'terms':'Condição original'}).json()
+    path=f"/api/proposals/{created['id']}"
+    preview=client.get(path+'/preview').json()
+    assert preview['snapshot']['terms']=='Condição original'
+    assert 'unit_net_cents' not in preview['snapshot']['items'][0]
+    assert client.post(path+'/publish',headers=headers).status_code==200
+    payload={'expected_expiry':preview['expires_at']}
+    rotated=client.post(path+'/reissue-link',headers=headers,json=payload)
+    assert rotated.status_code==200
+    assert client.get('/api/public'+created['review_path']).status_code==404
+    assert client.get('/api/public'+rotated.json()['review_path']).json()['snapshot']==preview['snapshot']
+    assert client.post(path+'/reissue-link',headers=headers,json=payload).status_code==409

@@ -536,17 +536,46 @@ def public_proposal(token:str):
     with connect() as db:
         p=required(db,'SELECT id,project_id,company_id,version,status,snapshot,total_cents,published_at FROM proposals WHERE token_hash=? AND expires_at>? AND revoked_at IS NULL',(token_hash(token),now()))
         if p['status']=='draft':raise HTTPException(404,'Proposta ainda não publicada')
-        private=jload(p['snapshot']) or {}
-        # Cliente jamais recebe custos NET, tributos, fees, margens ou IDs internos.
-        public_items=[{key:item.get(key) for key in ('category','description','quantity','sale_total_cents')}
-          for item in private.get('items',[])]
-        snapshot={'project':private.get('project',{}),'items':public_items,'total_cents':p['total_cents'],'introduction':str(private.get('introduction') or ''),'terms':str(private.get('terms') or '')}
-        return {'version':p['version'],'status':p['status'],
-          'snapshot':snapshot,'total_cents':p['total_cents'],'published_at':p['published_at']}
+        return commercial_preview(p)
+
+def commercial_preview(p):
+    private=jload(p['snapshot']) or {}
+    # Cliente jamais recebe custos NET, tributos, fees, margens ou IDs internos.
+    public_items=[{key:item.get(key) for key in ('category','description','quantity','sale_total_cents')}
+      for item in private.get('items',[])]
+    snapshot={'project':private.get('project',{}),'items':public_items,'total_cents':p['total_cents'],'introduction':str(private.get('introduction') or ''),'terms':str(private.get('terms') or '')}
+    return {'version':p['version'],'status':p['status'],
+      'snapshot':snapshot,'total_cents':p['total_cents'],'published_at':p['published_at']}
+
+
+@app.get('/api/proposals/{propid}/preview')
+def preview_proposal(propid:int,user=Depends(me)):
+    allow(user,('admin','consultant'))
+    with connect() as db:
+        p=required(db,'SELECT * FROM proposals WHERE id=? AND company_id=?',(propid,user['company_id']))
+        project(db,p['project_id'],user)
+        return {**commercial_preview(p),'id':propid,'expires_at':p['expires_at']}
+
+@app.post('/api/proposals/{propid}/reissue-link')
+def reissue_proposal(propid:int,response:Response,expected_expiry:str|None=Body(embed=True),user=Depends(me)):
+    allow(user,('admin','consultant'))
+    with connect() as db:
+        db.execute('BEGIN IMMEDIATE')
+        p=required(db,'SELECT * FROM proposals WHERE id=? AND company_id=?',(propid,user['company_id']))
+        project(db,p['project_id'],user)
+        if p['status']!='published' or expected_expiry!=p['expires_at']:
+            raise HTTPException(409,'Atualize a proposta para conferir a situação atual.')
+        token=make_token()
+        expires_at=(datetime.now(timezone.utc)+timedelta(days=30)).isoformat()
+        db.execute('UPDATE proposals SET token_hash=?,expires_at=?,revoked_at=NULL WHERE id=?',(token_hash(token),expires_at,propid))
+        audit(db,user['company_id'],user['id'],'proposal.link_reissued',p['project_id'],str(propid))
+        response.headers['Cache-Control']='no-store'
+        return {'review_path':'/proposal/'+token,'expires_at':expires_at}
 
 @app.post('/api/public/proposal/{token}/decision')
 def public_decide(token:str,body:DecisionIn):
     with connect() as db:
+        db.execute('BEGIN IMMEDIATE')
         p=required(db,'SELECT * FROM proposals WHERE token_hash=? AND expires_at>? AND revoked_at IS NULL',(token_hash(token),now()))
         if p['status']!='published':raise HTTPException(409,'Proposta não está pendente de aprovação')
         db.execute('UPDATE proposals SET status=? WHERE id=?',(body.decision,p['id']))

@@ -242,3 +242,5 @@ button:disabled{opacity:.5;cursor:not-allowed}
  }
 }
 @media(max-width:970px){.rfq-grid{grid-template-columns:minmax(0,1fr)}.rfq-grid>*{min-width:0}}
+
+@media(max-width:640px){.context-bar{grid-template-columns:repeat(2,minmax(0,1fr))}.context-item{min-width:0;overflow-wrap:anywhere}.context-item:nth-child(2){border-top:0}}
