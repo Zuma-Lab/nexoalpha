@@ -416,6 +416,28 @@ def send_rfq_batch(bid:int,user=Depends(me)):
         audit(db,user['company_id'],user['id'],'rfq.batch_marked_sent',batch['project_id'],f'Lote #{bid} (envio manual por link)')
         return {'batch_id':bid,'status':'sent','delivered_via':'manual_link'}
 
+@app.post('/api/rfqs/{rfqid}/manual-delivery')
+def record_rfq_delivery(rfqid:int,expected_expiry:str=Body(embed=True),user=Depends(me)):
+    allow(user,('admin','consultant'))
+    with connect() as db:
+        db.execute('BEGIN IMMEDIATE')
+        invite=required(db,'''SELECT r.*,b.project_id FROM rfqs r JOIN rfq_batches b
+          ON b.id=r.batch_id WHERE r.id=? AND r.company_id=?''',(rfqid,user['company_id']))
+        project(db,invite['project_id'],user)
+        if invite['expires_at']!=expected_expiry:
+            raise HTTPException(409,'Convite alterado. Atualize o projeto.')
+        if invite['sent_at']:
+            return {'sent_at':invite['sent_at']}
+        stamp=now()
+        if invite['status']!='prepared' or invite['revoked_at'] or expected_expiry<=stamp:
+            raise HTTPException(409,'Este convite não está disponível para entrega')
+        db.execute("UPDATE rfqs SET status='sent',sent_at=? WHERE id=?",(stamp,rfqid))
+        db.execute('''UPDATE rfq_batches SET sent_at=? WHERE id=? AND sent_at IS NULL
+          AND NOT EXISTS(SELECT 1 FROM rfqs WHERE batch_id=? AND sent_at IS NULL)''',
+          (stamp,invite['batch_id'],invite['batch_id']))
+        audit(db,user['company_id'],user['id'],'rfq.manual_delivery',invite['project_id'],str(rfqid))
+        return {'sent_at':stamp}
+
 @app.post('/api/rfqs/{rfqid}/reissue-link')
 def reissue_rfq_link(rfqid:int,response:Response,expected_expiry:str|None=Body(embed=True),user=Depends(me)):
     allow(user,('admin','consultant'))

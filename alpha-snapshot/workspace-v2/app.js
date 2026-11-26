@@ -166,16 +166,17 @@ function rfqPage(){
  const list=p.rfqs||[];
  const checkList=available.map(s=>check(s.name+" · "+s.category,"supplier_ids[]",false,String(s.id))).join("");
  const creating=canEdit()?surf("Solicitar cotação","O convite fica vinculado à versão mais recente do briefing. Os links são entregues manualmente.",'<form class="form surface-body" data-form="rfq-batch"><div class="check-grid">'+(checkList||'<p class="page-description">Cadastre fornecedores para solicitar cotações.</p>')+'</div>'+field("Prazo de resposta (opcional)","deadline","","date")+'<div class="form-footer"><span class="page-description">A criação não dispara e-mails.</span><button class="btn btn-primary" type="submit" '+(!available.length?"disabled":"")+'>Gerar links de RFQ</button></div></form>'):"";
- const links=state.rfqBatch?'<div class="notice success">Lote #'+state.rfqBatch.batch_id+' criado a partir do briefing V'+state.rfqBatch.briefing_version+'. Copie os links abaixo antes de sair desta tela: os tokens não são exibidos novamente.</div>'+surf("Links para envio manual","Nenhum e-mail foi enviado pelo sistema.",'<div class="surface-body">'+state.rfqBatch.links.map((x,i)=>'<div class="pair"><span>'+esc(suppliers.find(s=>s.id===x.supplier_id)?.name||("Fornecedor "+x.supplier_id))+'</span><div class="actions"><a class="btn btn-small" target="_blank" rel="noopener noreferrer" href="'+esc(x.response_path)+'">Abrir link</a><button class="btn btn-small" type="button" data-action="copy-rfq" data-index="'+i+'">'+icon("copy")+' Copiar</button></div></div>').join("")+'<div class="form-footer"><span class="page-description">Marque como enviado somente após compartilhar o convite fora da plataforma.</span>'+button("Registrar envio manual","mark-rfq-sent",true)+'</div></div>'):"";
+ const links=state.rfqBatch?'<div class="notice success">Lote #'+state.rfqBatch.batch_id+' criado a partir do briefing V'+state.rfqBatch.briefing_version+'. Copie os links abaixo antes de sair desta tela: os tokens não são exibidos novamente.</div>'+surf("Links para envio manual","Nenhum e-mail foi enviado pelo sistema.",'<div class="surface-body">'+state.rfqBatch.links.map((x,i)=>'<div class="pair"><span>'+esc(suppliers.find(s=>s.id===x.supplier_id)?.name||("Fornecedor "+x.supplier_id))+'</span><div class="actions"><a class="btn btn-small" target="_blank" rel="noopener noreferrer" href="'+esc(x.response_path)+'">Abrir link</a><button class="btn btn-small" type="button" data-action="copy-rfq" data-index="'+i+'">'+icon("copy")+' Copiar</button></div></div>').join("")+'</div>'):"";
  const reissued=state.reissuedRfq?.pid===state.pid?state.reissuedRfq:null;
  const recovery=reissued?surf("Link reemitido",reissued.supplierName,
    '<div class="surface-body"><div class="actions"><a class="btn btn-small" href="'+esc(reissued.response_path)+'" target="_blank" rel="noopener noreferrer">Abrir link</a>'+
    button("Copiar link","copy-reissued-rfq")+'</div></div>'):"";
  const invitationStatus=x=>x.status==="responded"?status(x.status):
    x.revoked_at?status("Revogado"):!x.expires_at||Date.parse(x.expires_at)<=Date.now()?status("Expirado"):status(x.status);
- const table=surf("Histórico de RFQs",list.length+" solicitações",list.length?'<div class="table-wrap" tabindex="0" aria-label="Pedidos de cotação"><table class="data-table compact"><thead><tr><th>Fornecedor</th><th>Especialidade</th><th>Estado</th><th>Disponibilidade</th><th>Condições</th><th>Link</th></tr></thead><tbody>'+list.map(x=>'<tr><th>'+esc(x.supplier_name)+'</th><td>'+esc(x.category)+'</td><td>'+invitationStatus(x)+'</td><td>'+esc(x.available||"Aguardando")+'</td><td>'+esc(x.cancellation||x.conditions||"—")+'</td><td>'+
+ const table=surf("Histórico de RFQs",list.length+" solicitações",list.length?'<div class="table-wrap" tabindex="0" aria-label="Pedidos de cotação"><table class="data-table compact"><thead><tr><th>Lote</th><th>Fornecedor</th><th>Especialidade</th><th>Estado</th><th>Disponibilidade</th><th>Condições</th><th>Link</th></tr></thead><tbody>'+list.map(x=>'<tr><td>#'+Number(x.batch_id)+'</td><th>'+esc(x.supplier_name)+'</th><td>'+esc(x.category)+'</td><td>'+invitationStatus(x)+'</td><td>'+esc(x.available||"Aguardando")+'</td><td>'+esc(x.cancellation||x.conditions||"—")+'</td><td>'+
+   (canEdit()&&x.status==="prepared"&&!x.revoked_at&&Date.parse(x.expires_at)>Date.now()?'<button class="btn btn-small" data-action="record-delivery" data-id="'+Number(x.id)+'">Registrar entrega</button>':"")+
    (canEdit()&&x.status!=="responded"?'<button class="btn btn-small" data-action="reissue-rfq" data-id="'+Number(x.id)+'">Reemitir link</button>':"—")+'</td></tr>').join("")+'</tbody></table></div>':empty("Nenhuma RFQ criada","Selecione os fornecedores adequados ao serviço e gere os convites.") );
- return '<div class="notice neutral">A aplicação registra os convites e suas respostas; a entrega é feita por link manual. Cada fornecedor enxerga apenas seu próprio pedido.</div>'+links+recovery+'<div class="project-grid"><div>'+table+'</div><aside>'+creating+'</aside></div>';
+ return '<div class="notice neutral">A aplicação registra os convites e suas respostas; a entrega é feita por link manual. Cada fornecedor enxerga apenas seu próprio pedido.</div>'+links+recovery+'<div class="project-grid rfq-grid"><div>'+table+'</div><aside>'+creating+'</aside></div>';
 }
 function moneyBreakdown(item){
  const net=Number(item.quantity)*Number(item.unit_net_cents),tax=Math.floor((net*Number(item.tax_bps)+5000)/10000),fee=Math.floor(((net+tax)*Number(item.fee_bps)+5000)/10000);
@@ -427,7 +428,12 @@ async function action(button){
    }
  }
  else if(name==="remove-item"){if(confirm("Excluir este item do orçamento? O valor da cotação será recalculado.")){await api("/api/projects/"+state.pid+"/quote-items/"+Number(button.dataset.id),{method:"DELETE"});await refreshProject();render();notify("Item excluído.");}}
- else if(name==="mark-rfq-sent"){const batch=state.rfqBatch;if(!batch)return;await api("/api/rfq-batches/"+batch.batch_id+"/send",{method:"POST"});state.rfqBatch=null;await refreshProject();render();notify("Envio manual registrado. O sistema não despachou e-mails.");}
+ else if(name==="record-delivery"){
+   const invite=state.project.rfqs.find(row=>row.id===Number(button.dataset.id));
+   if(!invite||!confirm("Confirmar que você compartilhou o convite com "+invite.supplier_name+"?"))return;
+   await api("/api/rfqs/"+invite.id+"/manual-delivery",{method:"POST",body:{expected_expiry:invite.expires_at}});
+   await refreshProject();render();notify("Entrega registrada para "+invite.supplier_name+".");
+ }
  else if(name==="reissue-rfq"){
    const invitation=state.project?.rfqs?.find(x=>x.id===Number(button.dataset.id));
    if(!invitation||!confirm("Gerar um novo link para "+invitation.supplier_name+"? O link anterior será invalidado."))return;
