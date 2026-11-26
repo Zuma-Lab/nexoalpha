@@ -386,13 +386,14 @@ def test_manual_delivery_of_one_invitation_after_reload(client):
     project=client.get('/api/projects').json()[0]
     url=f"/api/projects/{project['id']}"
     suppliers=client.get('/api/suppliers').json()[:2]
-    batch=client.post(url+'/rfq-batches',headers=headers,json={'supplier_ids':[s['id'] for s in suppliers]}).json()
+    batch=client.post(url+'/rfq-batches',headers=headers,json={'supplier_ids':[s['id'] for s in suppliers],'deadline':'2027-03-01'}).json()
     first,second=batch['links']
     path=f"/api/rfqs/{first['rfq_id']}"
     rotated=client.post(path+'/reissue-link',headers=headers,json={'expected_expiry':first['expires_at']}).json()
     for _ in range(2):
         assert client.post(path+'/manual-delivery',headers=headers,json={'expected_expiry':rotated['expires_at']}).status_code==200
     rows={row['id']:row for row in client.get(url).json()['rfqs']}
+    assert rows[first['rfq_id']]['deadline']=='2027-03-01'
     assert rows[first['rfq_id']]['sent_at']
     assert rows[second['rfq_id']]['status']=='prepared'
     assert rows[second['rfq_id']]['sent_at'] is None
